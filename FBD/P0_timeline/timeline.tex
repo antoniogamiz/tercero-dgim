@@ -1,0 +1,62 @@
+\documentclass[a4paper, twoside, 11pt]{report}
+
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[TS1,T1]{fontenc}
+\usepackage{fourier, heuristica}
+\usepackage{array, booktabs}
+\usepackage{graphicx}
+\usepackage[x11names,table]{xcolor}
+\usepackage{color}
+\usepackage{caption}
+\DeclareCaptionFont{blue}{\color{LightSteelBlue3}}
+
+\newcommand{\foo}{\color{LightSteelBlue3}\makebox[0pt]{\textbullet}\hskip-0.5pt\vrule width 1pt\hspace{\labelsep}}
+
+\newcommand{\dbname}[1]{\textbf{#1}: }
+
+\begin{document}
+
+\begin{table}
+\renewcommand\arraystretch{2}\arrayrulecolor{LightSteelBlue3}
+\captionsetup{singlelinecheck=false, font=blue, labelfont=sc, labelsep=quad}
+\caption{Lenguajes de Bases de Datos}\vskip -1.5ex
+\begin{tabular}{@{\,}r <{\hskip 2pt} !{\foo} >{\raggedright\arraybackslash}p{12cm}}
+\toprule
+\addlinespace[1ex]
+1971 & \dbname{ALPHA} Primer lenguaje de base de datos, propuesto por Edgar F. Codd. \\
+1976 & \dbname{QUEL}  Primera aparaición de los lenguajes de bases de datos. \\
+1986 & \dbname{\color{red} SQL-86} 	Primera publicaci\'on hecha por ANSI. Confirmada por ISO en 1987. \\
+1989 & \dbname{SQL-89}  Revisi\'on menor. \\
+1992 & \dbname{SQL-92} Revisi\'on mayor. \\
+199x & \dbname{OQL} Lenguaje desarrollado a partir de SQL. \\
+1997 & \dbname{MDX} Multidimensional Expressions: lenguaje usado para procesamiento analítico online. \\
+1998 & \dbname{NoSQL} Not Only SQL. \\
+1999 & \dbname{SQL:1999} Se agregaron expresiones regulares, consultas recursivas (para relaciones jer\'arquicas), triggers y algunas caracter\'isticas orientadas a objetos. \\
+2003 & \dbname{SQL:2003} Introduce algunas caracter\'isticas de XML, cambios en las funciones, estandarizaci\'on dle objeto sequence y de las columnas autonum\'ericas. \\
+2005 & \dbname{SQL:2005} Define las maneras en las cuales SQL se puede utilizar conjuntamente con XML. Define maneras de importar y guardar datos XML en una base de datos SQL, manipul\'andolos dentro de la base de datos y publicando el XML y los datos SQL convencionales en forma XML. \\
+2007 & \dbname{.QL} .Query Language, usado para el manejo de sistemas de bases de datos relacionales. \\
+2008 & \dbname{SQL:2008} Permite el uso de la cl\'ausula ORDER BY fuera de las definiciones de los cursores. Incluye los disparadores del tipo INSTEAD OF. Añade la sentencia TRUNCATE.\\
+2011 & \dbname{SQL:2011} Datos temporales (PERIOD FOR). Mejoras en las funciones de ventana y de la cl\'ausula FETCH. \\
+2016 & \dbname{SQL:2016} Permite b\'usqueda de patrones, funciones de tabla polim\'orficas y compatibilidad con los ficheros JSON. \\
+
+\end{tabular}
+\end{table}
+
+\begin{center}
+\large \textbf{LENGUAJES DE BASES DE DATOS \\ }
+\scriptsize Autores: Samuel Medina Gutiérrez, Francisco Vázquez Escobar, Antonio Gámiz Delgado, Laura Sánchez Parra.
+\end{center}
+
+\section*{ \large ALPHA}
+Fue el lenguaje propuesto por Edgar F. Codd, inventor de las bases de datos relacionales. Este lenguaje influenció el diseño de \textbf{QUEL}. 
+\section*{\large QUEL}
+Es un lenguaje relacional a través de consultas (queries), basado en el cálculo relacional de tuplas, con algunas similitudes a \textbf{SQL}. Fue creado como por \textit{Ingres DBMS} en la Universidad de California, basado en la previa pero no implementada sugerencia de Codd: \textit{Data Sub-Language ALPHA}. Esta especificación fue posteriormente abandonada y los que la usaban se pasaron a SQL. 
+\section*{\large SQL}
+SQL (Structured Query Language), creado por \textbf{IBM} en la década de los 70', siendo una combinación de álgebra relacional y cálculo relacional. Siendo publicada su primera estandarización SQL-86, en el año 1986 por ANSI. Este lenguaje consta de 3 partes: \textbf{DML} (Data Manipulation Language), \textbf{DDL} (Data Definition Language) y \textbf{DCL} (Data Control Language).
+\section*{\large OQL}
+Object Query Language (Object Query Language) es un lenguaje de consultas estándar para bases de datos dirigidas a objetos, modelada después de SQL. Fue desarrollado por el \textbf{Object Data Management Group} (ODMG). Debido a su complejidad, nadie lo ha implementado completamente.
+\section*{\large NoSQL}
+A diferencia del lenguaje SQl (estructurado), el lenguaje NoSQL puede dinámicamente estructurar los datos dinámicamente como más convenga.
+
+\end{document} 
