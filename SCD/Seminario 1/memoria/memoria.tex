@@ -1,0 +1,142 @@
+
+% plantilla obtenida de: https://www.overleaf.com/19886281jjqffwsxshmm#/73112823/
+
+\documentclass[a4paper, 11pt]{article}
+\usepackage{comment} % enables the use of multi-line comments (\ifx \fi) 
+\usepackage{lipsum} %This package just generates Lorem Ipsum filler text. 
+\usepackage{fullpage} % changes the margin
+
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx}
+
+\newcommand{\imageins}[4]{\begin{figure}[!ht]		%Take the hardwork from using images. Let this command do the work for you. Insert images by just using this command \imageins{filename}{width as a ratio of total text width of the page}{caption name}{label name for referring in articles}		
+    \centering
+    \includegraphics[width=#2\textwidth]{#1}
+    %\caption{#3}
+    %\label{#4}
+    \vspace{0.2em}
+\end{figure}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{listings}
+\usepackage{color}
+ 
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+ 
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+ 
+\lstset{style=mystyle}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+%Header-Make sure you update this information!!!!
+\noindent
+\large\textbf{Cálculo de $\pi$ concurrentemente} \hfill \textbf{Antonio Gámiz Delgado} \\
+\normalsize Sistemas Concurrentes y Distribuidos \hfill 21/09/2018
+%\normalsize ECE 100-003 \hfill Teammates: Student1, Student2 \\
+%Prof. Oruklu \hfill Lab Date: XX/XX/XX \\
+%TA: Adam Sumner \hfill Due Date: XX/XX/XX
+
+\section*{Chunks}
+
+\begin{lstlisting}[language=C++, caption=piChunk.cpp]
+double funcion_hebra( long i )
+{
+  double suma = 0.0;
+  for( long j = i*chunk_size ; j < (i+1)*chunk_size; j++ )
+    if( j < m ) suma += f( (j + double(0.5) )/m );
+  return suma;
+}
+
+double calcular_integral_concurrente( )
+{
+  future<double> futuros[n] ;
+
+  // poner en marcha todas las hebras y obtener los futuros
+  for( int i = 0 ; i < n ; i++ )
+    futuros[i] = async( launch::async, funcion_hebra, i ) ;
+
+  long double pi = 0.0;
+  for( int i = 0 ; i < n ; i++ )
+     pi += futuros[i].get();
+
+  pi/=m;
+  return pi;
+}
+\end{lstlisting}
+
+
+\section*{Scatter}
+
+\begin{lstlisting}[language=C++, caption=piScatter.cpp]
+double funcion_hebra_scatter( long i )
+{
+  double suma = 0.0;
+  for( long j = i ; j < m; j += n )
+    if( j < m ) suma += f( (j + double(0.5) )/m );
+  return suma;
+}
+
+double calcular_integral_concurrente_scatter( )
+{
+  future<double> futuros[n] ;
+
+  // poner en marcha todas las hebras y obtener los futuros
+  for( int i = 0 ; i < n ; i++ )
+    futuros[i] = async( launch::async, funcion_hebra_scatter, i ) ;
+
+  long double pi = 0.0;
+  for( int i = 0 ; i < n ; i++ )
+     pi += futuros[i].get();
+
+  pi/=m;
+  return pi;
+}
+\end{lstlisting}
+
+\section*{Análisis de los resultados}
+
+A continuación se muestra una tabla con los tiempos de ejecución de los dos programas anteriores, con 1 hebra (secuencial, 2, 4 y 8 respectivamente y repartiendo el trabajo en chunks, y luego en ciclos (scatter).
+
+\imageins{./images/timetable.png}{1}{}{}
+
+Veamos las tablas de las ganancias:
+
+\imageins{./images/chunk_s.png}{0.8}{}{}
+\imageins{./images/scatter_s.png}{0.8}{}{}
+
+Como vemos, para $n=2,4,8$ la ganancia es también de 2,4 y 8 respectivamente. Esto también se puede ver en el siguiente gráfico de uso de la CPU para $n=8$, en el que vemos que una de las hebras consume el 100\% de sus recursos durante aproximadamente 8 veces más que el tiempo que están las 8 hebras haciendo el cálculo de forma concurrente:
+
+\imageins{./images/cpu_usage.png}{1}{}{}
+
+\newpage
+
+Aquí podemos ver la ganancia de cada uno de los programas con respecto a la versión secuencial: 
+
+\imageins{./images/chunk_g.png}{0.8}{}{}
+\imageins{./images/scatter_g.png}{0.8}{}{}
+
+\end{document}

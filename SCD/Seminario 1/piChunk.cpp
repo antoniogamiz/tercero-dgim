@@ -10,7 +10,7 @@ using namespace std ;
 using namespace std::chrono;
 
 const long m  = 1024l*1024l*1024l,
-           n  = 4  ;
+           n  = 8  ;
 
 const long chunk_size = ( m % 2 == 0 ) ? m/n : (m/n) + 1;
 
