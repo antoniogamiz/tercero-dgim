@@ -6,13 +6,15 @@
 #include <vector>
 #include <cmath>
 
+#include <stdlib.h> // atoi() => para convertir los argumentos a enteros
+
 using namespace std ;
 using namespace std::chrono;
 
-const long m  = 1024l*1024l*1024l,
-           n  = 8  ;
 
-const long chunk_size = ( m % 2 == 0 ) ? m/n : (m/n) + 1;
+long m = 0, // serán inicializadas con los valores pasados como argumentos al main
+     n  = 0,
+     chunk_size = 0;
 
 // -----------------------------------------------------------------------------
 // evalua la función $f$ a integrar ($f(x)=4/(1+x^2)$)
@@ -31,12 +33,41 @@ double calcular_integral_secuencial(  )
 }
 
 // -----------------------------------------------------------------------------
+// función que ejecuta cada hebra: recibe $i$ ==índice de la hebra, ($0\leq i<n$)
+double funcion_hebra( long i )
+{
+  double suma = 0.0;
+  for( long j = i*chunk_size ; j < (i+1)*chunk_size; j++ ) // [i*chunk_size, (i+1)*chunk_size] es la carga correspondiente a la hebra 'i'
+    if( j < m ) suma += f( (j + double(0.5) )/m ); // j < m evita que el último chunk haga iteraciones de más
+  return suma;
+}
+
+// -----------------------------------------------------------------------------
+// calculo de la integral de forma concurrente (por bloques)
+double calcular_integral_concurrente( )
+{
+  future<double> futuros[n] ;
+
+  // poner en marcha todas las hebras y obtener los futuros
+  for( int i = 0 ; i < n ; i++ )
+    futuros[i] = async( launch::async, funcion_hebra, i ) ;
+
+  long double pi = 0.0;
+  for( int i = 0 ; i < n ; i++ )
+     pi += futuros[i].get();
+
+  pi/=m;
+
+  return pi;
+}
+
+// -----------------------------------------------------------------------------
 // cálculo de la función repartiendo la carga consecutivamente en lugar de por bloques
 double funcion_hebra_scatter( long i )
 {
   double suma = 0.0;
-  for( long j = i ; j < m; j += n )
-    if( j < m ) suma += f( (j + double(0.5) )/m );
+  for( long j = i ; j < m; j += n ) // sumamos n (número de hebras) para que cada hebra haga todas las iteraciones correspondientes a i mod n (entrelazado)
+    if( j < m ) suma += f( (j + double(0.5) )/m ); // j < m evita que el último ciclo haga iteraciones de más
   return suma;
 }
 
@@ -61,22 +92,39 @@ double calcular_integral_concurrente_scatter( )
 
 // -----------------------------------------------------------------------------
 
-int main()
+int main( int argc, char **argv)
 {
+
+  /*
+  * Pedimos el número de hebras y el tamaño de muestra como argumento del main
+  * para facilitar la obtención de los datos con el script pi.sh
+  */
+
+  if( argc != 3 )
+  {
+      cout << "Numero de parametros incorrecto: ./piBash <num_threads> <num_muestras>" << endl;
+      exit(-1);
+  }
+
+  n = atoi( argv[1] );
+  m = atoi( argv[2] );
+  chunk_size = ( m % 2 == 0 ) ? m/n : (m/n) + 1;
 
   time_point<steady_clock> inicio_sec  = steady_clock::now() ;
   const double             result_sec  = calcular_integral_secuencial(  );
   time_point<steady_clock> fin_sec     = steady_clock::now() ;
   double x = sin(0.4567);
+  time_point<steady_clock> inicio_conc = steady_clock::now() ;
+  const double             result_conc = calcular_integral_concurrente(  );
+  time_point<steady_clock> fin_conc    = steady_clock::now() ;
 
-  time_point<steady_clock> inicio_conc_sca  = steady_clock::now() ;
-  const double             result_conc_sca  = calcular_integral_concurrente_scatter(  );
-  time_point<steady_clock> fin_conc_sca     = steady_clock::now() ;
+  time_point<steady_clock> inicio_conc_sca = steady_clock::now() ;
+  const double             result_conc_sca = calcular_integral_concurrente_scatter(  );
+  time_point<steady_clock> fin_conc_sca    = steady_clock::now() ;
 
   duration<float,milli>    tiempo_sec  = fin_sec  - inicio_sec ,
+                           tiempo_conc = fin_conc - inicio_conc,
                            tiempo_conc_sca = fin_conc_sca - inicio_conc_sca;
-  const float              porc        = 100.0*tiempo_conc_sca.count()/tiempo_sec.count() ;
-
 
   constexpr double pi = 3.14159265358979323846l ;
 
@@ -85,10 +133,11 @@ int main()
        << setprecision(18)
        << "Valor de PI                       : " << pi << endl
        << "Resultado secuencial              : " << result_sec  << endl
+       << "Resultado concurrente (chunks)    : " << result_conc << endl
        << "Resultado concurrente (scatter)   : " << result_conc_sca << endl
        << setprecision(5)
        << "Tiempo secuencial                 : " << tiempo_sec.count()  << " milisegundos. " << endl
+       << "Tiempo concurrente (chunks)       : " << tiempo_conc.count() << " milisegundos. " << endl
        << "Tiempo concurrente (scatter)      : " << tiempo_conc_sca.count() << " milisegundos. " << endl
-       << setprecision(4)
-       << "Porcentaje t.conc_sca/t.sec.      : " << porc << "%" << endl;
+       << setprecision(4);
 }
