@@ -1,0 +1,151 @@
+
+% plantilla obtenida de: https://www.overleaf.com/19886281jjqffwsxshmm#/73112823/
+
+\documentclass[a4paper, 11pt]{article}
+\usepackage{comment} % enables the use of multi-line comments (\ifx \fi) 
+\usepackage{lipsum} %This package just generates Lorem Ipsum filler text. 
+\usepackage{fullpage} % changes the margin
+
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+% or
+\usepackage{amssymb}
+\newcommand{\imageins}[4]{\begin{figure}[!ht]		%Take the hardwork from using images. Let this command do the work for you. Insert images by just using this command \imageins{filename}{width as a ratio of total text width of the page}{caption name}{label name for referring in articles}		
+    \centering
+    \includegraphics[width=#2\textwidth]{#1}
+    %\caption{#3}
+    %\label{#4}
+    \vspace{0.2em}
+\end{figure}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{listings}
+\usepackage{color}
+ 
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+ 
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+ 
+\lstset{style=mystyle}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+%Header-Make sure you update this information!!!!
+\noindent
+\large\textbf{Relación I} \hfill \textbf{Antonio Gámiz Delgado} \\
+\normalsize Modelos de Computación \hfill 26/09/2018
+%\normalsize ECE 100-003 \hfill Teammates: Student1, Student2 \\
+%Prof. Oruklu \hfill Lab Date: XX/XX/XX \\
+%TA: Adam Sumner \hfill Due Date: XX/XX/XX
+
+\section*{Ejercicio 13}
+
+Dados dos homomorfismos $f,g: A^* \longrightarrow B^*$, se dice que son iguales si $f(x)=g(x), \quad \forall x \in A^*$. ¿Existe un procedimiento algorítmico para comprobar si dos homomorfismos son iguales? \\
+
+Sea $x_0 \in A^* \Longrightarrow x_0=a_0...a_{n-1}, \quad, n=|A|$. Apliquemos f y g a $x_0$.
+\[f(x_0)=f(a_0...a_{n-1})=f(a_0)...f(a_{n-1})=g(a_0)...g(a_{n-1})=g(a_0...a_{n-1})=g(x_0)\]
+
+Luego para que esa igualdad se cumpla, $f$ y $g$ tienen que asignarle a cada elemento de $A$ (que es \textbf{finito}), el mismo elemento de $B$. Por lo que el procedimiento algorítmico si existe, y sería comprobar que:
+\[f(a_i)=g(a_i), \quad \forall i \in \{0,...,n-1\} \text{ con } a_i\in A\]
+\section*{Ejercicio 16}
+Dada la gramática $G=(\{S,A\}, \{a,b\},P,S)$ donde $P = \{S \longrightarrow abAS, abA \longrightarrow baab, S \longrightarrow a, A \longrightarrow b \}.$ Determinar el lenguaje que genera. \\
+
+Debido a $S \longrightarrow abAS$ y $S \longrightarrow a$, vemos que todas las palabras de $L(G)$ van a terminar en $a$. Después de aplicar $n$ veces la primera regla, tenemos dos opciones: sustituir $abA$ por $baab$, provocando así que después de cada 2 $a$, siempre vaya una $b$ (ya que lo único que puede seguir en la palabra es $abA$), o dejar $ab$ y sustituir $A$ por $b$, luego siempre que nos encontremos $a$ sola, le seguirán 2 $b$.
+
+Por lo tanto, el lenguaje generado es:
+
+L(G) = \{palabras en las que la cadena a es seguida por bb, y la cadena aa es seguida por b, y terminan en a.\}
+
+\section*{Ejercicio 17}
+Sea la gramática $G=(V,T,P,S)$ donde:
+\begin{itemize}
+\item $V=\{<numero>, <digito>\}$
+\item $T = \{0,1,2,3,4,5,6,7,8,9\}$
+\item $S=<numero>$
+\item Las reglas de producción $P$ son:
+\begin{itemize}
+\item $<numero> \longrightarrow <numero><digito>$
+\item $<numero> \longrightarrow <digito>$
+\item $<digito> \longrightarrow <0|1|3|4|5|6|7|8|9>$
+\end{itemize}
+\end{itemize}
+Determinar el lenguaje que genera.
+
+El símbolo inicial es $S=<numero>$, o sea que siempre empezaremos por un número, que podremos sustituir por cualquier dígito del 0 al 9, generando así los números del 0 al 9. También podríamos aplicar la primera regla y volver a hacer lo anterior, generando los números del 10 al 19, y así hasta que queramos.
+
+Por lo tanto, el lenguaje generado es: L(G) = $\{\{0,1,2,3,4,5,6,7,8,9\}^*\}=\mathbb{N}$
+\section*{Ejercicio 18}
+Sea la gramática $G=(\{A,S\},\{a,b\},S,P)$ donde las reglas de producción son:
+\begin{itemize}
+\item $S \longrightarrow aS$
+\item $S \longrightarrow aA$
+\item $A \longrightarrow bA$
+\item $A \longrightarrow b$
+\end{itemize}
+Determinar el lenguaje generado por la gramática.
+
+Aplicando cualquier regla de producción con $S$, la palabra va a empezara por $a$. Después de eso solo tenemos dos opciones, o seguir añadiendo $a$ o parar cuando apliquemos la regla $S\longrightarrow aA$ y hacer lo mismo con las $b$.
+
+Por lo tanto, el lenguaje generado es: $L(G) = \{a^ib^i,\quad i>0\}$
+\section*{Ejercicio 19}
+
+Encontrar si es posible una gramática lineal por la derecha o una gramática independiente del contexto que genere el lenguaje $L$, en cada uno de los casos, supuesto que $L\subseteq\{a,b,c\}^*$ y verifica:
+
+\begin{itemize}
+\item $u\in L$ si y solamente si verifica que $u$ no contiene dos símbolos $b$ consecutivos.
+
+Existe una gramática de tipo 3 que genere este lenguaje ya que se puede resolver con memoria finita. Veámos cuál es:
+\begin{itemize}
+\item $S \longrightarrow \epsilon | aS | cS | bX$
+\item $X \longrightarrow \epsilon | aS | cS | a | c$
+\end{itemize}
+\item $u\in L$ si y solamente si verifica que $u$ contiene dos símbolos $b$ consecutivos.
+
+Por lo mismo que el anterior, en este también se puede encontrar de tipo 3. Veámos cuál es:
+\begin{itemize}
+\item $S \longrightarrow aS | cS | bbX$
+\item $X \longrightarrow aX | bX | cX | \epsilon$
+\end{itemize}
+\item $u\in L$ si y solamente si verifica que un número impar de símbolos $c$.
+
+Por lo mismo que el anterior, en este también se puede encontrar de tipo 3. Veámos cuál es:
+\begin{itemize}
+\item $S \longrightarrow aS | bS | cX$
+\item $X \longrightarrow aX | bX | cY | \epsilon$
+\item $Y \longrightarrow aY | bY | cX$
+\end{itemize}
+\item $u\in L$ si y solamente si verifica que no contiene el mismo número de símbolos $b$ que de símbolos $c$.
+
+Aquí no podemos encontrar una gramática de tipo 3, ya que necesitaríamos contar el número de símbolos $b$ o $c$ que hay en toda la palabra, y eso no se puede hacer con memoria finita.
+
+Tampoco parece haber ninguna gramática de tipo 2 que genere este lenguaje, ya que tampoco se puede resolver el problema con memoria finita y una pila infinita.
+\end{itemize}
+
+
+\end{document}
