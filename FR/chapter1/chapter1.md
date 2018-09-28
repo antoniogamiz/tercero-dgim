@@ -25,7 +25,7 @@ End systems attached to the Internet provide an `Application Programming Interfa
 
 * `Protocol`: defines the format and the order of messages exchanged between two or more communicating entities, as well as the actions taken on the transmission and/or receipt of a message or other event.
 
-![alt text](protocol.png "Protocols examples")
+![alt text](./images/protocol.png "Protocols examples")
 
 ## Home Access
 
@@ -33,11 +33,11 @@ In both of these, access is `asymmetric`.
 
 * `Digital Subscriber Line (DSL)` => DSL modem uses the existing telephone line to exchange data with a difital subscriber line access multiplexer (`DSLAM`) located in the telco's local central office (`CO`). The home's DSL modem takes digital data and translates it to high-frequency tones for transmission over telephone wires to the CO; the analog signals from many such houses are translated back into digital format at the DSLAM.
 
-![alt text](dsl.png "DSL")
+![alt text](./images/dsl.png "DSL")
 
 * `Hybrid FIber Coax (HFC)` => it makes use of the cable television company's existing cable televesion insfrastucture. Fiber optics connect the cable head end to neighborhood-level junctions, from which traditional coaxial cable is then used to reach individual houses and apartments. This requires special modems, called `cable modems`. It is typically an external device and connects to the home PC through an Ethernet port. At the cable head end, the`cable modem termination system (CMTS)` serves a similar function as the DSL network's DSLAM: divide the HFC network into two channels, a downstream and an upstream channel.
 
-![alt text](hfc.png "HFC")
+![alt text](./images/hfc.png "HFC")
 
 ## Access in the Enterprise (and the home): Ethernet and WiFi.
 
@@ -45,10 +45,10 @@ On corporate and university campuses, and increasingly in home settings, a `loca
 
 Ethernet users use twisted-pair copper wire to connect to an Ethernet switch. The Ethernet switch, is then in turn connected into the largar Internet.
 
-![alt text](ethernet.png "Ethernet")
+![alt text](./images/ethernet.png "Ethernet")
 
 
-![alt text](wifi.png "WiFi")
+![alt text](./images/wifi.png "WiFi")
 
 ## The NetWork Core
 
@@ -60,7 +60,7 @@ In a network application, end systems exchange messages with each other. Message
 
 Most packets switches use store-and-forward transmission at the inputs to the links. Store-and-forward transmissions means that the packet switch must receive the entire packet before it can begin to transmit the first bit of the packet onto the outbound link.
 
-![alt text](store-and-forward.png "store-and-forward")
+![alt text](./images/store-and-forward.png "store-and-forward")
 
 Due to this fact, the end-to-end delay for sending a packet over a path of N links each of rate R (thus, there are N-1 routers between source and destination) is: 
 
@@ -70,7 +70,7 @@ $$ d_{end-to-end}=N\frac{L}{R}$$
 
 Each packet switch has multiple links attached to it. For each attached link, the packet switch has an `output buffer` (also called an `output queue`), which stores packets that the router is about to send into that link. If an arriving packet needs to be transmitted onto a link but finds the link bussy with the transmission of another packet, the arriving packet must wait in the output buffer. Thus, in addition to the store-and-forward delays, packets suffer output buffer `queuing delays`. Since the amount of buffer amount is finite, an arriving packet may find that the buffer is completely full with other packets waiting for transmission. In this case, `packet loss` will occur - either the arriving packet or one of the alread-queued packets will be dropped.
 
-![alt text](queuing_delays.png "queuing delays")
+![alt text](./images/queuing_delays.png "queuing delays")
 
 ### Forwarding Tables and Routing Protocols
 
@@ -82,7 +82,7 @@ In the Internet, every end system has an address called an IP address. When a so
 
 `Circuit` => Before the sender can send the information, the network must establish a connection between the sender and the receiver. This is a *bona fide* connection, for wich the switches on the path between the and receiver maintain connection state for that connection. This connection, is ussually called a `circuit`. When the network establishes the ciurcuit, it also reserves a constant transmission rate in the network's links for the duration of the connection. Since a given transmission rate has been reserved for this sender-to-receiver connection, the sender can transfer the data to the receiver at the *guaranted* constant rate.
 
-![alt text](circuit.png "circuit")
+![alt text](./images/circuit.png "circuit")
 
 ## Networks of Networks
 
