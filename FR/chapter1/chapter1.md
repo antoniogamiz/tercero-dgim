@@ -86,4 +86,7 @@ In the Internet, every end system has an address called an IP address. When a so
 
 ## Networks of Networks
 
+* IXP son sinónimos PoP => puntos neutros para tener un punto común e intercambiar tráfico entre ellos y acortar caminos y rutas del tráfico.
+
+
 <----Explicar brevemente los Internet Structure 1,2,3,4,5, PoP, IXP, etc ----->

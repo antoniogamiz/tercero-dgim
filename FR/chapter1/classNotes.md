@@ -1,0 +1,4 @@
+diapo 26 => con la url uso la DNS para obtener la IP, una vez tengo la ip, miro el protocolo en la url, http en este caso, lo que nos da un puerto (el 80), y siguiendo las reglas del protocolo escribo el mensaje (que virtualmente le esta hablando a su entidad par, lineas amarillas). Este mensaje deja el plano de usuario, y pasa al siguiente protocolo, TCP, le añade la cabecera del TCP y así hasta que envía el mensaje o paquete IP al router, y segun la ip recorre la network hasta su destino. Cuando llega al destino, realiza las comprobaciones necesarias y genera una respuesta. Las IP's de origen a destino no cambian (las MAC si), salvo si pasan por alguna red privada o algo así.
+
+diapo 27 => el direccionamiento nos permite identificar entidades o recursos.
+            direccion ip => dirIPv4 32 bits, 4 numeros de 1 bytes separados por punto. 192.1.1.0
