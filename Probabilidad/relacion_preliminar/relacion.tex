@@ -19,8 +19,8 @@
 \usepackage{upgreek}
 
 \begin{document}
-\author{Mark Gius}
-\title{Homework Set 1: 141 Redux}
+\author{Antonio Gámiz Delgado}
+\title{Relación Preliminar: Probabilidad}
 \maketitle
 
 \begin{enumerate}
@@ -227,9 +227,28 @@ Var[X] = \frac{r(1-p)}{p^2}=\frac{4(1-0.05)}{0.05^2}=1520 \Longrightarrow \sigma
 
 \begin{enumerate}
 \item Hay exactamente tres números pares en cinco extracciones.
-
-
+\[
+X \sim H(10,5,5)
+\]
+\[
+P(X=3)=\frac{\binom{N_1}{x}\binom{N-N_1}{n-x}}{\binom{N}{n}}=\frac{\binom{5}{3}\binom{5}{2}}{\binom{10}{5}}=0.396825
+\]
 \item Se necesiten 5 extracciones para obterner 3 números pares.
+
+\[
+X \sim H(10, 5, 2)
+\]
+\[
+P(X=2)=\frac{\binom{N_1}{x}\binom{N-N_1}{n-x}}{\binom{N}{n}}=\frac{\binom{5}{2}\binom{5}{2}}{\binom{10}{4}}=0.476109
+\]
+
+Ahora tenemos la probabilidad de haber sacado 4 papeletas, en la que hemos obtenido 2 impares y 2 pares. 
+
+Como son sucesos independientes, podemos hacer:
+\[
+P(A\cap B)=P(A)P(B)=0.5*0.476109=0.238095
+\]
+Con A la probabilidad de sacar un número par y B la probabilidad de haber sacado 2 pares e impares en 4 extracciones.
 
 \item Obterner el número 7 en la cuarta extracción.
 
@@ -240,8 +259,18 @@ P(X)=(1-\frac{1}{10})(1-\frac{1}{9})(1-\frac{1}{8})\frac{1}{7} = 0.1
 \end{enumerate}
 
 \item Supongamos que el número de televisores vendidos en un comercio durante un mes se distribuye según una Poisson de parámetro 10, y que el beneficio neto por unidad es 30 euros.
+\[
+X \sim \mathcal{P}(10)
+\]
 \begin{enumerate}
 \item ¿Cuál es la probabilidad de que el beneficio neto obtenido por un comerciante durante un mes sea al menos de 360 euros?
+
+Si queremos que el beneficia sea de 360 euros, entonces debemos vender 12 televisores, luego:
+\[
+P(X=12)=1-\sum_{i=0}^{11}e^{-\lambda}\frac{\lambda^i}{i!}=0.30322
+\]
+
+\item ¿Cuántos televisores debe tener el comerciante a principio de mes para tener al menos proabilidad de 0.95 de satisfacer toda la demanda?
 \end{enumerate}
 
 \end{enumerate}
