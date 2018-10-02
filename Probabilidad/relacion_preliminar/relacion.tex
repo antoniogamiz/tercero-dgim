@@ -1,11 +1,8 @@
 \documentclass[11pt]{article}
-% decent example of doing mathematics and proofs in LaTeX.
-% An Incredible degree of information can be found at
-% http://en.wikibooks.org/wiki/LaTeX/Mathematics
-
-% Use wide margins, but not quite so wide as fullpage.sty
 
 \usepackage[spanish]{babel}
+\decimalpoint % to render points as points for decimal separators
+
 \usepackage[utf8]{inputenc}
 \marginparwidth 0.5in 
 \oddsidemargin 0.25in 
@@ -13,21 +10,46 @@
 \marginparsep 0.25in
 \topmargin 0.25in 
 \textwidth 6in \textheight 8 in
-% That's about enough definitions
 
 \usepackage{amsmath}
-\usepackage{upgreek}
+\usepackage{amssymb}
+%\usepackage{upgreek}
+\usepackage{xcolor}
+\usepackage{eurosym}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\tick}{\textbf{\color{green}{ (\checkmark) }}}
+\newcommand{\warning}{\textbf{\color{red}{ {\fontencoding{U}\fontfamily{futs}\selectfont\char 66\relax} }}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newenvironment{aclaration}    
+{
+\begin{center}
+\begin{tabular}{|p{0.9\textwidth}|}
+\hline \\ \warning
+}{
+\\\hline
+\end{tabular} 
+\end{center}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \author{Antonio Gámiz Delgado}
 \title{Relación Preliminar: Probabilidad}
 \maketitle
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \begin{enumerate}
 
-\item 
-
-Se estudian las plantas de una determinada zona donde ha atacado un virus. La probabilidad de que cada planta este contaminada es 0.35.
+\item Se estudian las plantas de una determinada zona donde ha atacado un virus. La probabilidad de que cada planta este contaminada es 0.35.
 
 Sea $X= \text{ número de plantas contaminadas en } n \text{ análisis con una probabilidad } p=0.35.  \Longrightarrow X \sim B(n,0.35)$ 
 
@@ -46,7 +68,7 @@ Luego se esperan 2 plantas contaminadas en 5 muestras.
 P(2 \leq X \leq 5) = \sum_{i=2}^5P(X=i) = \sum_{i=2}^5\binom{9}{i}p^i(1-p)^{9-i}
 \]
 \[
-= \binom{9}{2}0.35^2*0.65^7+\binom{9}{3}0.35^3*0.65^6+\binom{9}{4}0.35^4*0.65^5+\binom{9}{5}0.35^5*0.65^4= 
+= \binom{9}{2}0.35^2\cdot 0.65^7+\binom{9}{3}0.35^3\cdot 0.65^6+\binom{9}{4}0.35^4\cdot 0.65^5+\binom{9}{5}0.35^5\cdot 0.65^4= 
 \]
 \[
 = 0.825326770734375
@@ -61,7 +83,7 @@ P(X=4)=\binom{9}{4}0.35^40.65^5=0.21938630101171875
 
 \item 
 
-Cada que vez que una máquina, dedicada a la fabricación de comprimidos, produce uno, la probabilidad de que sea defectuoso es 0.01.
+\tick Cada que vez que una máquina, dedicada a la fabricación de comprimidos, produce uno, la probabilidad de que sea defectuoso es 0.01.
 
 \begin{enumerate}
 \item Si los comprimidos se colocan en tubos de 25, ¿cuál es la probabilidad de que en un tubo todos los comprimidos sean buenos?
@@ -76,7 +98,7 @@ P(X=0)=\binom{25}{0}0.01^00.99{25} = 0.777821359
 Calculamos la probabilidad de que un tubo tenga un comprimido defectuoso:
 
 \[
-P(X=1)=\binom{25}{1}0.01*0.99^{24} =0.1964
+P(X=1)=\binom{25}{1}0.01\cdot 0.99^{24} =0.1964
 \]
 
 Podemos hacer $X \sim B(10, 0.1964)$ con $X = \{\text{número de tubos con un comprimido defectuoso}\} $, ya que el tamaño de la caja es 10 tubos y sólo estamos calculando la probabilidad para una caja. Luego:
@@ -88,7 +110,7 @@ P(X=5)=\binom{10}{5}0.1964^5(1-0.1964)^5=0.02468714
 
 \item 
 
-Un pescador desea capturar un ejemplar de sardina que se encuentra siempre en una determinada zona del mar con probabilidad 0.15. Hallar la probabilidad de que tenga que pescar 10 peces de especies distintas de la deseada antes de:
+\tick Un pescador desea capturar un ejemplar de sardina que se encuentra siempre en una determinada zona del mar con probabilidad 0.15. Hallar la probabilidad de que tenga que pescar 10 peces de especies distintas de la deseada antes de:
 
 Sigue una distribución binomial negativa con probabilidad de éxito $p=0.15 \Longrightarrow X \sim BN(r,0.15)$, siendo $X=\{$número de peces de diferente especie pescados antes de haber pescado $k$ sardinas.$\}$
 
@@ -97,7 +119,7 @@ Sigue una distribución binomial negativa con probabilidad de éxito $p=0.15 \Lo
 \item pescar la sardina buscada.
 
 \[
-P(X="\text{10 antes de pescar 1 sardinas}")=BN(1,0.15)=
+P(X=10)=BN(1,0.15)=
 \]
 \[
 =\binom{x+r-1}{x}(1-p)^xp^r=\binom{10}{10}(1-0.15)^{10}0.15=0.02953
@@ -105,7 +127,7 @@ P(X="\text{10 antes de pescar 1 sardinas}")=BN(1,0.15)=
 \item pescar tres ejemplares de la sardina buscada.
 
 \[
-P(X="\text{10 antes de pescar 3 sardinas}")=BN(3,0.15)=
+P(X=10)=BN(3,0.15)=
 \]
 \[
 =\binom{x+r-1}{x}(1-p)^xp^r=\binom{12}{10}(1-0.15)^{10}0.15^3=0.04385
@@ -130,19 +152,19 @@ Así que, de media, el científico necesitará examinar a 12 monos para encontra
 \item Calcular la probabilidad de que encuentre 10 monos sanos antes de encontrar los 5 afectados.
 
 \[
-P(X=10)=\binom{x+r-1}{x}(1-p)^xp^r=\binom{14}{10}(1-0.33)^{10}*0.33^5=0.06871
+P(X=10)=\binom{x+r-1}{x}(1-p)^xp^r=\binom{14}{10}(1-0.33)^{10}\cdot 0.33^5=0.06871
 \]
 
 \item Calcular la probabilidad de que tenga que examinar por lo menos 20 monos.
 
 \[
-P(X=20)=\binom{x+r-1}{x}(1-p)^xp^r=\binom{24}{20}(1-0.33)^{20}*0.33^5=0.0206
+P(X=20)=\binom{x+r-1}{x}(1-p)^xp^r=\binom{24}{20}(1-0.33)^{20}\cdot 0.33^5=0.0206
 \]
 
 
 \end{enumerate}
 
-\item Se capturan 100 peces de un estanque que contiene 10000. Se les marca con una anilla y se devuelven al agua. Transcurridos unos días se capturan de nuevo 100 peces y se cuentan los anillados.
+\item \tick Se capturan 100 peces de un estanque que contiene 10000. Se les marca con una anilla y se devuelven al agua. Transcurridos unos días se capturan de nuevo 100 peces y se cuentan los anillados.
 
 Sigue una distribución hipergeométrica  $X \sim H(10000, 100, 100)$, siendo $X=\{$número de peces anillados encontrados en la segunda captura.$\}$.
 
@@ -151,24 +173,31 @@ Sigue una distribución hipergeométrica  $X \sim H(10000, 100, 100)$, siendo $X
 \item Calcular la probabilidad de que en la segunda captura se encuentre al menos un pez anillado.
 
 \[
-P(X=1)=\frac{\binom{N_1}{x}\binom{N-N_1}{n-x}}{\binom{N}{n}}=\frac{\binom{100}{1}\binom{9900}{99}}{\binom{10000}{100}}=0.3715891
+P(X\geq 1)=1 - P(X=0) =  1 - \frac{\binom{100}{0}\binom{9900}{100}}{\binom{10000}{0}}=0
 \]
+
+\begin{aclaration}
+Si no tenemos Mathematica, se podría haber aproximado por una binomial ya que $N=10000$. También se podría aproximar por una distribución de Poisson con $\lambda=np=100\cdot  0.01=1\Longrightarrow \mathcal{P}(1)$.
+\[
+P(X\geq 1)= 1-P(X=0)=1-\frac{e^{-1}1^0}{0!}=1-e^{-1}=0.632
+\]
+\end{aclaration}
 
 \item Calcular el número esperado de peces anillados en la segunda captura.
 
 La probabilidad de sacar un pez anillado es $p=\frac{N_1}{N}=\frac{100}{10000}=0.01$
 
 \[
-E[X]=np=100*0.01=1
+E[X]=np=100\cdot 0.01=1
 \]
 
 Así que se espera obtener 1 pez en la segunda captura.
 
 \end{enumerate}
 
-\item Cada página impresa de un libro tiene 40 líneas, y cada línea tiene 75 posiciones. Se supone que la probabilidad de que en cada posición haya un error es 1/6000.
+\item \tick Cada página impresa de un libro tiene 40 líneas, y cada línea tiene 75 posiciones. Se supone que la probabilidad de que en cada posición haya un error es 1/6000.
 
-Sigue una distribución binomial con $n=40*75=3000$ y $p=1/6000 \Longrightarrow X \sim B(3000, 1/6000$, siendo $X=\{$número de posiciones de impresión erróneas encontradas en una página$\}$.
+Sigue una distribución binomial con $n=40\cdot 75=3000$ y $p=1/6000 \Longrightarrow X \sim B(3000, 1/6000)$, siendo $X=\{$número de posiciones de impresión erróneas encontradas en una página$\}$.
 
 
 \begin{enumerate}
@@ -192,14 +221,14 @@ P(X \geq 5)=1 - P(X<=4) = 1 - \sum_{i=0}^4\binom{3000}{i}(\frac{1}{6000})^i(1-\f
 X \sim B(20, 0.6065)
 \]
 \[
-P(X=0) = (1-0.6065)^{20} = 7.92309 * 10^{-9}
+P(X=0) = (1-0.6065)^{20} = 7.92309 \cdot  10^{-9}
 \]
 
 \end{enumerate}
 
-\item En un departamento de control de calidad se inspeccionan las unidades terminadas que provienen de una línea de ensamble. La probabilidad de que cada unidad sea defectuosa es 0.05.
+\item \tick En un departamento de control de calidad se inspeccionan las unidades terminadas que provienen de una línea de ensamble. La probabilidad de que cada unidad sea defectuosa es 0.05.
 
-Sigue una distribución binomial negativa con $p=0.05 \Longrightarrow X \sim BN(r, 0.05$, siendo $X=\{$número de unidades defectuosas encontradas$\}$.
+Sigue una distribución binomial negativa con $p=0.05 \Longrightarrow X \sim BN(r, 0.05)$, siendo $X=\{$número de unidades no defectuosas hasta encontrar la segunda defectuos$\}$.
 
 \begin{enumerate}
 \item ¿Cúal es la probabilidad de que la vigésima unidad inspeccionada sea la segunda que se encuentra defectuosa?
@@ -207,24 +236,23 @@ Sigue una distribución binomial negativa con $p=0.05 \Longrightarrow X \sim BN(
 X \sim BN(2, 0.05)
 \]
 \[
-P(X=20) = \binom{x+r-1}{x}(1-p)^xp^r=\binom{21}{20}(1-0.05)^{20}0.05^2=0.0188
+P(X=18) = \binom{x+r-1}{x}(1-p)^xp^r=\binom{19}{18}(1-0.05)^{18}0.05^2=0.0188
 \]
 
 \item ¿Cuántas unidades deben inspeccionarse por término medio hasta encontrar 4 defectuosas?
 
 \[
-E[X] = \frac{r(1-p)}{p}=\frac{4(1-0.05)}{0.05} = 76
+E[X] = \frac{r(1-p)}{p}=\frac{4(1-0.05)}{0.05} = 76 \Longrightarrow \text{Deben inspeccionarse } \underbrace{76+4=80}_{\warning} \text{ unidades.} 
 \]
 
 \item Calcular la desviación típica del número de unidades inspeccionadas hasta encontrar 4 defectuosas.
 \[
-Var[X] = \frac{r(1-p)}{p^2}=\frac{4(1-0.05)}{0.05^2}=1520 \Longrightarrow \sigma [X] = \sqrt{Var[X]} = 38.98717
+Var[X] = \frac{r(1-p)}{p^2}=\frac{4(1-0.05)}{0.05^2}=1520 \Longrightarrow \sigma [X] = \sqrt{Var[X]} = 38.98717 \text{ inspecciones.}
 \]
 
 \end{enumerate}
 
 \item Los números 1,2,3,...,10 se escriben en 10 tarjetas y se colocan en una urna. Las tarjetas se extraen una a una y sin devolución. Calcular las probabilidades de los siguientes sucesos:
-
 \begin{enumerate}
 \item Hay exactamente tres números pares en cinco extracciones.
 \[
@@ -234,7 +262,6 @@ X \sim H(10,5,5)
 P(X=3)=\frac{\binom{N_1}{x}\binom{N-N_1}{n-x}}{\binom{N}{n}}=\frac{\binom{5}{3}\binom{5}{2}}{\binom{10}{5}}=0.396825
 \]
 \item Se necesiten 5 extracciones para obterner 3 números pares.
-
 \[
 X \sim H(10, 5, 2)
 \]
@@ -246,11 +273,11 @@ Ahora tenemos la probabilidad de haber sacado 4 papeletas, en la que hemos obten
 
 Como son sucesos independientes, podemos hacer:
 \[
-P(A\cap B)=P(A)P(B)=0.5*0.476109=0.238095
+P(A\cap B)=P(A)P(B)=0.50.476109=0.238095
 \]
 Con A la probabilidad de sacar un número par y B la probabilidad de haber sacado 2 pares e impares en 4 extracciones.
 
-\item Obterner el número 7 en la cuarta extracción.
+\item Obterner el número 7 en la cuarta extracción. \\
 
 Si obtenemos el número 7 en la cuarta extracción ($X$), significa que antes hemos sacado 3 números distintos de 7: 
 \[
@@ -260,17 +287,53 @@ P(X)=(1-\frac{1}{10})(1-\frac{1}{9})(1-\frac{1}{8})\frac{1}{7} = 0.1
 
 \item Supongamos que el número de televisores vendidos en un comercio durante un mes se distribuye según una Poisson de parámetro 10, y que el beneficio neto por unidad es 30 euros.
 \[
+X = \{\text{número de televisores vendidos/mes}\}
+\]
+\[
 X \sim \mathcal{P}(10)
 \]
 \begin{enumerate}
-\item ¿Cuál es la probabilidad de que el beneficio neto obtenido por un comerciante durante un mes sea al menos de 360 euros?
+\item ¿Cuál es la probabilidad de que el beneficio neto obtenido por un comerciante durante un mes sea al menos de 360 euros? \\
 
 Si queremos que el beneficia sea de 360 euros, entonces debemos vender 12 televisores, luego:
 \[
 P(X=12)=1-\sum_{i=0}^{11}e^{-\lambda}\frac{\lambda^i}{i!}=0.30322
 \]
 
-\item ¿Cuántos televisores debe tener el comerciante a principio de mes para tener al menos proabilidad de 0.95 de satisfacer toda la demanda?
+\begin{aclaration}
+Justificación de por qué podemos dividir por 30\euro: Sea $Y=$\{beneficio mensual\}.
+\[
+Y=30X \Longrightarrow Y \sim \mathcal{P}(30\cdot 10)=\mathcal{P}(300)\Longrightarrow 
+\]
+\[
+\Longrightarrow P(Y\geq 360)=P(30X\geq 360)=P(X\geq 12)
+\]
+\end{aclaration}
+
+\item ¿Cuántos televisores debe tener el comerciante a principio de mes para tener al menos proabilidad de 0.95 de satisfacer toda la demanda?\\
+
+Usando la desigualdad de Chebyshev: $E[X]=\mu=\lambda=10$
+\[
+P(|X-E[X]|< \epsilon) \geq 1 - \frac{\sigma^2}{\epsilon^2}
+\]
+\[
+\sigma^2=\lambda=10 \Longrightarrow \epsilon^2=200 \Longrightarrow \epsilon = 14.14
+\]
+\[P(|X-10|< 14.14) \geq 0.95 \Longrightarrow X < 24.14 \Longrightarrow \text{ Deben tener 25 TV.}\]
+
+\begin{aclaration}
+También se puede usar la tabla de la distribución de Poisson, que nos da una cota más fina:
+\[
+P(X\leq k) \geq 0.95 \Longleftrightarrow P(X \geq k) \geq 0.05
+\]
+Esto equivale a la búsqueda de percentiles:
+\[
+P(X\leq 14) = 0.9165 < 0.95 \quad P(X\leq 15) = 0.9512 > 0.95
+\]
+\[
+P(X\geq 15)=1-P(X\leq 14)=0.0835 > 0.05 \Longrightarrow k=15 \text{ TV.}
+\]
+\end{aclaration}
 \end{enumerate}
 
 \end{enumerate}
