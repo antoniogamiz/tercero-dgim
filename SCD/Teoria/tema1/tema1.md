@@ -40,4 +40,27 @@ Las sentencias en un bloque delimitado por cobegin-coend comienzan su ejecución
 #### Exclusión mutua y sincronización:
 
 * `condición de sincronización`: esto ocurre cuando hay alguna restricción sobre el orden en el que se pueden mezclar las instrucciones ed distintos procesos.
-* `exclusión mutua`: (caso particular de condición de sincronización) son secuencias finitas de instrucciones que deben ejecutarse de principio a fin por un único proceso, sin que a la vez otro proceso las esté ejecutando también.
+* `exclusión mutua`: (caso particular de condición de sincronización) son secuencias finitas de instrucciones que deben ejecutarse de principio a fin por un único proceso, sin que a la vez otro proceso las esté ejecutando también. Al conjunto de dichas instrucciones se denomina `sección crítica`. Ejemplo común: cuando process con memoria compartida que acceden para leer y modificar variables o estructuras de datos comunes usando operaciones no atómicas.
+
+![alt text](./images/6.png "exclusion mutua ejemplo")
+
+Notación para expresar instrucciones no atómicas que queremos que se ejecuten como atómicas: 
+
+![alt text](./images/5.png "notación pseudo-código")
+
+
+#### Concepto de corrección de un programa concurrente:
+
+* `Propiedad de un programa concurrente`: atributo del programa que es cierto para todas las posibles secuencias de interfoliación. Hay dos tipos:
+    * `Propiedad de seguridad (safety)`: son condiciones que deben cumplirse en cada instante (del tipo: "nunca pasará nada malo"). Ejemplos:
+        * Exclusión mutua: 2 procesos nunca entrelazan ciertas subsecuencias de operaciones.
+        * Ausencia de interbloqueo (deadlock-freedom):  nunca ocurrirá que los procesos se encuentren esperando a algo que nunca ocurrirá.
+        * Propiedad de seguridad en el Productor-Consumidor: el consumidor debe consumir todos los datos producidos por el productor en el orden en que se van produciendo.
+    * `Propiedad de vivacidad (liveness)`: son propiedades que deben cumplirse eventualmente (del tipo: "realmente sucede algo bueno"). Ejemplos:
+        * Ausencia de inanición (starvation-freedom): un proceso o grupo de procesos no puede ser indefinidamente pospuesto. En algún momento, podrá avanzar.
+        * Equidad (fairness): un proceso que desee progresar debe hacerlo con justicia relativa con respecto a los demás. Más ligado a la implementación y a veces incumplida.
+
+#### Verificación de programas concurrentes:
+
+* Enfoque axiomático: se define un sistema lógico formal que permite establecer propiedades de programas en base a axiomas y reglas de inferencia. Se usan fórmulas lógicas para caracterizar un conjunto de estados. Los teoremas en la lógica tienen la forma: $\{P\} \quad S \quad \{Q\} $. Que significa: si la ejecución de la sentencia $S$ empieza en algún estado en el que es verdadero el predicado $P$ (precondición), entonces el predicado $Q$ (postcondición) será verdadero en el estado resultante.
+* Invariante global: predicado que referencia variables globales siendo cierto en el estado inicial de cada proceso y manteniéndose cierto ante cualquier asignación dentro de los procesos. Ejemplo: en una solución correcta del Productor-Consumidor, un invariante global sería: $ consumidos \leq producidos \leq consumidos+1$
