@@ -1,0 +1,132 @@
+\documentclass[12pt]{article}
+
+\usepackage[spanish]{babel}
+\decimalpoint % to render points as points for decimal separators
+
+\usepackage[utf8]{inputenc}
+
+\usepackage[left=1cm, right=1cm, top=1cm]{geometry} 
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+%\usepackage{upgreek}
+\usepackage{xcolor}
+\usepackage{eurosym}
+\usepackage{graphicx}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\R}[1][]{\mathbb{R}^{#1}}
+\newcommand{\N}[1][]{\mathbb{N}^{#1}}
+\newcommand{\solution}[1]{\text{\fbox{$#1$}}}
+
+\DeclareMathOperator\arctanh{arctanh}
+
+\newcommand{\abs}[1]{\left|#1\right|}
+
+\newcommand{\FVCP}[5]{x(t)=e^{#1}\int_{#4}^{t}e^{#2}#3ds+#5e^{#1}}
+\newcommand{\FVC}{x(t)=e^{\int_{t_0}^{t}a(s)ds}\int_{t_0}^te^{-\int_{t_0}^{s}a(z)dz}b(s)ds+x_0e^{\int_{t_0}^{t}a(s)ds}, \quad x(t_0)=x_0}
+
+
+\newcommand{\tick}{\textbf{\color{green}{ (\checkmark) }}}
+\newcommand{\warning}{\textbf{\color{red}{ {\fontencoding{U}\fontfamily{futs}\selectfont\char 66\relax} }}}
+
+\newcommand{\U}{\mathcal{U}}
+
+\newcommand{\qued}{\hfill$\blacksquare$}
+\newtheorem{theorem}{Teorema:}
+\newtheorem{proof}{Demostración:}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newenvironment{aclaration}    
+{
+\begin{center}
+\begin{tabular}{|p{0.9\textwidth}|}
+\hline \\ \warning
+}{
+\\\hline
+\end{tabular} 
+\end{center}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\author{Antonio Gámiz Delgado}
+\title{Ejercicio Propuesto II}
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem}
+Sea $\Omega$ un dominio estrellado y $P,Q\in C^1(\Omega)$ que cumple la condición de exactitud $\left(\displaystyle \frac{\partial P}{\partial y}= \frac{\partial Q}{\partial x}\right)$. Entonces:
+\[
+\exists \U\in C^1(\Omega): \quad \frac{\partial\U}{\partial x}=P \quad \frac{\partial\U}{\partial y}=Q.
+\]
+\end{theorem}
+
+
+\begin{proof}
+Como $\Omega$ es dominio estrellado, entonces $\exists z_*\in\Omega:\enskip z_*=(\alpha, \beta)$ con $\alpha,\beta \in \R$. Por definición de dominio estrellado tenemos que:
+\[
+[(x,y),(\alpha, \beta)]=\{(\lambda(x-\alpha)+\alpha,\lambda(y-\beta)+\beta),\lambda\in[0,1]\}
+\]
+
+Podemos definir la función $\U: \Omega	\longrightarrow \R$ como:
+\[
+\U(x,y)=x\int_0^1P(\lambda(x-\alpha)+\alpha,\lambda(y-\beta)+\beta)d\lambda+y\int_0^1Q(\lambda(x-\alpha)+\alpha,\lambda(y-\beta)+\beta)d\lambda
+\]
+
+Calculamos ahora $\displaystyle\frac{\partial \U}{\partial x}$ (x es un parámetro):
+\begin{align*}
+\frac{\partial \U}{\partial x}=& \int_0^1 P(\lambda(x-\alpha)+\alpha,\lambda(y-\beta)+\beta)d\lambda+x\int_0^1\lambda\frac{\partial P}{\partial x}(\lambda(x-\alpha)+\alpha,\lambda(y-\beta)+\beta)d\lambda+ \\
+& +y\int_0^1\lambda\frac{\partial Q}{\partial x}(\lambda(x-\alpha)+\alpha,\lambda(y-\beta)+\beta)d\lambda
+\end{align*}
+Aplicando la condición de exactitud:
+\begin{align*}
+\frac{\partial \U}{\partial x}=& \int_0^1 P(\lambda(x-\alpha)+\alpha,\lambda(y-\beta)+\beta)d\lambda+x\int_0^1\lambda\frac{\partial P}{\partial x}(\lambda(x-\alpha)+\alpha,\lambda(y-\beta)+\beta)d\lambda+ \\
+& +y\int_0^1\lambda\frac{\partial P}{\partial y}(\lambda(x-\alpha)+\alpha,\lambda(y-\beta)+\beta)d\lambda
+\end{align*}
+Sacando $\lambda$ factor común:
+\begin{align*}
+\frac{\partial \U}{\partial x}=& \int_0^1 P(\lambda(x-\alpha)+\alpha,\lambda(y-\beta)+\beta)d\lambda+\\
+& +\int_0^1\lambda \left(x\frac{\partial P}{\partial x}(\lambda(x-\alpha)+\alpha,\lambda(y-\beta)+\beta)+y\frac{\partial P}{\partial y}(\lambda(x-\alpha)+\alpha,\lambda(y-\beta)+\beta)\right)d\lambda
+\end{align*}
+
+Usando que lo del interior de los paréntesis del segundo sumando en la expresión anterior es igual a $\displaystyle\frac{d}{d\lambda}\left(P(x-\alpha)+\alpha,\lambda(y-\beta)+\beta)\right)$, tenemos:
+
+\[
+\frac{\partial \U}{\partial x}=\int_0^1 P(\lambda(x-\alpha)+\alpha,\lambda(y-\beta)+\beta)d\lambda+\int_0^1\lambda \left[\displaystyle\frac{d}{d\lambda}\left(P(\lambda(x-\alpha)+\alpha,\lambda(y-\beta)+\beta)\right)\right]d\lambda	
+\]
+
+Integrando por partes el segundo sumando:
+
+\[
+\left \{ 
+\begin{array}{llll}
+u & = \lambda &\longrightarrow & du=dv\\
+dv & = \frac{d}{d\lambda}P(\lambda(x-\alpha)+\alpha,\lambda(y-\beta)+\beta) &\longrightarrow & v=P(\lambda(x-\alpha)+\alpha,\lambda(y-\beta)+\beta)
+\end{array}
+\right\}
+\]
+\[
+[\lambda P(\lambda(x-\alpha)+\alpha,\lambda(y-\beta)+\beta)]^1_0-\int_0^1P(\lambda(x-\alpha)+\alpha,\lambda(y-\beta)+\beta)d\lambda=
+\]
+\[
+=P(x,y)-\int_0^1P(\lambda(x-\alpha)+\alpha,\lambda(y-\beta)+\beta)d\lambda
+\]
+
+Y sustituyendo en la fórmula anterior, nos queda:
+\[
+\frac{\partial \U}{\partial x} = P(x,y)
+\]
+
+Realizando el mismo procedimiento, obtenemos $\displaystyle\frac{\partial \U}{\partial y}=Q(x,y)$. 
+
+\qued
+
+\end{proof}
+
+\end{document}

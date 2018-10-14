@@ -1,0 +1,95 @@
+\documentclass[12pt]{article}
+
+\usepackage[spanish]{babel}
+\decimalpoint % to render points as points for decimal separators
+
+\usepackage[utf8]{inputenc}
+
+\usepackage[left=1cm, right=1cm, top=1cm]{geometry} 
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+%\usepackage{upgreek}
+\usepackage{xcolor}
+\usepackage{eurosym}
+\usepackage{graphicx}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\R}[1][]{\mathbb{R}^{#1}}
+\newcommand{\N}[1][]{\mathbb{N}^{#1}}
+\newcommand{\solution}[1]{\text{\fbox{$#1$}}}
+
+\DeclareMathOperator\arctanh{arctanh}
+
+\newcommand{\abs}[1]{\left|#1\right|}
+
+\newcommand{\FVCP}[5]{x(t)=e^{#1}\int_{#4}^{t}e^{#2}#3ds+#5e^{#1}}
+\newcommand{\FVC}{x(t)=e^{\int_{t_0}^{t}a(s)ds}\int_{t_0}^te^{-\int_{t_0}^{s}a(z)dz}b(s)ds+x_0e^{\int_{t_0}^{t}a(s)ds}, \quad x(t_0)=x_0}
+
+
+\newcommand{\tick}{\textbf{\color{green}{ (\checkmark) }}}
+\newcommand{\warning}{\textbf{\color{red}{ {\fontencoding{U}\fontfamily{futs}\selectfont\char 66\relax} }}}
+
+\newcommand{\U}{\mathcal{U}}
+
+\newcommand{\qued}{\hfill$\blacksquare$}
+\newtheorem{theorem}{Teorema:}
+\newtheorem{proof}{Demostración:}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newenvironment{aclaration}    
+{
+\begin{center}
+\begin{tabular}{|p{0.9\textwidth}|}
+\hline \\ \warning
+}{
+\\\hline
+\end{tabular} 
+\end{center}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\author{Antonio Gámiz Delgado}
+\title{Ejercicio Propuesto I}
+\maketitle
+
+\begin{enumerate}
+\item Resuelve la ecuación $\displaystyle x'=\alpha x\left(1-\frac{x}{L(t)}\right)$. (Suponiendo $L(t)\neq 0 \enskip \forall t$).
+
+Como la ecuación no es lineal, hagamos el siguiente cambio para convertirla en una lineal:
+
+\[
+\varphi : \left \{ 
+\begin{array}{ll}
+s =& t \\
+y =& x^{-1} \Longrightarrow y'=\displaystyle-\frac{x'}{x^2} \Longrightarrow x'=-x^2y'=-\frac{y'}{y^2}
+\end{array}
+\right.
+\]
+
+Haciendo el cambio:
+\[
+-\frac{y'}{y^2}=\frac{\alpha}{y}\left( 1- \frac{1}{yL(t)} \right) \Longrightarrow y'=-\alpha y\left( 1- \frac{1}{yL(t)} \right)=-\alpha y + \frac{\alpha}{L(t)} \Longrightarrow y'=-\alpha y + \frac{\alpha}{L(t)}
+\]
+
+Ya tenemos una ecuación lineal de orden 1, por lo que podemos aplicar la Fórmula de Variación de Constantes ($y(t_0)=K$):
+
+\[
+y(t)=e^{-\alpha t}\int_{t_0}^t \frac{\alpha}{L(s)} e^{\alpha s}ds+Ke^{-\alpha t}, \enskip K\in\R.
+\]
+
+Por lo que deshaciendo el cambio nos queda:
+
+\[
+x(t) = e^{\displaystyle\alpha t}\frac{1}{K+\displaystyle\int_{t_0}^t\frac{\alpha}{L(s)} e^{\alpha s}, ds}, \enskip K\in\R.
+\]
+
+\end{enumerate}
+
+\end{document}
