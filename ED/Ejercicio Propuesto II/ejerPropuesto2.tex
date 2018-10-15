@@ -76,7 +76,7 @@ Como $\Omega$ es dominio estrellado, entonces $\exists z_*\in\Omega:\enskip z_*=
 
 Podemos definir la función $\U: \Omega	\longrightarrow \R$ como:
 \[
-\U(x,y)=x\int_0^1P(\lambda(x-\alpha)+\alpha,\lambda(y-\beta)+\beta)d\lambda+y\int_0^1Q(\lambda(x-\alpha)+\alpha,\lambda(y-\beta)+\beta)d\lambda
+\U(\lambda(x-\alpha)+\alpha,\lambda(y-\beta)+\beta)=x\int_0^1P(\lambda(x-\alpha)+\alpha,\lambda(y-\beta)+\beta)d\lambda+y\int_0^1Q(\lambda(x-\alpha)+\alpha,\lambda(y-\beta)+\beta)d\lambda
 \]
 
 Calculamos ahora $\displaystyle\frac{\partial \U}{\partial x}$ (x es un parámetro):
@@ -107,7 +107,7 @@ Integrando por partes el segundo sumando:
 \left \{ 
 \begin{array}{llll}
 u & = \lambda &\longrightarrow & du=dv\\
-dv & = \frac{d}{d\lambda}P(\lambda(x-\alpha)+\alpha,\lambda(y-\beta)+\beta) &\longrightarrow & v=P(\lambda(x-\alpha)+\alpha,\lambda(y-\beta)+\beta)
+dv & = \frac{d}{d\lambda}P(\lambda(x-\alpha)+\alpha,\lambda(y-\beta)+\beta) &\longrightarrow & v=P(\lambda(x-\alpha2)+\alpha,\lambda(y-\beta)+\beta)
 \end{array}
 \right\}
 \]
@@ -125,8 +125,15 @@ Y sustituyendo en la fórmula anterior, nos queda:
 
 Realizando el mismo procedimiento, obtenemos $\displaystyle\frac{\partial \U}{\partial y}=Q(x,y)$. 
 
+Falta ver si $\U$ es de clase $C^2(\Omega)$, que lo es al ser $\U$  y sus parciales $\frac{\partial\U}{\partial x}=P$ y $\frac{\partial\U}{\partial y}=Q$ de clase $C^1(\Omega)$.  
+
 \qued
 
 \end{proof}
+
+
+
+
+
 
 \end{document}

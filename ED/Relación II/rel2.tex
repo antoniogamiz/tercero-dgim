@@ -79,11 +79,6 @@ Para ver el intervalo maximal de definición, necesitamos estudiar donde se anul
 \solution{D^{'-}=]-\infty,5-\sqrt{25-k'}[ \quad D^{'+}=]5+\sqrt{25-k'},+\infty[}
 \]
 
-\begin{figure}[h!]
-\center
-\includegraphics[scale=0.4]{./graphics/1.png}
-\end{figure}
-\newpage
 \hrule
 \item En Dinámica de Poblaciones, dos modelos muy conocidos son la ecuación de Verhulst o logística
 \[
@@ -94,9 +89,6 @@ y la ecuación de Gompertz
 P'(t)=P(t)[\alpha-\beta \ln(P(t))],
 \]
 siendo $P(t)$ la población a tiempo $t$ de una determinada especie y $\alpha, \beta$ parámetros positivos. Calcula en cada caso la solución con condición inicial $P(0)=100$. \\
-
-%\rule{\textwidth}{0.4pt}
-
 \hrule
 
 En el primer caso, vemos que hay dos soluciones constantes: $P(t)=0$ y $P(t)=\frac{\alpha}{\beta}$. Ahora buscamos las soluciones no constantes, resolvemos la ecuación por el método de las variables separadas:
@@ -125,7 +117,6 @@ De donde no vamos a despejar $P$ por simplicidad, luego la solución, en implíc
 \solution{-\frac{\ln(|\beta\ln(P)-\alpha|)}{b}=t+C \quad C\in\R}
 \]
 
-\newpage
 \hrule
 \item Nos planteamos resolver la ecuación
 \[
@@ -156,8 +147,6 @@ Si nos fijamos, antes de realizar (1), estamos realizando variables separadas di
 
 (1) He usado Mathematica para obtener la integral ya que es un \textit{poco} compleja.
 
-
-\newpage
 \hrule
 \item Experimentalmente, se sabe que la resistencia al aire de un cuerpo en caída libre es proporcional al cuadrado de la velocidad del mismo. Por tanto, si $v(t)$ es la velocidad a tiempo $t$, la ecuación de Newton nos dice que
 \[
@@ -186,7 +175,6 @@ Y si queremos saber el comportamiento a largo plazo, hacemos $t\longrightarrow +
 \solution{\displaystyle \lim_{t \to \infty}v(t)=\sqrt{\alpha}=\sqrt{\frac{k}{mg}}}
 \]
 
-\newpage
 \hrule
 \item Calcule la solución de la ecuación
 \[
@@ -237,9 +225,8 @@ Que es una ecuación en variables separadas luego:
 
 Usando la condición inicial $y(0)=1$ obtenemos que $C=\arctan(3)-\ln(\sqrt{10})$.
 
-\newpage
+\hrule
 \item Resuelva los siguientes problemas lineales:
-
 \begin{enumerate}
 \item $x'+3x=e^{-3t} \quad x(1)=5$
 
@@ -274,8 +261,6 @@ En este apartado, al aplicar la Fórmula de Variación de Constantes, aparece la
 que no tiene primitiva formada por funciones elementales.
 \end{enumerate}
 
-\newpage
-
 \hrule
 \item Sean $a,b: \R \longrightarrow \R $ funciones continuas con $a(t)\geq c > 0$ para todo $t$ y
 \[
@@ -298,5 +283,163 @@ Si hacemos $t\to +\infty$:
 \lim_{t\to +\infty}x(t)=\lim_{t\to +\infty}\frac{\int_{t_0}^t e^{\int a(z)dz}b(s)ds}{e^{\int a(t)dt}} \stackrel{\text{L'Hôpital}}{\Longrightarrow} \lim_{t\to +\infty} \frac{e^{\int a(t)dt}b(t)}{e^{\int a(t)dt}}=\lim_{t\to +\infty} b(t)=0
 \]
 \qued
+
+\hrule
+\item La ecuación de Bernoulli tiene la forma
+\[
+x'=a(t)x+b(t)x^n,
+\]
+donde $a,b: I \longrightarrow \R$ son funciones continuas y $n\in\R$. Compruebe que el cambio de variable $y=x^\alpha$ lleva la ecuación de Bernoullli a una ecuación del mismo tipo, y ajuste el valor de $\alpha$ para que la ecuación obtenida sea lineal ($n=0$). Usando el cambio anterior, resuelva el problema de valor inicial:
+\[
+x'=x+t\sqrt{x}, \enskip x(0)=1.
+\]
+\hrule
+
+Realizamos el siguiente cambio de variable:
+
+\[
+\varphi : \left \{ \begin{array}{ll}
+s=&t \\
+y=&x^\alpha \Longrightarrow y'=\alpha x^{\alpha - 1}x' \Longrightarrow x'=\displaystyle\frac{y'}{y^{\frac{\alpha-1}{\alpha}}}
+\end{array}
+\right.
+\]
+
+Aplicando el cambio:
+
+\[
+\frac{y'}{y^{\frac{\alpha-1}{\alpha}}}=a(t)\frac{1}{y^\alpha}+b(t)y^{\frac{n}{\alpha}}\Longrightarrow y'=a(t)y^{\frac{1}{\alpha}+\frac{\alpha-1}{\alpha}}+b(t)y^{\frac{n+\alpha-1}{\alpha}} \stackrel{\alpha=1-n}{\Longrightarrow} y'=a(t)y+b(t)
+\]
+
+Por lo que si \solution{\alpha=1-n}, la ecuación tras el cambio sigue siendo de Bernouilli y además es lineal.
+
+Resolvemos ahora $x'=x+t\sqrt{x}, \enskip x(0)=1$. Hacemos el cambio:
+
+\[
+\varphi : \left \{ \begin{array}{ll}
+s=&t \\
+y=&x^{\frac{1}{2}} \Longrightarrow y'=\frac{1}{2}x^{-\frac{1}{2}}x' \Longrightarrow x' = 2y'y
+\end{array}
+\right.
+\]
+
+Aplicando el cambio:
+
+\[
+2y'y=y^2+ty \Longrightarrow y'=\frac{y}{2}+\frac{t}{2}
+\]
+
+Que aplicando la Fórmula de Variación de Constantes nos queda:
+
+\[
+\displaystyle y(t)=e^{\frac{t}{2}}\int_{0}^{t}e^{-\frac{s}{2}}\frac{s}{2}ds+e^{\frac{t}{2}}=e^{\frac{t}{2}}\left( -te^{-\frac{t}{2}} -2e^{-\frac{t}{2}}+1 \right)=-t-2+e^{\frac{t}{2}}
+\]
+
+Deshaciendo el cambio anterior nos queda que:
+
+\[
+\solution{x(t)=\left( -t-2+e^{\frac{t}{2}} \right)^2}
+\]
+
+\hrule
+\item Se considera la ecuación de Ricatti 
+\[
+y'=-\frac{1}{x^2}-\frac{y}{x}+y^2.
+\]
+Encuentre una solución particular de la forma $y(x)=x^\alpha$ con $\alpha \in \R$. Usando esta solución particular, calcule la solución que cumple $y(1)=2$ y estudie su intervalo maximal de definición.
+\hrule
+
+Como $y(x)=x^\alpha$ es solución, sustituimos en la expresión y vemos que valor tiene que tomar $\alpha$ para que se cumpla igualdad:
+\[
+\alpha x^{\alpha-1}=-x^{-2}-x^{\alpha-1}+x^{2\alpha}\Longrightarrow \alpha=-1 \Longrightarrow \solution{y(x)=x^{-1}}
+\]
+
+Como ya tenemos una solución particular $f(t)=\frac{1}{t}$, sabemos que el siguiente cambio de variable nos llevará a una ecuación lineal:
+\[
+\varphi : \left \{ \begin{array}{ll}
+s=&t \\
+y=&\displaystyle\frac{1}{x-f(t)} \Longrightarrow x=\frac{1}{t}+\frac{1}{y}
+\end{array}
+\right.
+\]
+
+\[
+x'=-\frac{1}{t^2}-\frac{y'}{y^2}=-\frac{1}{t^2}-\frac{\frac{1}{t}+\frac{1}{y}}{t}+\left(\frac{1}{t}+\frac{1}{y}\right)^2 \Longrightarrow y'=-\frac{3y}{t}-1
+\]
+
+Aplicando la Fórmula de Variación de Constantes:
+\[
+y(t) = e^{-3\ln t}\int -e^{3\ln t} dt + ce^{-3\ln t}=-\frac{1}{t^3}\frac{t^4}{4}+\frac{c}{t^3} \Longrightarrow y(t) = -\frac{t}{4}+\frac{c}{t^3}
+\]
+
+Deshaciendo el cambio nos queda:
+\[
+x(t)=\frac{1}{t}+\frac{1}{\frac{c}{t^3}-\frac{t}{4}}
+\]
+
+Como queremos que $x(1)=2$, entonces $c=\frac{5}{4}$, por lo que:
+\[
+\solution{x(t)=\frac{1}{t}+\frac{1}{\frac{5}{4t^3}-\frac{t}{4}}}
+\]
+
+Para el intervalo maximal de definición vemos que al principio de todo, la solución particular nos hace elegir entre dos dominios: $]-\infty,0[$ y $]0,+\infty[$. Nos tenemos que quedar con el último ya que es en el que vive la condición inicial. Además, si $c=\pm\sqrt[4]{5}$, el denominador del segundo sumando de la solución se anula, por lo que tenemos quedarnos con: $\solution{D^+=]\sqrt[4]{5}, +\infty[}$. \\\\\\
+
+\hrule
+\item Encuentre una curva $y=y(x)$ que pase por el punto $(1,2)$ y cumpla la siguiente propiedad: la distancia de cada punto de la curva al origen coincide con la segunda coordenada del punto de corte de la recta tangente y el eje de ordenadas. 
+\hrule
+
+
+Primero veamos cuál es el punto de corte entre el eje de ordenadas y la recta tangente. Fijamos el punto $(x,y)\in\R$. La recta tangente a ese punto es:
+\[
+u-x=y'(v-y)
+\]
+
+Como tiene que cortar al eje de ordenadas, $u=0 \Longrightarrow v = y \displaystyle-\frac{x}{y'}$. La distancia del punto $(x,y)$ al origen es: $\sqrt{x^2+y^2}$, por lo que nos queda la ecuación:
+\[
+\sqrt{x^2+y^2}=y-\frac{x}{y'}
+\]
+
+Pasamos a coordenadas polares para poder resolver la ecuación en diferencias:
+\[
+\varphi : \left \{ \begin{array}{l}
+x=\rho(\theta)\cos\theta \\
+y=\rho(\theta)\sen\theta \Longrightarrow y'=\rho'\sen\theta+\rho\cos\theta
+\end{array}
+\right.
+\]
+
+Realizando el cambio de variable nos queda:
+\[
+\rho=\rho\sen\theta-\frac{\rho\cos\theta}{\rho'\sen\theta+\rho\cos\theta} \Longrightarrow \frac{\cos\theta}{\rho'\sen\theta+\rho\cos\theta}=\sen\theta-1\Longrightarrow
+\]
+\[
+\Longrightarrow\rho'=\left[\frac{\cos\theta}{\sen\theta-1}-\rho\cos\theta\right]\frac{1}{\sen\theta}\Longrightarrow\rho'=-\rho\cot\theta+\frac{\cot\theta}{\sen\theta-1}
+\]
+Quedándonos así una ecuación lineal en $\rho$. Aplicando la Fórmula de Variación de Constantes, tenemos que resolver dos integrales:
+\[
+(i)\enskip\int \cot\theta d\theta=\ln|\sen\theta|+C
+\]
+\[
+(ii) \enskip\int \frac{\cot\theta}{\sen\theta(\sen\theta-1)}d\theta=\int \cos\theta\frac{1}{\sen^2\theta(\sen\theta-1)}d\theta \Longrightarrow
+\]
+
+Realizando ahora el cambio $u=\sen\theta\longrightarrow d\theta=\displaystyle\frac{du}{\cos\theta}$:
+\[
+\Longrightarrow \int \frac{1}{u^2(u-1)}du=\int\left(-\frac{1}{u}-\frac{1}{u^2}+\frac{1}{u-1}\right)du=-\ln|u|+\frac{1}{u}+\ln|u-1|+C
+\]
+Deshaciendo el cambio:
+\[
+\int\frac{\cot\theta}{\sen\theta(\sen\theta-1)}d\theta=-\ln|\sen\theta|+\frac{1}{\sen\theta}+\ln|\sen\theta-1|+C
+\]
+
+Una vez calculadas estas integrales, podemos aplicar fácilmente la Fórmula de Variación de Constantes:
+\[
+\rho(\theta)=e^{\displaystyle\ln|\sen\theta|}\int e^{\displaystyle-\ln|\sen\theta|}\frac{\cot\theta}{\sen\theta-1}d\theta+ce^{\displaystyle\ln|\sen\theta|}=
+\]
+\[
+=|sen\theta|\left[-\ln|\sen\theta|+\frac{1}{\sen\theta}+\ln|\sen\theta-1|+c\right]
+\]
+
+Aplicando el cambio al punto $(1,2) \longrightarrow (2.23607,1.10715) \Longrightarrow c=0.481251$.
 \end{enumerate}
 \end{document}
