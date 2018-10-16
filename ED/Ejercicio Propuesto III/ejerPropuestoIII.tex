@@ -1,0 +1,98 @@
+\documentclass[12pt]{article}
+
+\usepackage[spanish]{babel}
+\decimalpoint % to render points as points for decimal separators
+
+\usepackage[utf8]{inputenc}
+
+\usepackage[left=2cm, right=2cm, top=1cm]{geometry} 
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+%\usepackage{upgreek}
+\usepackage{xcolor}
+\usepackage{eurosym}
+\usepackage{graphicx}
+\usepackage{amsthm}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\R}[1][]{\mathbb{R}^{#1}}
+\newcommand{\N}[1][]{\mathbb{N}^{#1}}
+\newcommand{\solution}[1]{\text{\fbox{$#1$}}}
+
+\DeclareMathOperator\arctanh{arctanh}
+
+\newcommand{\abs}[1]{\left|#1\right|}
+
+\newcommand{\FVCP}[5]{x(t)=e^{#1}\int_{#4}^{t}e^{#2}#3ds+#5e^{#1}}
+\newcommand{\FVC}{x(t)=e^{\int_{t_0}^{t}a(s)ds}\int_{t_0}^te^{-\int_{t_0}^{s}a(z)dz}b(s)ds+x_0e^{\int_{t_0}^{t}a(s)ds}, \quad x(t_0)=x_0}
+
+
+\newcommand{\tick}{\textbf{\color{green}{ (\checkmark) }}}
+\newcommand{\warning}{\textbf{\color{red}{ {\fontencoding{U}\fontfamily{futs}\selectfont\char 66\relax} }}}
+
+\newcommand{\U}{\mathcal{U}}
+
+\newcommand{\qued}{\hfill$\blacksquare$}
+\newtheorem*{theorem*}{Ejercicio}
+
+\newtheorem*{proof*}{Solución}
+\newcommand{\p}[2]{\frac{\partial#1}{\partial#2}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newenvironment{aclaration}    
+{
+\begin{center}
+\begin{tabular}{|p{0.9\textwidth}|}
+\hline \\ \warning
+}{
+\\\hline
+\end{tabular} 
+\end{center}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\author{Antonio Gámiz Delgado}
+\title{Ejercicio Propuesto III}
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{theorem*}
+Se define $\Omega=\{(x,y)\in\R[2]:x>0, \enskip \frac{1}{4}<x^2+y^2<4\}$. Encuentra un potencial para las funcions $P$ y $Q$.
+\[
+P(x,y)=-\frac{y}{x^2+y^2} \quad Q(x,y)=\frac{x}{x^2+y^2}
+\]
+\end{theorem*}
+
+\begin{proof*}
+Sabemos que $P$ y $Q$ cumplen la condición de exactitud:
+\[
+\p{P}{y}=\frac{x^2-y^2}{(x^2+y^2)^2}=\p{Q}{x}
+\]
+
+Queremos buscar una función $\U$ tal que:
+\[
+\p{\U}{x}(x,y)+\p{\U}{y}(x,y)y'=0 \enskip \text{ con } \p{\U}{x}=P \quad \p{\U}{y}=Q
+\]
+
+Entonces:
+\[
+\U(x,y)=\int Pdx=-\int \frac{y}{x^+y^2}dx=-\int \frac{1}{y}\frac{1}{1+(\frac{x}{y})^2}dx=-\arctan\left(\frac{x}{y}\right)+c(y) 
+\]
+Usando ahora que $\displaystyle\p{\U}{y}=Q$:
+\[
+\p{\U}{y}=-\frac{1}{1+(\frac{x}{y})^2}\left(-\frac{x}{y^2}\right)+c'(y)=\frac{x}{x^2+y^2}+c'(y)=\frac{x}{x^2+y^2}=Q \Longrightarrow c'(y)=0 \Longrightarrow c(y)=k
+\]
+Por lo que la función potencial $\U$ que buscamos es:
+\[
+\U(x,y)=-\arctan\left(\frac{x}{y}\right)+k, \enskip k\in\R
+\]
+\end{proof*}
+\end{document}

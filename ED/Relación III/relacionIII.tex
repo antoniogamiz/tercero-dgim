@@ -1,0 +1,84 @@
+\documentclass[12pt]{article}
+
+\usepackage[spanish]{babel}
+\decimalpoint % to render points as points for decimal separators
+
+\usepackage[utf8]{inputenc}
+
+\usepackage[left=1cm, right=1cm, top=1cm]{geometry} 
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+%\usepackage{upgreek}
+\usepackage{xcolor}
+\usepackage{eurosym}
+\usepackage{graphicx}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\R}[1][]{\mathbb{R}^{#1}}
+\newcommand{\N}[1][]{\mathbb{N}^{#1}}
+\newcommand{\solution}[1]{\text{\fbox{$#1$}}}
+
+\DeclareMathOperator\arctanh{arctanh}
+
+\newcommand{\abs}[1]{\left|#1\right|}
+
+\newcommand{\FVCP}[5]{x(t)=e^{#1}\int_{#4}^{t}e^{#2}#3ds+#5e^{#1}}
+\newcommand{\FVC}{x(t)=e^{\int_{t_0}^{t}a(s)ds}\int_{t_0}^te^{-\int_{t_0}^{s}a(z)dz}b(s)ds+x_0e^{\int_{t_0}^{t}a(s)ds}, \quad x(t_0)=x_0}
+
+
+\newcommand{\tick}{\textbf{\color{green}{ (\checkmark) }}}
+\newcommand{\warning}{\textbf{\color{red}{ {\fontencoding{U}\fontfamily{futs}\selectfont\char 66\relax} }}}
+
+\newcommand{\qued}{\hfill$\blacksquare$}
+
+\newcommand{\p}[2]{\frac{\partial#1}{\partial#2}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newenvironment{aclaration}    
+{
+\begin{center}
+\begin{tabular}{|p{0.9\textwidth}|}
+\hline \\ \warning
+}{
+\\\hline
+\end{tabular} 
+\end{center}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\author{Antonio Gámiz Delgado}
+\title{Relación III: Ecuaciones Diferenciales}
+\maketitle
+
+\begin{enumerate}
+
+\hrule
+\item Calcula, si es posible, una función potencial para las siguientes parejas de funciones. Especifíca en cada caso el dominio en el que se trabaja.
+\hrule
+\begin{enumerate}
+\item $P(x,y)=x+y^3, \enskip Q(x,y)=\frac{x^2}{2}+y^2$
+\[
+\p{P}{y}=3y^2\neq x=\p{Q}{x} \Longrightarrow \text{ No existe potencial  }
+\]
+
+\item $P(x,y)=\frac{1}{2}\sin 2x-xy^2, \enskip Q(x,y)=y(1-x^2)$
+\[
+\p{P}{y}=-2xy \neq -2xy=\p{Q}{x} \Longrightarrow \text{Se puede calcular el potencial}
+\]
+
+\[
+\p{\U}{x}=\
+\]
+\end{enumerate}
+\end{enumerate}
+
+
+\end{document}
