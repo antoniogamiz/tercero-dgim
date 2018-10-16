@@ -95,4 +95,45 @@ Por lo que la función potencial $\U$ que buscamos es:
 \U(x,y)=-\arctan\left(\frac{x}{y}\right)+k, \enskip k\in\R
 \]
 \end{proof*}
+
+\newpage
+
+\begin{theorem*}
+Dada la ecuación lineal
+\[
+a(t)x+b(t)-x'=0
+\]
+que admite un factor integrante dependiente solamente de $t$: $\mu(t,x)=e^{-A(t)}$ con $A(t)$ primitiva de $a(t)$. Recupera la fórmula de variación de constantes buscando el potencial asociado.
+\end{theorem*}
+\begin{proof*}
+Tenemos que $P(t,x)=a(t)x+b(t)$ y $Q(t,x)=-1$.
+
+Multiplicamos la ecuación original por el factor integrante:
+\[
+e^{-A(t)}a(t)x+e^{-A(t)}b(t)-e^{-A(t)}x'=0
+\]
+
+Queremos buscar una función $\U$ tal que:
+\[
+\p{\U}{t}(t,x)+\p{\U}{x}(t,x)x'=0 \enskip \text{ con } \p{\U}{t}=P \quad \p{\U}{x}=Q
+\]
+
+Entonces:
+\[
+\U(t,x)=\int Pdx= \int\left(e^{-A(t)}a(t)x+e^{-A(t)}b(t)\right)dt=-xe^{-A(t)}+\int e^{-A(t)}b(t)dt+c(x)
+\]
+Usando ahora que $\displaystyle\p{\U}{x}=Q=-e^{-A(t)}$:
+\[
+\p{\U}{x}=-e^{-A(t)}+c'(x)=-e^{-A(t)}\Longrightarrow c(x)=k
+\]
+Por lo que la función potencial $\U$ que buscamos es:
+\[
+U(t,x)=-xe^{-A(t)}+\int e^{-A(s)}b(s)ds+k=0
+\]
+
+Despejando $x$:
+\[
+x(t)=e^{A(t)}\left(\int^t_k e^{-A(s)}b(s)ds+k\right) \text{ F.V.C. }
+\]
+\end{proof*}
 \end{document}
