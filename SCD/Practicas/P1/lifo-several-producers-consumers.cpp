@@ -23,8 +23,6 @@ int buffer[tam_vec];
 
 Semaphore producir( tam_vec );
 Semaphore consumir( 0 );
-Semaphore alguien_consumiendo( 1 ); // a 1 ya que al principio no hay nadie consumiendo.
-Semaphore alguien_produciendo( 1 ); // a 1 ya que al principio no hay nadie consumiendo.
 Semaphore mod_consumidos( 1 );  // para modificar consumidos en exclusion mutua.
 Semaphore mod_producidos( 1 );  // para modificar producidos en exclusion mutua.
 Semaphore mod_counter( 1 ); // para modificar counter en exclusión mutua
@@ -105,13 +103,11 @@ void  funcion_hebra_productora(  )
       int dato = producir_dato() ;
       
       sem_wait( producir );
-    //   sem_wait( alguien_produciendo );
 
       sem_wait( mod_counter );
       buffer[ counter++ ]=dato;
       sem_signal( mod_counter );
 
-    //   sem_signal( alguien_produciendo );
       sem_signal( consumir );
 
    }
@@ -130,15 +126,13 @@ void funcion_hebra_consumidora(  )
       int dato ;
 
       sem_wait( consumir );
-    //   sem_wait( alguien_consumiendo );
       
       sem_wait( mod_counter );
       counter--;
       dato=buffer[ counter ];
       sem_signal( mod_counter );
-    //   sem_signal( alguien_consumiendo );
-      sem_signal( producir );
-      
+
+      sem_signal( producir );      
       consumir_dato( dato ) ;
     
 
