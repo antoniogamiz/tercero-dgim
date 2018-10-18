@@ -11,7 +11,7 @@ using namespace SEM ;
 //**********************************************************************
 // variables compartidas
 
-const int num_items = 20,   // número de items
+const int num_items = 100,   // número de items
 	       tam_vec   = 5 ;   // tamaño del buffer
 unsigned  cont_prod[num_items] = {0}, // contadores de verificación: producidos
           cont_cons[num_items] = {0}; // contadores de verificación: consumidos
@@ -27,9 +27,11 @@ Semaphore alguien_consumiendo( 1 ); // a 1 ya que al principio no hay nadie cons
 Semaphore alguien_produciendo( 1 ); // a 1 ya que al principio no hay nadie consumiendo.
 Semaphore mod_consumidos( 1 );  // para modificar consumidos en exclusion mutua.
 Semaphore mod_producidos( 1 );  // para modificar producidos en exclusion mutua.
+Semaphore mod_counter( 1 ); // para modificar counter en exclusión mutua
 
-int counter_read = 0;
-int counter_write = 0;
+
+int counter = 0;
+
 
 //**********************************************************************
 // plantilla de función para generar un entero aleatorio uniformemente
@@ -103,10 +105,13 @@ void  funcion_hebra_productora(  )
       int dato = producir_dato() ;
       
       sem_wait( producir );
-      sem_wait( alguien_produciendo );
-      buffer[ counter_write ]=dato;
-      counter_write = (counter_write + 1) % tam_vec;
-      sem_signal( alguien_produciendo );
+    //   sem_wait( alguien_produciendo );
+
+      sem_wait( mod_counter );
+      buffer[ counter++ ]=dato;
+      sem_signal( mod_counter );
+
+    //   sem_signal( alguien_produciendo );
       sem_signal( consumir );
 
    }
@@ -125,13 +130,13 @@ void funcion_hebra_consumidora(  )
       int dato ;
 
       sem_wait( consumir );
-      sem_wait( alguien_consumiendo );
+    //   sem_wait( alguien_consumiendo );
       
-
-      dato=buffer[counter_read];
-      counter_read = (counter_read + 1) % tam_vec;
-
-      sem_signal( alguien_consumiendo );
+      sem_wait( mod_counter );
+      counter--;
+      dato=buffer[ counter ];
+      sem_signal( mod_counter );
+    //   sem_signal( alguien_consumiendo );
       sem_signal( producir );
       
       consumir_dato( dato ) ;
@@ -144,12 +149,12 @@ void funcion_hebra_consumidora(  )
 int main()
 {
    cout << "--------------------------------------------------------" << endl
-        << "Problema de los productores-consumidores (solución FIFO)." << endl
+        << "Problema de los productores-consumidores (solución LIFO)." << endl
         << "--------------------------------------------------------" << endl
         << flush ;
 
-    int n_consumidores = 1;
-    int n_productores = 1;
+    int n_consumidores = 3;
+    int n_productores = 3;
 
    thread productores[n_productores];
    thread consumidores[n_consumidores];
