@@ -11,20 +11,22 @@ using namespace SEM ;
 //**********************************************************************
 // variables compartidas
 
-const int num_items = 15 ,   // número de items
+const int num_items = 20,   // número de items
 	       tam_vec   = 5 ;   // tamaño del buffer
 unsigned  cont_prod[num_items] = {0}, // contadores de verificación: producidos
           cont_cons[num_items] = {0}; // contadores de verificación: consumidos
 
 int consumidos = 0;
+int producidos = 0;
 
 int buffer[tam_vec];
 
 Semaphore producir( tam_vec );
 Semaphore consumir( 0 );
 Semaphore alguien_consumiendo( 1 ); // a 1 ya que al principio no hay nadie consumiendo.
+Semaphore alguien_produciendo( 1 ); // a 1 ya que al principio no hay nadie consumiendo.
 Semaphore mod_consumidos( 1 );  // para modificar consumidos en exclusion mutua.
-// Semaphore modificar_counter( 1 );
+Semaphore mod_producidos( 1 );  // para modificar producidos en exclusion mutua.
 
 int counter_read = 0;
 int counter_write = 0;
@@ -93,15 +95,18 @@ void test_contadores()
 
 void  funcion_hebra_productora(  )
 {
-   for( unsigned i = 0 ; i < num_items ; i++ )
+   sem_wait( mod_producidos );
+   while( producidos < num_items )
    {
+      producidos++;
+      sem_signal( mod_producidos );
       int dato = producir_dato() ;
       
       sem_wait( producir );
-
+      sem_wait( alguien_produciendo );
       buffer[ counter_write ]=dato;
       counter_write = (counter_write + 1) % tam_vec;
-
+      sem_signal( alguien_produciendo );
       sem_signal( consumir );
 
    }
@@ -143,15 +148,16 @@ int main()
         << "--------------------------------------------------------" << endl
         << flush ;
 
-    int n_consumidores = 3;
+    int n_consumidores = 1;
+    int n_productores = 1;
 
-   thread hebra_productora ( funcion_hebra_productora );
+   thread productores[n_productores];
    thread consumidores[n_consumidores];
 
+   for( int i = 0; i < n_productores; i++ ){ productores[i] = thread( funcion_hebra_productora ); }
    for( int i = 0; i < n_consumidores; i++ ){ consumidores[i] = thread( funcion_hebra_consumidora ); }
 
-   hebra_productora.join() ;
-//    cout << "productor terminado" << endl;
+   for( int i = 0; i < n_productores; i++ ){ productores[i].join(); }
    for( int i = 0; i < n_consumidores; i++ ){ consumidores[i].join(); }
 
 
