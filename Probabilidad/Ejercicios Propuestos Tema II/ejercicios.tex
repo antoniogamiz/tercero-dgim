@@ -1,0 +1,185 @@
+\documentclass[12pt]{article}
+
+\usepackage[spanish]{babel}
+\decimalpoint % to render points as points for decimal separators
+
+\usepackage[utf8]{inputenc}
+
+\usepackage[left=2cm, right=2cm, top=1cm]{geometry} 
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+%\usepackage{upgreek}
+\usepackage{xcolor}
+\usepackage{eurosym}
+\usepackage{graphicx}
+\usepackage{amsthm}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\R}[1][]{\mathbb{R}^{#1}}
+\newcommand{\N}[1][]{\mathbb{N}^{#1}}
+\newcommand{\solution}[1]{\text{\fbox{$#1$}}}
+
+\DeclareMathOperator\arctanh{arctanh}
+
+\newcommand{\abs}[1]{\left|#1\right|}
+
+\newcommand{\FVCP}[5]{x(t)=e^{#1}\int_{#4}^{t}e^{#2}#3ds+#5e^{#1}}
+\newcommand{\FVC}{x(t)=e^{\int_{t_0}^{t}a(s)ds}\int_{t_0}^te^{-\int_{t_0}^{s}a(z)dz}b(s)ds+x_0e^{\int_{t_0}^{t}a(s)ds}, \quad x(t_0)=x_0}
+
+
+\newcommand{\tick}{\textbf{\color{green}{ (\checkmark) }}}
+\newcommand{\warning}{\textbf{\color{red}{ {\fontencoding{U}\fontfamily{futs}\selectfont\char 66\relax} }}}
+
+\newcommand{\U}{\mathcal{U}}
+\newcommand{\A}{\mathcal{A}}
+
+\newcommand{\qued}{\hfill$\blacksquare$}
+\newtheorem*{theorem*}{Ejercicio}
+
+\newtheorem*{proof*}{Solución}
+\newcommand{\p}[2]{\frac{\partial#1}{\partial#2}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newenvironment{aclaration}    
+{
+\begin{center}
+\begin{tabular}{|p{0.9\textwidth}|}
+\hline \\ \warning
+}{
+\\\hline
+\end{tabular} 
+\end{center}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\author{Antonio Gámiz Delgado}
+\title{Ejercicios Propuestos Temas I y II}
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{enumerate}
+\item Demostrar la propiedad de falta de memoria de la distribución exponencial:
+\[
+P(X>t+h|X>h)=P(X>t), \enskip t,h>0, \enskip X\sim exp(\lambda)
+\]
+
+Usando el teorema de la probabilidad condicionada, tenemos:
+\[
+P(A|B)=\frac{P(A\cap B)}{P(B)}\Longrightarrow P(X>t+h|X>h) =\frac{P(X>t+h, X>h)}{P(X>h)}
+\]
+
+$P(X>h)$ no puede ser 0 ya que:
+\[
+P(X>t)=1-P(X\leq t)=1-F_X(t)=1-(1-e^{-at})=e^{-at} > 0 \enskip \forall t \in \R.
+\]
+
+Es evidente que el suceso $\{X>t+h\}\subset\{X>h\}$, luego su interesección será $\{X>t+h\}$, quedándonos:
+
+\[
+P(X>t+h|X>h) =\frac{P(X>t+h, X>h)}{P(X>h)}=\frac{P(X>t+h)}{P(X>h)}=\frac{e^{-a(t+h)}}{e^{-ah}}=e^{-at}=P(X>t)
+\]
+\qued
+
+\item Definir un experimento aleatorio cualquiera, especificando los elementos del espacio probabilístico $(\Omega, \mathcal{A}, P)$, y describir adecuadamente sobre él un vector aleatorio discreto $X=(X_1,X_2, ...,X_n)$ (con $n$ siendo una cifra a tu elección) que mida una serie de características del experimento. Asimismo, calcular la función de distribución de dicho vector aleatorio.
+
+Consideremos el experimento de consultar las dos conversaciones de Telegram de tus dos amigos más cercanos, justo el día después del lanzamiento de un nuevo episodio de Juego de Tronos, considerando que el sujeto de prueba no ha visto el susodicho episodio. 
+
+El primer mensaje de cada conversación puede ser: un spoiler (S), un meme (M), o cualquier otro mensaje (O).
+
+Los elementos del espacio de probabilidad, $(\Omega, \mathcal{A}, P)$, asociado al experimento aleatorio se definen de la siguiente forma:
+\[
+\Omega=\{SS,SM,SO,MM,MO,MS, OO, OM, OS\}
+\]
+\[
+\A=\mathcal{P}(\Omega)
+\]
+\[
+P(\omega)=\frac{1}{2}, \enskip \omega\in\{SS\}
+\]
+\[
+P(\omega)=\frac{1}{28}, \enskip \omega\in\{SM,MS,OS,SO, OO, MO, OM\}
+\]
+\[
+P(\omega)=\frac{1}{4}, \enskip \omega\in\{MM\}
+\]
+Sobre el experimento, se miden las siguientes variables aleatorias:
+\begin{itemize}
+\item $X_1:$ número de spoilers obtenidos tras leer el primer mensaje de ambas conversaciones.
+\item $X_2:$ número de memes obtenidos tras leer el primer mensaje de ambas conversaciones.
+\end{itemize}
+
+El vector $X=(X_1, X_2)$ está definido en el espacio medible ($\R[2], \mathcal{B}^2$) y podemos comprobar que es variable aleatoria:
+\[
+X^{-1}((-\infty,0],(-\infty,0])=\{\omega\in\Omega\enskip : \enskip X_1\leq 0, \enskip X_2\leq 0\}=\{OO\}\in\A
+\]
+\[
+X^{-1}((-\infty,1],(-\infty,0])=\{\omega\in\Omega\enskip : \enskip X_1\leq 0, \enskip X_2\leq 0\}=\{SM,MS,XS,SX\}\in\A
+\]
+\[
+X^{-1}((-\infty,0],(-\infty,1])=\{\omega\in\Omega\enskip : \enskip X_1\leq 0, \enskip X_2\leq 0\}=\{SM,MS,XS,SX\}\in\A
+\]
+\[
+\dots
+\]
+\[
+X^{-1}((-\infty,0],(-\infty,0])=\{\omega\in\Omega\enskip : \enskip X_1< 0, \enskip X_2< 0\}=\emptyset\in\A
+\]
+
+Por tanto, el vector $X=(X_1, X_2)$, es un vector aleatorio.
+
+Calculemos ahora su distribución de probabilidad:
+
+\[
+\begin{array}{ll}
+F_X: & \R[2] \longrightarrow [0,1] \\
+& x \longmapsto F_X(x)=P(X^{-1}((-\infty, x]))
+\end{array}
+\]
+
+\[
+F_X(x_1,x_2)=\left \{ \begin{array}{ll}
+0 & x_1<0 \enskip\text{ó}\enskip x_2<0 \enskip\text{ó}\enskip \{0\leq x_1<1,\enskip 0\leq x_2 <1\}\\
+\frac{1}{14} & \{1\leq x_1 < 2, \enskip 0 \leq x_2 < 1\} \enskip\text{ó}\enskip \{0\leq x_1 < 1, \enskip 1 \leq x_2 < 2\} \\
+\frac{1}{7} & 1\leq x_1 < 2 \enskip 1\leq x_2 < 2 \\
+\frac{9}{28} & 0\leq x_1 <1, \enskip 2<x_2 \\
+\frac{11}{28} & 1\leq x_1 < 2, \enskip 2 < x_2 \\
+\frac{4}{7} & 2<x_1, \enskip 0\leq x_2 <1 \\
+\frac{9}{14} & 2 < x_1, \enskip 1\leq x_2 < 2 \\
+1 & 2<x_1, \enskip 2<x_2
+
+\end{array}\right.
+\]
+\newpage
+\item Dar la expresión de las siguientes probabilidades en términos de la función de distribución para un vector aleatorio $X=(X_1, X_2)$:
+
+\begin{itemize}
+\item $P[a<X_1<b,c<X_2<d]=F(b^-,d^-)-F(b^-,c)-(F(a,d)-F(a,c))$
+\item $P[a\leq X_1<b,c<X_2<d]=F(b^-,d^-)-F(b^-,c)-(F(a^-,d)-F(a,c))$
+\item $P[a<X_1\leq b,c<X_2<d]=F(b,d^-)-F(b,c)-(F(a,d)-F(a,c))$
+\item $P[a\leq X_1\leq b,c<X_2<d]=F(b,d^-)-F(b,c)-(F(a^-,d)-F(a,c))$
+\item $P[a<X_1<b,c\leq X_2<d]=F(b^-,d^-)-F(b^-,c^-)-(F(a,d)-F(a,c))$
+\item $P[a\leq X_1<b,c\leq X_2<d]=F(b^-,d^-)-F(b^-,c^-)-(F(a^-,d)-F(a,c))$
+\item $P[a<X_1\leq b,c\leq X_2<d]=F(b,d^-)-F(b,c^-)-(F(a,d)-F(a,c))$
+\item $P[a\leq X_1\leq b,c\leq X_2<d]=F(b,d^-)-F(b,c^-)-(F(a^-,d)-F(a,c))$
+\item $P[a<X_1<b,c<X_2\leq d]=F(b^-,d)-F(b^-,c)-(F(a,d)-F(a,c))$
+\item $P[a\leq X_1<b,c<X_2\leq d]=F(b^-,d)-F(b^-,c)-(F(a^-,d)-F(a,c))$
+\item $P[a<X_1\leq b,c<X_2\leq d]=F(b,d)-F(b,c)-(F(a,d)-F(a,c))$
+\item $P[a\leq X_1\leq b,c<X_2\leq d]=F(b,d)-F(b,c)-(F(a^-,d)-F(a,c))$
+\item $P[a<X_1<b,c\leq X_2\leq d]=F(b^-,d)-F(b^-,c^-)-(F(a,d)-F(a,c))$
+\item $P[a\leq X_1<b,c\leq X_2\leq d]=F(b^-,d)-F(b^-,c^-)-(F(a^-,d)-F(a,c))$
+\item $P[a<X_1\leq b,c\leq X_2\leq d]=F(b,d)-F(b,c^-)-(F(a,d)-F(a,c))$
+\item $P[a\leq X_1\leq b,c\leq X_2\leq d]=F(b,d)-F(b,c^-)-(F(a^-,d)-F(a,c))$
+
+\end{itemize}
+
+\end{enumerate}
+
+\end{document}
