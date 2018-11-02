@@ -180,7 +180,6 @@ void ProdConsNSU::escribir( int valor )
    if ( lleno )
       libres.wait();
 
-   //cout << "escribir: ocup == " << num_celdas_ocupadas << ", total == " << num_celdas_total << endl ;
    // hacer la operación de inserción, actualizando estado del monitor
    buffer[escritura] = valor ;
    escritura = (escritura+1) % num_celdas_total;
