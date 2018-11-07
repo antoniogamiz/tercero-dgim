@@ -232,9 +232,22 @@ Encuentra para cada uno de los siguientes lenguajes una gramática de tipo 3 que
 \end{tikzpicture}
 \end{center}
 
-
 \end{itemize}
 
 Como $L_2\subset L_1 \Longrightarrow L_2 = L_1\cup L_2$, luego el segundo autómata finito determinista es también el AFD de la intersección.
+
+\section*{Ejercicio 45}
+Sea el alfabeto $A=\{0,1,+,=\}$, demostrar que el lenguaje
+\[
+ADD=\{x=y+z|x,y,z \text{ son números en binario, y x es la suma de y y z}\}
+\]
+no es regular.
+
+Usando el lema de Bombeo enunciado anteriormente, tenemos que cogiendo $z=1^n+0=1^n\in ADD$, $u=\varepsilon$, $v=1^n$ y $w=+0=1^n$ y $i=2$:
+\[
+uv^iw=v^iw=1^{2n}+0=1^n \notin ADD \enskip \forall n \in \mathbb{N}
+\]
+
+Por lo tanto, ADD no es regular.
 
 \end{document}
