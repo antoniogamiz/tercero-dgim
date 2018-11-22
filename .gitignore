@@ -374,3 +374,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+/FR/Prácticas/Práctica II/main/nbproject/private/
+/FR/Prácticas/JavaApplication2/nbproject/private/
