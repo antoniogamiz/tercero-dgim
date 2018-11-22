@@ -10,7 +10,7 @@
 using namespace HM;
 using namespace std;
 
-static const int n_clientes = 3;
+static const int n_clientes = 5;
 
 template< int min, int max > int aleatorio()
 {
@@ -36,8 +36,11 @@ class MB : public HoareMonitor {
     private:
         CondVar clientes, 
                 barbero,
+                puertaBarberia,
                 silla;
         bool libre;
+        int n_sillas,
+            n_sillas_ocupadas;
     public:
         MB();
         void CortarPelo( int i );
@@ -49,16 +52,29 @@ MB::MB()
 {
     clientes = newCondVar();
     barbero = newCondVar();
+    puertaBarberia = newCondVar();
     silla = newCondVar();
     libre = true;
+    n_sillas = 2;
+    n_sillas_ocupadas = 0;
 }
 
 void MB::CortarPelo( int i )
 {
+
+    if( n_sillas_ocupadas >= n_sillas ) {
+        cout << "Cliente ( " << i << " ) espera en la puerta (quejándose)." << endl << flush;
+        puertaBarberia.wait();
+    }
+
     cout << "Cliente ( " << i << " ) entra a la barbería." << endl << flush;
 
-    if( !clientes.empty() || !libre ) clientes.wait();
-
+    if( !clientes.empty() || !libre ) {
+        n_sillas_ocupadas++;
+        clientes.wait();
+        n_sillas_ocupadas--;
+        puertaBarberia.signal();
+    }
     libre = false;
     barbero.signal();
     cout << "Cliente ( " << i << " ) se sienta." << endl << flush;
@@ -111,6 +127,8 @@ int main()
     thread clientes[n_clientes], 
            estanquero( funcion_hebra_barbero, monitor );
 
+    espera(); espera(); //para que el barbeor duerma
     for( int i = 0; i < n_clientes; i++ ) clientes[i] = thread( funcion_hebra_cliente, monitor, i );
+
     for( int i = 0; i < n_clientes; i++ ) clientes[i].join();
 }
