@@ -19,6 +19,8 @@ public class Protocol {
     static int LOGIN = 1001;
     static int REGISTRATION = 1002;
     static int CONNECTIONTIME = 1003;
+    static int STAYCONNECTED = 1004;
+    static int STAYCONNECTEDANSWER = 1005;
     static int OK = 200;
     static int LOGINERROR = 301;
     static int USERTAKEN = 302;

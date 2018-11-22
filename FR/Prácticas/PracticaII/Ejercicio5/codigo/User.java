@@ -86,13 +86,31 @@ public class User extends Thread {
     @Override
     public void run() {        
         identify();
+        String messageReceived[];
+        int code;
+        boolean connected = true;
         
-        String messageReceived[] = Protocol.receivePacket( inReader );
-        int code = Integer.parseInt( messageReceived[0] );
+        //Guardamos cada cuanto tiempo quiere que le preguntemos si 
+        //desea seguir conectado
+        messageReceived = Protocol.receivePacket( inReader );
+        code = Integer.parseInt( messageReceived[0] );
         if( code == Protocol.CONNECTIONTIME ) {
             connectionTime = Integer.parseInt( messageReceived[1] );
-            try { Thread.sleep( connectionTime ); } catch( Exception e ) {};
         }
+
+        //Dormimos durante el tiempo fijado, mandamos paquete para 
+        //ver si seguimos conectados o no.
+        do{
+            try { Thread.sleep( connectionTime ); } catch( Exception e ) {};
+            Protocol.emitPacket(outPrinter, Protocol.STAYCONNECTED, "");
+            messageReceived = Protocol.receivePacket( inReader );
+            code = Integer.parseInt( messageReceived[0] );
+            if( code == Protocol.STAYCONNECTEDANSWER ){
+                if( "0".equals(messageReceived[1]) )
+                    connected = false;
+            }
+        } while ( connected );
+
         Protocol.emitPacket(outPrinter, Protocol.DISCONNECT, "");
         System.out.println( "Closing connection..." );
         try { serviceSocket.close(); } catch ( Exception e ) {};

@@ -1,0 +1,119 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{210Header}
+
+% AMS packages for specialized mathematical environments and fonts.
+\RequirePackage{
+,amsmath
+,amsfonts
+,amsthm
+}
+% Packages for easier mark-up
+\RequirePackage[color=green!40,textwidth=1.2in]{todonotes}
+\RequirePackage[normalem]{ulem}
+\RequirePackage{cancel}
+% More packages for various purposes
+\RequirePackage{
+,nicefrac % Formats in-line fractions to look nicer (such as 1/3).
+,pgf,tikz % Allows pictures to be defined and drawn in LaTeX.
+,geometry % For defining page geometry, such as margins, header, etc.
+,graphicx % Allows images to be included (using \includegraphics).
+,pdfpages % Allows entire PDF files to be inserted into the final document.
+,refstyle % Combined with refstyle.def, defines specialized label and reference commands.
+,hyperref % Makes references clickable.
+}
+
+% A kludge to make cases reset on a new \paragraph while still not numbering paragraphs.
+\addtocounter{secnumdepth}{1}
+\renewcommand{\theparagraph}{\hspace*{-1em}}
+
+% Load libraries for patterns, etc. in tikz
+\usetikzlibrary{patterns,arrows,decorations.pathreplacing}
+
+% Set the paper size and margins. Right margin set larger for marginal notes in the markup.
+\geometry{letterpaper,margin=1in,right=1.5in}
+
+% Define an environments for conjectures, theorems, lemmas, corollaries,
+% and propositions, all numbered in sequence together.
+\newtheorem{cnj}{Conjecture}
+\newtheorem{thm}[cnj]{Theorem}
+\newtheorem{cor}[cnj]{Corollary}
+\newtheorem{lemma}[cnj]{Lemma}
+\newtheorem{prop}[cnj]{Proposition}
+% Define subconjectures, numbered within conjectures, as in ``Conjecture 3.1'',
+% for example.
+\newtheorem{subcnj}{Conjecture}[cnj]\renewcommand{\thesubcnj}{\thecnj\alph{subcnj}}
+
+% Define an environment for the ten select Portfolio Theorems.
+\newtheorem{pthm}{Portfolio Theorem}
+% Define subtheorems, numbered within Portfolio Theorems, as in ``Theorem 3.a'',
+% for example.
+\newtheorem{psubthm}{Theorem}[pthm]\renewcommand{\thepsubthm}{\thepthm\alph{psubthm}}
+
+% Define an environment for stating theorems from the text.
+\newtheorem*{bookthm}{Theorem}
+
+% Define environments for definitions, both from the text and my own.
+\theoremstyle{definition}
+\newtheorem*{defn}{Definition}
+\newtheorem{mydefn}{Definition}
+
+% Special environments for cases and induction
+\newcounter{case}[paragraph]
+\providecommand{\claim}[1][]{%
+  \par\medskip\noindent\refstepcounter{case}\hbox{{\bfseries Case~\arabic{case}}
+\ifx#1\undefined\else(#1)\fi}%
+\quad% Let's try indenting from the case rather than a new paragraph after its statement.
+%\par%
+}
+\newenvironment{case}{\claim}{\par\medskip}
+
+\providecommand{\basis}[1][]{%
+  \par\medskip\noindent\hbox{{\bfseries Basis Step}
+\ifx#1\undefined\else(#1)\fi}\par}
+\newenvironment{basisstep}{\basis}{\par\medskip}
+
+\providecommand{\inductive}[1][]{%
+  \par\medskip\noindent\hbox{{\bfseries Inductive Step}
+\ifx#1\undefined\else(#1)\fi}\par}
+\newenvironment{inductivestep}{\inductive}{\par\medskip}
+
+% Environments and commands for mark-up
+\providecommand{\del}[1]{\textcolor{red}{\sout{#1}}}    % Items to be deleted
+\providecommand{\ins}[1]{\textcolor{blue}{\uwave{#1}}}  % Items inserted
+\providecommand{\chg}[2]{\del{#1}\ins{#2}}              % Replace first with second
+\providecommand{\hlt}[1]{\colorbox{yellow!45}{#1}}      % Highlighting
+\newenvironment{insblock}{\par\begin{minipage}{\textwidth}\color{blue}}{\end{minipage}}
+\newenvironment{delblock}{\par\begin{minipage}{\textwidth}\color{red}}{\end{minipage}}
+
+% Settings to reduce breaking words across lines.
+% Default:  \hyphenpenalty=200
+\hyphenpenalty=1000
+\tolerance=1414
+
+%% Do no indent paragraphs, but skip extra space between paragraphs.
+\setlength{\parskip}{1ex plus 0.5ex minus 0.75ex}
+\setlength{\parindent}{0pt}
+
+%% Make commands that are more suggestive of intersection and union
+\DeclareMathOperator*{\intersect}{\cap}
+\DeclareMathOperator*{\union}{\cup}
+
+%% Define the colon used in set-builder notation as an operator to help with spacing.
+\DeclareMathOperator*{\st}{:}
+\DeclareMathOperator*{\coln}{:}
+% Define a command for the complement of a set.
+\providecommand*{\comp}[1]{\ensuremath{ {#1}^{\mathrm{c}}}}
+% Define the blackboard bold font for natural numbers, rational numbers, real numbers, and integers.
+\providecommand*{\N}{\ensuremath{\mathbb{N}}}
+\providecommand*{\Q}{\ensuremath{\mathbb{Q}}}
+\providecommand*{\R}{\ensuremath{\mathbb{R}}}
+\providecommand*{\Z}{\ensuremath{\mathbb{Z}}}
+
+\providecommand*{\semester}{%
+%                 Jan         Feb        Mar        Apr
+\ifcase\month\or{}Winter\or{}Winter\or{}Winter\or{}Winter%
+%    May        Jun        Jul
+\or{}Spring\or{}Spring\or{}Summer%
+%    Aug     Sep      Oct      Nov      Dec
+\or{}Fall\or{}Fall\or{}Fall\or{}Fall\or{}Fall\fi%
+}

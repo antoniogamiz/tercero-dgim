@@ -19,7 +19,7 @@ public class Transmitter extends Thread {
                 if ( user.isLogin() )
                     Protocol.emitPacket( user.getOutPrinter(), Protocol.DATA, "data data data" );
             }
-            try { Thread.sleep(500); } catch (InterruptedException e) {};
+            try { Thread.sleep(1000); } catch (InterruptedException e) {};
         } while ( true );
     }
 }

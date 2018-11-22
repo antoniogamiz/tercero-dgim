@@ -30,7 +30,7 @@ public class Client {
     public static void main ( String[] args ) {
         
         System.out.println( "Initialising ChatterClient..." );
-
+        
         int port = 30000;
         String host = "localhost";
         
@@ -48,17 +48,22 @@ public class Client {
             System.out.println( "¿How long do you want to receive data (in ms) ?" );
             String time = S.nextLine();
             Protocol.emitPacket( outPrinter, Protocol.CONNECTIONTIME, time );
-            messageReceived = Protocol.receivePacket( inReader );
             
+            String answer;
             do{
                 messageReceived = Protocol.receivePacket( inReader );
                 code = Integer.parseInt( messageReceived[0] );
                 
                 if ( code == Protocol.DATA ) {
                     System.out.println( "Data Packet received: " + messageReceived[1] );
+                } else if( code == Protocol.STAYCONNECTED ){ 
+                    System.out.println( "¿Do you want to stay connected? (0->NO, 1-> YES)" );
+                    answer = S.nextLine();
+                    Protocol.emitPacket( outPrinter, Protocol.STAYCONNECTEDANSWER, answer );
                 } else if ( code == Protocol.DISCONNECT ) {
                     connected = false;
-                    System.out.println( "Connection time expired. Disconnecting..." );
+                    serviceSocket.close();
+                    System.out.println( "Connection closed." );
                 }
                 
             } while( connected );

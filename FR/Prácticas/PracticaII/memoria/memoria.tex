@@ -69,27 +69,27 @@
 
 \section{Descripción.}
 
-Para esta práctica he hecho una aplicación que da un servicio de \textit{login} y \textit{broadcasting}. El objetivo de la misma es permitir al cliente que se registre e inicie sesión con un \textit{usuario} y \textit{contraseña} definidos por él. Una vez haya iniciado sesión, al cliente se la pregunta por un tiempo de conexión, en milisegundos. Ese dato indica durante cuanto tiempo estará recibiendo datos, y una vez pasado ese tiempo, se procederá a la desconexión y cierre de la conexión.
+Para esta práctica he hecho una aplicación que da un servicio de \textit{login} y \textit{broadcasting}. El objetivo de la misma es permitir al cliente que se registre e inicie sesión con un \textit{usuario} y \textit{contraseña} definidos por él. Una vez haya iniciado sesión, al cliente se le pregunta por un tiempo de conexión, en milisegundos. Ese dato indica durante cuanto tiempo estará recibiendo datos, y una vez pasado ese tiempo, se preguntará al cliente si quiere seguir con la conexión abierta, cerrándose la conexión si así se quiere.
 
 Para implementar esta aplicación, he creado un nuevo protocolo usando como base TCP. Los elementos de este protocolo pueden encontrarse en el archivo \textit{Protocolo.java}. Clase creada para almacenar los códigos de los distintos paquetes, así como dos métodos para recibir y emitir paquetes, para hacer el código de la aplicación más simple y entendible. 
 
 El servidor es concurrente, cada vez que llega una nueva conexión se lanza una nueva hebra (instancia de la clase \textit{User} (\textit{User.java}), que se encarga de identificar al cliente ( método \textit{identify()} y de efectuar la posterior desconexión del mismo. 
 
-Al inicializar el servidor, se crea una nueva hebra, instancia de la clase \textit{Transmitter} (\textit{Transmitter.java}), que se encarga de hacer el \textit{broadcasting} de los datos a todos los clientes conectados a través de un \textit{ArrayList\textless User\textgreater} que mantiene el Server con todas los usuarios conectados en ese momento.
+Al inicializar el servidor, se crea una nueva hebra, instancia de la clase \textit{Transmitter} (\textit{Transmitter.java}), que se encarga de hacer el \textit{broadcasting} de los datos a todos los clientes conectados a través de un \textit{ArrayList\textless User\textgreater} que mantiene el Server con todos los usuarios conectados en ese momento.
  
 \section{Diagrama de estados del servidor.}
 
 \begin{figure}[h]
 \center
-\includegraphics[scale=0.70]{diagram.png}
+\includegraphics[scale=0.3]{diagram.png}
 \end{figure}
-
+\newpage
 \section{Mensajes que intervienen}
 \begin{figure}[h]
 \center
-\includegraphics[scale=0.3]{codes.png}
+\includegraphics[scale=0.45]{codes.png}
 \end{figure}
-\
+\newpage
 \section{Evaluación de la aplicación.}
 
 \begin{figure}[h]
@@ -102,13 +102,14 @@ Al inicializar el servidor, se crea una nueva hebra, instancia de la clase \text
 \caption{Nos logeamos otra vez con el usuario creado.}
 \end{figure}
 \newpage
-\begin{figure}[t]
+\begin{figure}[h]
 \center
 \includegraphics[scale=0.45]{5.png}
 \caption{Intetamos logearnos con un usuairo inexistente.}
 \includegraphics[scale=0.45]{6.png}
 \caption{Intentamos registrarnos con un usario ya existente.}
-
+\includegraphics[scale=0.45]{7.png}
+\caption{Realizamos todo lo anterior y cerramos la conexión cuando nos lo solicitan.}
 \end{figure}
 
 \end{document}
