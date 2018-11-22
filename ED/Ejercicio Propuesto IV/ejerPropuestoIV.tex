@@ -1,0 +1,99 @@
+\documentclass[12pt]{article}
+
+\usepackage[spanish]{babel}
+\decimalpoint % to render points as points for decimal separators
+
+\usepackage[utf8]{inputenc}
+
+\usepackage[left=2cm, right=2cm, top=1cm]{geometry} 
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+%\usepackage{upgreek}
+\usepackage{xcolor}
+\usepackage{eurosym}
+\usepackage{graphicx}
+\usepackage{amsthm}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\R}[1][]{\mathbb{R}^{#1}}
+\newcommand{\N}[1][]{\mathbb{N}^{#1}}
+\newcommand{\solution}[1]{\text{\fbox{$#1$}}}
+
+\DeclareMathOperator\arctanh{arctanh}
+
+\newcommand{\abs}[1]{\left|#1\right|}
+
+\newcommand{\FVCP}[5]{x(t)=e^{#1}\int_{#4}^{t}e^{#2}#3ds+#5e^{#1}}
+\newcommand{\FVC}{x(t)=e^{\int_{t_0}^{t}a(s)ds}\int_{t_0}^te^{-\int_{t_0}^{s}a(z)dz}b(s)ds+x_0e^{\int_{t_0}^{t}a(s)ds}, \quad x(t_0)=x_0}
+
+
+\newcommand{\tick}{\textbf{\color{green}{ (\checkmark) }}}
+\newcommand{\warning}{\textbf{\color{red}{ {\fontencoding{U}\fontfamily{futs}\selectfont\char 66\relax} }}}
+
+\newcommand{\U}{\mathcal{U}}
+
+\newcommand{\qued}{\hfill$\blacksquare$}
+\newtheorem*{theorem*}{Ejercicio}
+
+\newtheorem*{proof*}{Solución}
+\newcommand{\p}[2]{\frac{\partial#1}{\partial#2}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newenvironment{aclaration}    
+{
+\begin{center}
+\begin{tabular}{|p{0.9\textwidth}|}
+\hline \\ \warning
+}{
+\\\hline
+\end{tabular} 
+\end{center}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\author{Antonio Gámiz Delgado}
+\title{Ejercicio Propuesto}
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{theorem*}
+Demostrar que:
+\[
+\{ c_1\cos t +c_2 \sin t, \enskip c_1,c_2\in\R \} = \{ A\cos (t+\theta), \enskip A\geq 0,\theta \in [0,2\pi[ \}
+\]
+\end{theorem*}
+
+\begin{proof*} 
+Veámos que uno está incluído en el otro y viceversa:
+\begin{itemize}
+\item $\supseteq$ : Usando que 
+\[
+\cos(a+b)=\cos a \cos b - \sin a \sin b \Longrightarrow
+\]
+\[
+\Longrightarrow A\cos (A+\theta) = A\left( \cos t \cos \theta - \sin t \sin \theta \right) = A\cos \theta\cos t - A\sin\theta\sin t \Longrightarrow
+\]
+\[
+\Longrightarrow c_1 = A\cos\theta \text{ y } c_2 = -A\sin\theta
+\]
+\item $\subseteq$: Usando lo anterior, si demostramos que podemos expresar cualquier $(c_1,c_2)$ de la forma ($A\cos t, -A\sin t$) habremos terminado.
+\[
+\left \{ \begin{array}{ll}
+c_1 &= A\cos \theta \Longrightarrow A = \displaystyle\frac{c_1}{\cos\theta} \Longrightarrow A = \frac{c_1}{\cos\left(\arctan\left(-\displaystyle\frac{c_2}{c_1}\right)\right) } = \frac{c_1}{\sqrt{1+\left(\frac{c_2}{c_1}\right)^2}}=\frac{c_1^2}{\sqrt{c_1^2+c_2^2}}\\
+c_2 &= -A\sin \theta \Longrightarrow c_2 = -c_1\tan\theta \Longrightarrow \theta = \arctan\left(-\displaystyle\frac{c_2}{c_1}\right)
+\end{array}\right.
+\]
+Luego si tenemos $c_1\cos t + c_2\sin t$, con $A=\frac{c_1^2}{\sqrt{c_1^2+c_2^2}}$ y $\theta=\arctan\left( -\frac{c_2}{c_1} \right)$ se cumple la inclusión. \qued
+
+\end{itemize}
+\end{proof*}
+
+\end{document}
