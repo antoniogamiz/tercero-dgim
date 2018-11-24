@@ -110,24 +110,70 @@ Este sistema presenta varias ventajas, como la facilidad de acceso a los datos d
 Un sistema de almacenamiento consiste en habilitar uno o varios discos duros de una red local (que a su vez puede estar conectada a Internet) de manera que los datos que allí se almacenen permanezcan accesibles a todos los dispositivos que deseen utilizarlos. De esta forma el usuario dispone de un almacenamiento común con el resto de usuarios.
 La cuestión se complica cuando hay que definir la forma en que los distintos tipos de almacenamiento de datos gestionan esa conexión a tu red local.
 
-\subsection{NAS - Network Attached Storage.}
+\subsection{Network Attached Storage (NAS)}
 
 Este sistema incorpora su propio sistema de conexión y recepción de petición de acceso a los datos, eliminando a los servidores de la ecuación. Los sistemas de almacenamiento NAS se conectan directamente al router (en local, LAN) mediante TCP/IP.
 
-\subsection{SAN - Storage Area Network.}
+\begin{itemize}
+\item Ventajas: 
+\item Incovenientes: 
+\end{itemize}
+\subsection{Storage Area Network (SAN)}
 
 
 Como un NAS, SAN traspasa la responsabilidad del almacenamiento de los datos de servidores y ordenadores a dispositivos de almacenamiento dedicados. Pero a diferencia de NAS, que es un dispositivo independiente, un SAN es una red de dispositivos de almacenamientos interconectados. Ambos son accedidos a través de la red local a la que están conectados.
 
-Este tipo de sistema usa dos protocolos:
 \begin{itemize}
-\item Protocolo de canal de fibra (FCP): es la interfaz del protocolo SCSI (Small Computer System Interface) usando conexión de fibra óptica por debajo. Protocolo de alta velocidad que soporta la mayoría de canales y redes, ya que provee un estándar para el almacenamiento y la transferencia de datos.
-\item Interfaz SCSI (iSCSI): protocolo que usa TCP/IP para la transferencia de datos. A diferencia del canal de fibra, solamente requiere Ethernet (o cualquier otra red compatible con TCP/IP) para funcionar. Esto permite soluciones menos costosas.
+\item Ventajas: pueden acceder al dispositivo todas las personas que estén conectadas a la misma red que el NAS. Seguro, ya que somos nosotros mismos quienes manipulamos los archivos.
+\item Incovenientes: dificultad en la instalación, ya que esta tiene que hacerse muy bien para su correcto funcionamiento. Caro.
 \end{itemize}
+
+\subsection{Direct Access Storage (DAS)}
+
+Son todos los dispositvos USB, discos duros, etc, que se conectan con un computador y se tiene acceso directo al almacenamiento.
+
 
 Dado que Dropbox es una empresa privada, nadie sabe exactamente cómo implementan su servicio de almacenamiento, pero se cree que usan mayormente SAN.
 
+\section{Protocolos de Almanamiento}
+
+Una vez vistos los principales sistemas de almacenamiento, veremos los principales protocolos usados para manejar, controlar y almacenar todos estos datos correctamente.
+
+\subsection{Small Computer Interface (SCSI)}
+
+SCSI es el principal método de acceso a disco en el centro de datos. El acceso a disco es realizado por medio de bloques, que son la mínima unidad de información que puede ser leída o escrita en un disco. Su tamaño varía dependiendo del tipo de disco y uso (de 512 a 4096 bytes). Este protocolo permite al servidor acceder directamente a los bloques del disco sin necesidad de un sistema de archivos.
+
+Este protocolo se usaba principalmente para mover datos en un único servidor. EL sistema operativo se encarga de escribir datos usando SCSI, que usa un controlador para coordinar los distintos dispositivos que hay conectados al cable SCSI. Debido a que el controlador se asegura de que no haya perdida de datos, ni de que dos dispositivos estén activos a la vez en el cable, ni de que los bloques lleguen en distinto orden en que fueron enviados, la pérdida de datos y la inconsistencia es prácticamente nula.
+
+SCSI todavía es muy usado, pero debido al aumento de complejidad en los archivos y en los centros de datos, ha sido encapsulado en el resto de protocolos.
+
+\subsection{Fiber Channel (FC)}
+
+El FC fue diseñado para extender la funcionalidad del protocolo SCSI en las topologías de switches y punto a punto. Esto permite conectar servidores a distancias más largas además de mejorar el consolidamiento del almacenamiento.
+
+FC encapsula datos del protocolo SCSI y Command Descriptor Blocks (CDB) en "cargas de trabajo" del canal de fibra. Una vez encapsulados, las redes FC se encarga del direccionamiento, enrutamiento y del control de flujo requerido para soportar SCSI. Esto lo consigue asegurando la no pérdida de información en el proceso ("lossless").
+
+Las redes FC normalmente están implementadas sobre cables de fibra óptica, con infraestructuras dedicadas. Debido a esto, proporcionan un gran ancho de banda así como una baja latencia.
+
+\subsection{internet/IP Small Computer System Interface (iSCSI)}
+
+iSCSI coge los datos del SCSI y los CDM y los encapsula en paquetes TCP/IP. Esto permite al protocolo SCSI ser extendido a través de las infraestructuras IP existentes.
+
+La principal atracción de iSCSI es que el almacenamiento de datos puede ser fácilmente extendido entre la infraestructura existente con un coste adicional mínimo. Aún así, no ha conseguido ganar el mercado debido a las limitaciones del protocolo y las limitaciones de las redes tradicionales de los Data Center basadas en Ethernet.
+
+El problema con Ethernet era que la mayoría de los data centers usaban links de 1GE que se saturaban rápidamente. Esto significaba que implementar iSCSI requería una infraestructura nueva de swicthing. 10GE ha aumentado el ancho de banda significativamente, pero no ha sido suficiente para subir la popularidad de iSCSI.
+
+Por otro lado, como protocolo, su principal problema es que encapsula al protocolo SCSI, el cual espera la no pérdida de paquetes, llegada en el mismo orden en el que fueron enviados. Cumplir estas condiciones, usando paquetes TCP/IP que están diseñados para sufrir pérdida de paquetes y la llegada en distinto orden de los mismo, lo hace bastante complejo.
+
+\subsection{Fiber Channel over Ethernet (FCoE)}
+
+Protocol que se encarga de proveer la funcionalidad necesaria para ejecutar el protocolo FC sobre una red Ethernet (10GE). FCoE encapsula los paquetes del protocolo FC en paquetes Ethernet Jumbo, que aseguran que el paquete no es ni fragmentado ni alterado.
+
+
 \section{Dropbox}
+
+\subsection{Origen}
+Dropbox es un servicio de almacenamiento en la nube, creado por Drew Houston y Arash Ferdows en junio de 2007. A modo de dato curioso: la idea de Dropbox se le ocurrió a Drew Houston, cuando estaba montado en un autobús de Boston a New York. En ese trayecto, él quería trabajar sobre algunas ideas de proyectos, pero se olvidó el pen drive en casa, cómo usualmente le pasaba. Así que decidió que esa sería la última vez que le pasaría, por lo que en dos demanas desarolló un prototipo y un nombre, y se lo presentó a una empresa de Silicon Valley, Y Combinator, quién invirtió en el proyecto, pero con la condición de que Houston buscara un socio, Arash Ferdows, quien estaba estudiendo ingeniería eléctrica e informática en el MIT, dejando los estudios para trabajar en lo que sería Dropbox.
 
 \subsection{¿Qué es Dropbox?}
 Dropbox se define a si mismo como una CDN (Content Delivery Network), es decir, un conjunto de servidores que contienen copias de una misma serie de contenidos (imágenes, vídeos, documentos, etc) y que están ubicados en puntos diversos de una red para poder servir sus contenidos de manera más eficiente. Normalmente usan protocolos TCP/IP y TLS que reducen la latencia.
@@ -138,7 +184,7 @@ Por lo que, la Edge Network de Dropbox es, el conjunto de PoPs que permiten redu
 
 \subsection{GSLB - Global Server Load Balancing}
 
-¿Cómo distribuye Dropbox los usuarios entre los Pops? Utiliza GSLB, normalmente GSLB envía cada usuario al Pop más cercano, a no ser que el Pop este inhabilitado.
+¿Cómo distribuye Dropbox los usuarios entre los Pops? Utiliza GSLB, normalmente GSLB envía cada usuario al Pop más cercano, a no ser que el Pop esté inhabilitado.
 
 \subsubsection{BGP anycast}
 Anycast es el método más fácil de loadbalancing. Usa el protocolo de routing del núcleo de Internet, BGP (Border Gateway Protocol - protocolo meidente el cuál se intercambia información de encaminamiento entre sistemas autónomos). Para empezar a usar anycast es suficiente con empezar a "publicar" la misma subred desde todos los PoPs e Internet entregerá cada paquete al PoP "óptimo" automáticamente. Aunque parece ser un muy buen método, tiene varias desventajas, como el limitado control que se tiene sobre el tráfico y es difícil mover tráfico implícitamente de un PoP a otro.
@@ -160,44 +206,70 @@ Los métodos anteriores tienen un problema: ninguno de ellos usa datos de perfor
 RUM en Dropbox: todavía es un proyecto en evolución que todavía no está implementado para el público general, pero se están realizando experimentos y recogiendo datos de los métodos anteriores para poder llegar a usar hasta 25-30 PoPs.
 
 \subsection{Backbone Network}
+Junto con la edge network, Dropbox ha creado una backbone network que permite la interconexión entre los data centers de Norte América no sólo entre ellos, sino también con los nodos edge alrededor del mundo.
 
-Junto con la edge network, Dropbox ha creado una backbone network que permite la interconexión entre los data centers de Norte América, pero no sólo entre ellos, sino también con los nodos edge alrededor del mundo. ¿Por qué fue necesario crear tanto una edge network como una backbone network? Debido al número de usuarios  y la cantidad de datos que almacena cada uno de ellos y sobre todo al masivo crecimiento de los mismos, que hacía cada vez menos eficiente el almacenamiento en Dropbox. 
+A nivel interno (IGP)(Conexión entre PoPs); 
+Dropbox gestiona interfaces en múltiples redes cuya tarea es copiar paquetes de una red a otra en función de las tablas de enrutamiento almacenadas en la memoria.
+
+La arquitectura de enrutamiento es  Open Shortest Path First (OSPF) que usa el algoritmo Dijkstra, para calcular la ruta más corta entre dos nodos.
+
+Actualmente Dropbox utiliza IPv6, una versión del Internet Protocol (IP), definida en el RFC 2460.
+
+A nivel externo (BGP)(Conexión con otros edge nodos); se tienen en cuenta dos diseños básicos. 
+\begin{enumerate}
+\item Diseño BGP de malla completa en todos los routers, es decir, todos los routers conocen todas las rutas entre sí. Esto funciona bien en una red más pequeña.
+
+\item División de la red troncal en regiones más pequeñas. Al mismo tiempo que implementar BGP de malla completa entre los routers dentro de una misma región, mientras que los RR anuncian rutas entre las regiones.
+Los RR o route reflector son dispositivos que permiten la conexión entre dos routers sin necesidad de una malla completa, es decir, un router se conecta con el RR y este a su vez la refleja en otro router.
+
 
 \subsection{Tipos de routers}
-La red troncal de Dropbox consta de enrutadores con tres funciones distintas:
+La red troncal de Dropbox consta de routers con tres funciones distintas:
 \begin{itemize}
-\item Enrutadores del centro de datos (DR): con una función principal de conectar el centro de datos a la red troncal.
-\item Enrutadores de red troncal (BB): que actúan como un punto de terminación para circuitos de larga distancia y también como dispositivos de agregación para DR en regiones donde tenemos centros de datos.
-\item Peering Routers (PR): con una función principal de conectar Dropbox a pares BGP externos para proporcionar conectividad a Internet
-\item Data Centers (DC): para conectar los data centers.
+\item Routers del centro de datos (DR): con una función principal de conectar el centro de datos a la red troncal.
+\item Routers de red troncal (BB): que actúan como un punto de terminación para circuitos de larga distancia y también como dispositivos de agregación para DR en regiones donde tenemos centros de datos.
+\item Peering routers (PR): con una función principal de conectar Dropbox a pares BGP externos para proporcionar conectividad a Internet
+
 \end{itemize}
 
-\subsection{Arquitectura de 2 niveles}
 
-La red de Dropbox tiene dos tipos de tráfico: "tráfico de usuario" el cuál fluye entre Dropbox e Internet, y "tráfico del data center", el cuál fluye entre los data centers de Dropbox.
-
-En la nueva arquitectura, existen dos dominios de red para manejar cada tipo de tráfico de forma independiente. El nivel DC lleva el tráfico del centro de datos, mientras que el nivel DR se usa para transportar el tráfico de usuarios, principalmente desde Dropbox a Internet. Cada nivel tiene su propia malla BGP, pero se conectan al mismo conjunto de enrutadores de red troncal (BB), que comparten la misma red de transporte físico.
-
-El tráfico entre data centers es aproximadamente el doble del tráfico de usuarios y ambos tienen características diferentes. El tráfico del centro de datos consiste en servicios internos que se comunican entre sí o que copian datos de un centro de datos a otro. El tráfico de usuarios siempre se está transportando desde los DR a un punto de presencia, y se trata como tráfico premium. El despegue del tráfico interno de Dropbox a su propio nivel ha permitido una clara separación entre los dos tipos de tráfico, lo que ayuda a crear perfiles de tráfico y topologías de red que son únicas para cada tipo de tráfico.
 
 \section{Dropbox LAN Sync}
 
 Para terminar, vamos a hablar de una de las nuevas funciones de Dropbox, Dropbox LAN Sync:
 
-Dropbox LAN Sync es una función que le permite descargar archivos de otras computadoras en su red, ahorrando tiempo y ancho de banda en comparación con descargarlos desde los servidores de Dropbox.
-En vez de almacenar los archivos en los servidores de Dropbox, cualquier ordenador conectado a la misma red, podrá acceder a los demás  y descargar el archivo directamente desde allí sin tener que acceder a la nube.
-Para comprender cómo funciona, primero debemos hablar de abstracciones que usa DropBox: Bloques y nameSpaces. Los archivos en DropBox están separados en bloques de 4MB direccionados por funciones HASH. Por tanto un archivo puede ser descrito por una lista de “Hashes”.
 
-Los Espacios de nombre pueden ser pensados como directorios con permisos específicos. Cada cuenta tiene un espacio de nombre que representa su cuenta personal  y todos los archivos que contiene. 
-En conclusión,  la petición de descargas de archivos puede pensarse como una serie de peticiones de pares (espacio de nombres, Hashes) para indicar el/los bloques específicos. Sin LAN Sync estas peticiones se meterían en una cola  y enviadas al servidor de bloques que devuelve un bloque de datos y por tanto no es necesario que la tubería de descarga conozca cosas como el nombre del archivo.
+Dropbox Lan Sync es un tecnología que permite descargar archivos desde otras computadoras que estén conectadas a tu misma red, sin la necesidad de conectar a los servidores de Dropbpox, ahorrando así tiempo y ancho de banda. Cualquier ordenador que esté conectado a la misma red, podrá acceder al resto y descargar el archivo directamente desde allí.
+Para comprender el funcionamiento de esta tecnología, debemos conocer las abstracciones que usa DropBox: Los bloques y los espacios de nombres. 
+\begin{itemize}
+	\item Bloques: los archivos en DropBox están separados en bloques de 4MB direccionados por funciones HASH. Por tanto un archivo puede ser descrito por una lista de “Hashes”.
+	\item Espacios de nombres:   pueden ser pensados como directorios con permisos específicos. Cada cuenta tiene un espacio de nombre que representa su cuenta personal  y todos los archivos que contiene. 
+\end{itemize}
 
-Esto también significa que LAN Sync  solo sincroniza los datos reales de los archivos  y no los metadatos. Asegurando que todos los metadatos recibidos provienen de los servidores de DropBox podemos tener la certeza de que todos están siempre en un estado consistente. Con el LAN Sync intentamos descargar los bloques directamente del peer de la conexión, accediendo si no es posible al servidor de bloques.
+
+
+La petición de descargas de archivos puede pensarse como una serie de peticiones de pares (espacio de nombres, Hashes) para indicar  la computadora y el/los bloques específicos . Sin LAN Sync estas peticiones se meterían en una cola  y enviadas al servidor de bloques que devuelve un bloque de datos. Por tanto, no es necesario que la tubería de descarga conozca cosas como el nombre del archivo. ¿Qué significa esto? Que  LAN SYNC solo sincroniza los datos reales de los archivos, ya que los metadatos los proveen los servidores de DropBox. De esta forma se tiene la certeza de que todos los computadores y archivos estarán siempre en un estado consistente.
+
+
+En definitiva, nos encontramos con una red P2P, en la cual primero intentaremos descargar el archivo desde los peers ubicados en la red, usando el servidor de bloques solamente si esta última acción falla.
 
 Esta tecnología tiene tres componentes principales:
 \begin{itemize}
 \item El “Discovery engine” que trata de encontrar máquinas que estén conectadas en la red que se puedan sincronizar. Para hacer esto cada máquina envía y escucha periódicamente de paquetes UDP sobre el puerto 17500. Estos paquetes contienen información sobre el protocolo usado, el espacio de nombres soportado…
-\item Protocolo:  la transferencia del bloque se hace mediante HTTPS.
+\item Protocolo:  la transferencia del bloque se hace mediante HTTPS. Cada computadora tiene que poner en marchaun servidor HTTPS. Este soporta dos métodos, GET y HEAD. El método HEAD se usa para comprobar si el bloque existe y GET devuelve el bloque.
 \item Servidor/Cliente: el servidor maneja peticiones de los clientes conectados en el servidor, proveyendo los bloques de datos solicitados. Los clientes solo son responsables de realizar las peticiones.  
 \end{itemize}
+\end{enumerate}
+\newpage
+\begin{thebibliography}{9}
+\bibitem{nombre} https://blogs.dropbox.com/tech/2017/06/evolution-of-dropboxs-edge-network/
+\bibitem{} https://computerhoy.com/noticias/internet/que-es-como-funciona-almacenamiento-red-33081 
+\bibitem{} https://blogs.dropbox.com/tech/2017/09/infrastructure-update-evolution-of-the-dropbox-backbone-network/
+\bibitem{} https://blogs.dropbox.com/tech/2016/05/inside-the-magic-pocket/
+\bibitem{} https://blogs.dropbox.com/tech/
+\bibitem{} https://blogs.dropbox.com/developers/
+\bibitem{} https://blogs.dropbox.com/tech/2015/10/inside-lan-sync/
+\bibitem{}  https://www.makeuseof.com/tag/network-storage-explained-cloud-nas-san-das/
+\end{thebibliography}
 
 \end{document}
