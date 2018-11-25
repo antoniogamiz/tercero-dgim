@@ -1,0 +1,25 @@
+TODOS del archivo: random.cpp
+
+===============TODOs/Checks incorrectos (vacios)===============
+Linea 246: //TODO:
+Linea 301: //TODO:
+
+
+===============TODOs/Checks tipo 0===============
+Linea 27: //TODO: revisar esta macro
+Linea 42: //TODO : hay que cambiar esto a otro tipo
+
+
+===============TODOs/Checks tipo 1===============
+Linea 547: //TODO: Deadline: 12/6/2020 revisar caso 1 
+Linea 568: //TODO: Deadline: 12/6/2020 no se yo si esto estara bien 
+
+
+===============TODOs/Checks tipo 2===============
+Linea 159: //TODO: Deadline: 12/6/2020 revisar caso 3 URGENTE
+
+
+===============Referencias===============
+Linea 96: // See also: https://www.cpeihfeiu.com
+Linea 114: // See also: https://www.cplusplus.com
+Linea 128: // See also: https://www.cplusfefe.es
