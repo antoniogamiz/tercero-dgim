@@ -115,8 +115,8 @@ La cuestión se complica cuando hay que definir la forma en que los distintos ti
 Este sistema incorpora su propio sistema de conexión y recepción de petición de acceso a los datos, eliminando a los servidores de la ecuación. Los sistemas de almacenamiento NAS se conectan directamente al router (en local, LAN) mediante TCP/IP.
 
 \begin{itemize}
-\item Ventajas: 
-\item Incovenientes: 
+\item Ventajas: Todos los usuarios conectados a la misma red que el NAS, pueden acceder a él. Además, es más seguro ya que somos nosotros quienes manipulamos los archivos.
+\item Incovenientes: Realizar una instalación y configuración correcta es muy complicado. Además es un poco caro.
 \end{itemize}
 \subsection{Storage Area Network (SAN)}
 
@@ -260,6 +260,21 @@ Esta tecnología tiene tres componentes principales:
 \item Servidor/Cliente: el servidor maneja peticiones de los clientes conectados en el servidor, proveyendo los bloques de datos solicitados. Los clientes solo son responsables de realizar las peticiones.  
 \end{itemize}
 \end{enumerate}
+
+\section{Wireshark}
+
+A continuación presentamos una captura de WireShark realizada en el momento de subir un archivo de texto a nuestra cuenta.
+
+\begin{figure}[h]
+\center
+\includegraphics[scale=0.35]{wireshark/wireshark}
+\end{figure}
+
+Como "podemos apreciar" en la foto, hay dos IPs, 162.20.122.66, que pertenece a Dropbox y escucha en el puerto 443, y otra, 172.20.122.66, que la nuestra y escucha en el puerto 48348.
+
+Al principio podemos ver que se está estableciendo la conexión entre el servidor y el cliente (nosotros): al principio de mandan dos paquetes de sincronización, luego el cliente manda un mensaje "Cliente Hello", que contiene los cipher suites soportados. El servidor responde con un mensaje "Server Hello", diciendole al cliente que cipher suite va a usar. Y como medida de protección se mandan entre ellos, en los mensajes anteriores, se mandan 32 bytes de datos random para saber que están hablando con quién deberían y evitar sitios maliciosos. 
+
+Luego, el servidor manda un mensaje "Server Key Exchange", inicializando la clave de intercambio y firmándola con su clave pública. Después, manda un mensaje "Server Hello Done" indicando al cliente que está esperando. El cliente ahora manda un mensaje "Client Key Exchange" conteniendo su parte de la clave de intercambio. Finalmente, el cliente envía un mensaje "Change Cipher Spec", "Encrypted Handshake Message", el servidor responde con los mismos mensajes y ya pueden empezar a intercambiar mensajes conteniendo Applciation Data.
 \newpage
 \begin{thebibliography}{9}
 \bibitem{nombre} https://blogs.dropbox.com/tech/2017/06/evolution-of-dropboxs-edge-network/
