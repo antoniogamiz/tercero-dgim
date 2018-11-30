@@ -1,0 +1,325 @@
+
+% plantilla obtenida de: https://www.overleaf.com/19886281jjqffwsxshmm#/73112823/
+
+\documentclass[a4paper, 11pt]{article}
+\usepackage{comment} % enables the use of multi-line comments (\ifx \fi) 
+\usepackage{lipsum} %This package just generates Lorem Ipsum filler text. 
+\usepackage{fullpage} % changes the margin
+
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\decimalpoint
+\usepackage{graphicx}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+% or
+\usepackage{amssymb}
+\usepackage{tikz}
+\usepackage{array}
+\newcolumntype{C}{>{$}l<{$}} % math-mode version of "l" column type
+\newcommand{\imageins}[4]{\begin{figure}[!ht]		%Take the hardwork from using images. Let this command do the work for you. Insert images by just using this command \imageins{filename}{width as a ratio of total text width of the page}{caption name}{label name for referring in articles}		
+    \centering
+    \includegraphics[width=#2\textwidth]{#1}
+    %\caption{#3}
+    %\label{#4}
+    \vspace{0.2em}
+\end{figure}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{listings}
+\usepackage{color}
+\newcommand{\R}[1][]{\mathbb{R}^{#1}}
+\newcommand{\N}[1][]{\mathbb{N}^{#1}}
+\newcommand{\solution}[1]{\text{\fbox{$#1$}}}
+
+\DeclareMathOperator\arctanh{arctanh}
+
+\newcommand{\abs}[1]{\left|#1\right|}
+
+\newcommand{\FVCP}[5]{x(t)=e^{#1}\int_{#4}^{t}e^{#2}#3ds+#5e^{#1}}
+\newcommand{\FVC}{x(t)=e^{\int_{t_0}^{t}a(s)ds}\int_{t_0}^te^{-\int_{t_0}^{s}a(z)dz}b(s)ds+x_0e^{\int_{t_0}^{t}a(s)ds}, \quad x(t_0)=x_0}
+
+
+\newcommand{\tick}{\textbf{\color{green}{ (\checkmark) }}}
+\newcommand{\warning}{\textbf{\color{red}{ {\fontencoding{U}\fontfamily{futs}\selectfont\char 66\relax} }}}
+
+\newcommand{\qued}{\hfill$\blacksquare$}
+
+\newcommand{\p}[2]{\frac{\partial#1}{\partial#2}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newenvironment{aclaration}    
+{
+\begin{center}
+\begin{tabular}{|p{0.9\textwidth}|}
+\hline \\ \warning
+}{
+\\\hline
+\end{tabular} 
+\end{center}
+}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+ 
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+ 
+\lstset{style=mystyle}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+%Header-Make sure you update this information!!!!
+\noindent
+\large\textbf{Parcial I} \hfill \textbf{Antonio Gámiz Delgado} \\
+\normalsize Probabilidad \hfill 28/11/2018
+%\normalsize ECE 100-003 \hfill Teammates: Student1, Student2 \\
+%Prof. Oruklu \hfill Lab Date: XX/XX/XX \\
+%TA: Adam Sumner \hfill Due Date: XX/XX/XX
+
+\subsubsection*{Cálculo de la función de distribución de un vector aleatorio continuo.}
+
+Sea $f(x,y)$ la función de densidad de dos variables aleatorias continuas $(X,Y)$, entonces:
+\[
+F_X(x_0,y_0)=P[X\leq x_0, Y\leq y_0] = \int_{(-\infty, x_0),(-\infty,y_0)}f(x,y)dxdy=\int_{-\infty}^{x_0}\int_{-\infty}^{y_0}f(x,y)dxdy
+\]
+
+\subsubsection*{Cálculo de probabilidades usando la función de densisdad.}
+
+Dado un vector $(X,Y)$ con función de densidad $f(x,y)$, la probabilidad de que dicho vector pertenezca a un conjunto de Borel $B$ se calcula como:
+\[
+\int_Bf(x,y)dxdy \quad \forall B \in \R[2]
+\]
+
+Si $f(x,y)$ es no nula sólo en un conjunto de valores $C$, la expresión se reduce a:
+
+\[
+\int_{B\cap C}f(x,y)dxdy
+\]
+
+\subsubsection*{Distribuciones marginales.}
+\begin{itemize}
+\item \underline{Vectores discretos:}  Sea $X=(X_1,X_2)$ un vector aleatorio discreto en $\R[2]$ con función masa de probabilidad:
+\[
+\{\left((x_{1i},x_{2j}), \enskip i=1,\dotso, \infty, \enskip j=1,\dotso, \infty\right)\}
+\]
+
+Sus funciones masa de probabilidad marginales serán:
+\[
+P[X_1=x_{1i}]=P[X_1=x_{1i},x_2\in\R]=\sum_{j}^\infty p_{ij}=p_{i\cdot} \enskip \forall i=1,\dotso, \infty
+\]
+\[
+P[X_2=x_{2j}]=P[x_1\in\R, X_2=x_{2j},]=\sum_{i}^\infty p_{ij}=p_{\cdot j} \enskip \forall j=1,\dotso, \infty
+\]
+
+Verificando que $\sum_i p_{i\cdot}=\sum_j p_{\cdot j } = 1.$
+
+Y las funciones de distribución marginales serán:
+\[
+F_1(x_1)=P[X_1\leq x_1, x_2\in\R]=F(x_1,+\infty)=\sum_{x_{1i}\leq x_1}p_{i\cdot}=\sum_{x_{1i}\leq x_1}\sum_{j=1}^\infty p_{ij}
+\]
+\[
+F_2(x_2)=P[x_1\in\R, X_2\leq x_2]=F(+\infty,x_2)=\sum_{x_{2j}\leq x_2}p_{\cdot j}=\sum_{x_{2j}\leq x_2}\sum_{i=1}^\infty p_{ij}
+\]
+
+\item \underline{Vectores continuos:}  Sea $X=(X_1,X_2)$ un vector aleatorio continuo en $\R[2]$ con función de densidad $f(x_1,x_2)$. Entonces las marginales son:
+\[
+f_1(x_1)=\int_{-\infty}^{+\infty}f(x_1,x_2)dx_2 \quad f_2(x_2)=\int_{-\infty}^{+\infty}f(x_1,x_2)dx_1
+\]
+
+\[
+F(x_1)=P[X_1\leq x_1, X_2\in\R]=\int_{-\infty}^{x_1}f_1(s_1)ds_1=\int_{-\infty}^{x_1}\int_{-\infty}^{+\infty}f(s_1, s_2)ds_2ds_1
+\]
+\[
+F(x_2)=P[X_1\in\R, X_2\leq x_2]=\int_{-\infty}^{x_2}f_2(s_2)ds_2=\int_{-\infty}^{x_2}\int_{-\infty}^{+\infty}f(s_1, s_2)ds_1ds_2\]
+
+\end{itemize}
+
+\subsubsection*{Distribuciones condicionadas.}
+
+\begin{itemize}
+\item \underline{Vectores discreto:} Sea $X=(X_1,X_2)$ un vector aleatorio discreto en $\R[2]$ con función masa de probabilidad:
+\[
+\{\left((x_{1i},x_{2j}), \enskip i=1,\dotso, \infty, \enskip j=1,\dotso, \infty\right)\}
+\]
+
+Entonces para cada valor $X_2=x_{2j}$ es posible obtener la distribución condicionada de $X_1$ a ese valor, denotándose $x_1|X_2=x_{2j}$. Su función masa de probabilidad condicionada es:
+\[
+P[X_1=x_{1i}|X_2=x_{2j}]=\frac{p_{ij}}{p_{\cdot j}} \enskip \forall p_{\cdot j} \neq 0 \quad P[X_2=x_{2j}|X_1=x_{1i}]=\frac{p_{ij}}{p_{i\cdot}} \enskip \forall p_{i\cdot} \neq 0
+\]
+\[
+F(x_1|X_2=x_{2j})=\sum_{x_{1i}\leq x_1}p_{i/j}=\frac{\sum_{x_{1i}\leq x_1}p_{ij}}{p_{\cdot j}} \enskip \forall x_1\in\R
+\]
+\[
+F(x_2|X_1=x_{1i})=\sum_{x_{2j}\leq x_2}p_{i/j}=\frac{\sum_{x_{2j}\leq x_2}p_{ij}}{p_{i\cdot}} \enskip \forall x_2\in\R
+\]
+
+\item \underline{Vectores continuos:}  Sea $X=(X_1,X_2)$ un vector aleatorio continuo en $\R[2]$ con función de densidad $f(x_1,x_2)$. Entonces las condicionadas son:
+\[
+f(x_1|X_2=x_2)=\frac{f(x_1,x_2)}{f_2(x_2)} \quad f(X_1=x_1|x_2)=\frac{f(x_1,x_2)}{f_1(x_1)}
+\]
+\[
+F(x_1|X_2=x_2)=P(X_1\leq x_1,X_2=x_2)=\int_{-\infty}^{x_1}f(s_1|X_2=x_2)ds_1=\frac{\displaystyle\int_{-\infty}^{x_1}f(s_1,x_2)ds_1}{f_2(x_2)}
+\]
+\[
+F(x_2|X_1=x_1)=P(X_1=x_1,X_2\leq x_2)=\int_{-\infty}^{x_2}f(X_1=x_1|s_2)ds_2=\frac{\displaystyle\int_{-\infty}^{x_2}f(x_1,s_2)ds_2}{f_1(x_1)}
+\]
+
+\end{itemize}
+
+\subsubsection*{Cambio de variable.}
+\begin{itemize}
+\item \underline{Cambio de discreto a discreto:}
+\[
+P(Y=y)=P(g(x)=y)=P(x\in g^{-1}(y))=\sum_{g^{-1}(y)}P(X=x) \quad \forall y\in g(E_X), \enskip E_X\in \R[n]
+\]
+\begin{itemize}
+\item Ejemplo: Calcular la función masa de probabilidad de $Y=(|x_1|, x_2^2)$:
+\[\begin{array}{|c|c|c|c|}
+\hline
+X_2/X_1 & -1 & 0 & 1 \\ 
+\hline
+-2 & \frac{1}{6} & \frac{1}{12} & \frac{1}{6} \\ 
+\hline
+1 & \frac{1}{6} & \frac{1}{12} & \frac{1}{6} \\ 
+\hline
+2 & \frac{1}{12} & 0 & \frac{1}{12} \\
+\hline
+\end{array} \Longrightarrow \begin{array}{|c|c|c|}
+\hline
+Y_2/Y_1 & 0 & 1 \\
+\hline
+1 & \frac{1}{12} & \frac{1}{3} \\
+\hline
+4 & \frac{1}{12} & \frac{1}{2} \\
+\hline
+\end{array}
+\]
+
+\end{itemize}
+\item \underline{Cambio de continuo a discreto:}
+\[
+P(Y=y)=P(g(x)=y)=P(x\in g^{-1}(y))=\int_{g^{-1}(y)}f_X(x)dx
+\]
+
+\begin{itemize}
+\item Ejemplo: Sea $X=(X_1, X_2)$ y $f(x_1,x_2)=\lambda\mu e^{-\lambda x_1}e^{-\mu x_2}, \enskip x_1,x_2,\lambda,\mu>0$.
+\[
+Y = \left\{\begin{array}{cc}
+0 & x_1 > x_2\\
+1 & x_1 < x_2
+\end{array}
+\right.
+\]
+
+\[
+P[Y=0]=\int\int f_X(x)dx=\int_0^\infty\int_{x_2}^\infty f(x_1,x_2)dx_1dx_2 = \frac{\mu}{\lambda+\mu}
+\]
+\[
+P[Y=1]=1-P[Y=0] = \frac{\lambda}{\lambda+\mu}
+\]
+\end{itemize}
+
+\item \underline{Cambio de continuo a continuo:}
+\[
+F_y(y)=P(x\in g^{-1}((-\infty,y])=\int_{g^{-1}((-\infty,y])}f_X(x)dx
+\]
+
+\begin{itemize}
+\item Ejemplo: $X=(x,y)$, $f(x,y)=e^{-x}e^{-y}$, $x,y>0$. $U=\frac{x}{x+y}$.
+
+Vemos que $0<u<1$.
+\[
+P(U\leq u) = P\left(\frac{x}{x+y}\leq u\right)=P\left(x\leq \frac{u}{1-u}y\right)=\int_0^\infty\int_0^{\frac{u}{1-u}y}e^{-x}e^{-y}dxdy=u.
+\]
+Por lo que su función de densidad será:
+\[
+f_U(u)=\frac{\partial F_U(u)}{\partial u } = 1.
+\]
+\end{itemize}
+\end{itemize}
+
+\subsubsection*{Teorema: Cambio de variable de continuo a continuo.}
+Sea $X$ un vector aleatorio continuo $n$-dimensional y $g:(\R[n],B^n)\longrightarrow (\R[n],B^n)$, con función de densidad $f_X$, un transformación medible tal que:
+\begin{itemize}
+\item $g(y_1,\dotso,y_n)$ admite inverse $g^{-1}(y_1^*,\dotso, y_n^*)$
+\item $g^{-1}$ sea derivable en todos los argumentos:
+\[
+\forall i,j=1,\dotso, n \enskip \displaystyle\exists\displaystyle\frac{\partial g_i^*(y1,\dotso,y_n)}{\partial y_j}
+\]
+\item El jacobiano de $g^{-1}$ sea no nulo:
+\[
+\left|J\right|=\left|\left(\frac{\partial g_i^*(y_1,\dotso,y_n)}{\partial y_j}\right)_{ij}\right|\neq 0
+\]
+\end{itemize}
+Entonces $Y=g(X)$ es un vector aleatorio continuo con función de densidad:
+\[
+f_Y(y)=f_x(g^{-1}(y))\cdot |J| \enskip \forall y\in\R
+\]
+\begin{itemize}
+\item \underline{Nota 1:} Si el vector transformado es de dimensión inferior al original, se toman variables auxiliares y se calcula la marginal correspondiente.
+\item \underline{Nota 2:} Si g no admite inversa pero cada $g_i$ tiene un número finito de antimágnes ($g_1^*(y),\dotso, g_k^*(y)$) cumpliendo las condiciones del teorema, entonces:
+\[
+f_Y(y)=\sum_{i=0}^k f_X(g_i^*(y))\cdot|J_i|
+\]
+
+\begin{itemize}
+\item Ejemplo: $X=(x,y)$, $f(x,y)=e^{-x}e^{-y}$, $x,y>0$. Cambio $u=\frac{x}{x+y}$. 
+
+Necesitamos una variable auxiliar $v=x+y$. Nuestra $g$ será:
+\[
+g(x_1,x_2)=(g_1(x_1,x_2), g_2(x_1,x_2))=\left(\frac{x}{x+y}, x+y\right)
+\]
+
+Calculamos la transformada inversa:
+\[
+g^{-1}(u,v)=(uv,v(1-u)),\quad 0<u<1,v>0.
+\]
+
+Vemos que esa transformada inversa cumple las dos primeras condiciones. Veámos si se cumple la tercera:
+\[
+|J|=\left|\begin{array}{cc}
+v & u\\
+-v & 1-u
+\end{array}
+\right| = v \neq 0
+\]
+
+Luego se cumplen las 3 condiciones del teorema:
+\[f_U(u,v) = f_X(u,v)=e^{-uv}e^{-v(1-u)}\cdot v = ve^{-v}
+\]
+
+Como lo que queremos es la función de densidad de $u$, calculamos su marginal:
+\[
+f_v(u)=\int_0^\infty ve^{-v}dv=1, \quad 0<u<1.
+\]
+
+\end{itemize}
+
+\end{itemize}
+
+\subsubsection*{Distribución del máximo y del mínimo.}
+
+\end{document}
