@@ -8,7 +8,7 @@ pc: prodcons_exe
 	mpirun -np  3 ./$<
 
 pc2: prodcons2_exe
-	mpirun -np  3 ./$<
+	mpirun -np  10 ./$<
 
 pcm-f: prodcons2-mu-fifo_exe
 	mpirun -np  10 ./$<

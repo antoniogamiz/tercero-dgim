@@ -1,0 +1,215 @@
+
+% plantilla obtenida de: https://www.overleaf.com/19886281jjqffwsxshmm#/73112823/
+
+\documentclass[a4paper, 11pt]{article}
+\usepackage{comment} % enables the use of multi-line comments (\ifx \fi) 
+\usepackage{lipsum} %This package just generates Lorem Ipsum filler text. 
+\usepackage{fullpage} % changes the margin
+
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\decimalpoint
+\usepackage{graphicx}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+% or
+\usepackage{amssymb}
+\usepackage{tikz}
+\usepackage{array}
+\newcolumntype{C}{>{$}l<{$}} % math-mode version of "l" column type
+\newcommand{\imageins}[4]{\begin{figure}[!ht]		%Take the hardwork from using images. Let this command do the work for you. Insert images by just using this command \imageins{filename}{width as a ratio of total text width of the page}{caption name}{label name for referring in articles}		
+    \centering
+    \includegraphics[width=#2\textwidth]{#1}
+    %\caption{#3}
+    %\label{#4}
+    \vspace{0.2em}
+\end{figure}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{listings}
+\usepackage{color}
+ 
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+ 
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+ 
+\lstset{style=mystyle}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+%Header-Make sure you update this information!!!!
+\noindent
+\large\textbf{Práctica II} \hfill \textbf{Antonio Gámiz Delgado} \\
+\normalsize Probabilidad \hfill 19 /11/2018
+%\normalsize ECE 100-003 \hfill Teammates: Student1, Student2 \\
+%Prof. Oruklu \hfill Lab Date: XX/XX/XX \\
+%TA: Adam Sumner \hfill Due Date: XX/XX/XX
+
+\section*{Ejercicio 1}
+
+Hallar la función generatriz de momentos del vector aleatorio discreto $(X,Y)$ con función masa de probabilidad dad en la tabla adjuntada junto a tu DNI/pasaporte, y a partir de ella, calcular la matriz de varianzas-covarianzas.   
+
+\[
+\begin{array}{|c|c|c|c|}
+\hline
+X/Y & -3 & 3 & 5 \\
+\hline
+0&1/16&1/16&1/8\\
+\hline
+1&1/2&0&1/4 \\
+\hline
+\end{array}
+\]
+
+Como sabemos, la función generatriz de momentos se calcula como:
+\[
+M(t_1,t_2) = \sum_{i=0}^1\sum_{j=0}^2e^{t_1x_i+t_2y_j}P[X=x_i, Y=y_j] = 
+\]
+\[
+= \frac{e^{-3t_2}}{16} + \frac{e^{3t_2}}{16} + \frac{e^{5t_2}}{8} + \frac{e^{t_1-3t_2}}{2} + \frac{e^{t_1+5t_2}}{4}
+\]
+
+Calculemos ahora la matriz de covarianzas:
+
+\[
+E[x] = m_{10} = \frac{\partial M(t_1, t_2)}{\partial t_1}\Big|_{t_1=t_2=0}=\frac{e^{t_1-3t_2}}{2} + \frac{e^{t_1+5t_2}}{4} \Big|_{t_1=t_2=0} = \frac{3}{4}
+\]
+
+\[
+E[x^2] = m_{20} = \frac{\partial^2 M(t_1, t_2)}{\partial^2 t_1}\Big|_{t_1=t_2=0}=\frac{e^{t_1-3t_2}}{2} + \frac{e^{t_1+5t_2}}{4} \Big|_{t_1=t_2=0} = \frac{3}{4}
+\]
+
+Luego la varianza de $X$ será: 
+\[
+Var[x] = E[x^2]-E[x]^2=\frac{3}{4}-\frac{9}{16}=\frac{3}{16}
+\]
+
+\[
+E[y] = m_{01} = \frac{\partial M(t_1, t_2)}{\partial t_2}\Big|_{t_1=t_2=0}=\frac{-3e^{-3t_2}}{16} + \frac{3e^{3t_2}}{16} + \frac{5e^{5t_2}}{8} + \frac{-3e^{t_1-3t_2}}{2} + \frac{5e^{t_1+5t_2}}{4} \Big|_{t_1=t_2=0} = \frac{3}{8}
+\]
+
+\[
+E[y^2] = m_{02} = \frac{\partial^2 M(t_1, t_2)}{\partial^2 t_2}\Big|_{t_1=t_2=0}=\frac{9e^{-3t_2}}{16} + \frac{9e^{3t_2}}{16} + \frac{25e^{5t_2}}{8} + \frac{9e^{t_1-3t_2}}{2} + \frac{25e^{t_1+5t_2}}{4} \Big|_{t_1=t_2=0} = 15
+\]
+
+Luego la varianza de $X$ será: 
+\[
+Var[Y] = E[Y^2]-E[Y]^2=15-\frac{9}{64}=\frac{951}{64}
+\]
+
+\[
+E[x,y]=m_{11}=\frac{\partial M(t_1, t_2)}{\partial t_1\partial t_2}\Big|_{t_1=t_2=0} = \frac{\partial M(t_1,t_2)}{\partial t_2}\left(\frac{e^{t_1-3t_2}}{2} + \frac{e^{t_1+5t_2}}{4}\right) \Big|_{t_1=t_2=0} = 
+\]
+
+\[
+= \frac{-3e^{t_1-3t_2}}{2} + \frac{5e^{t_1+5t_2}}{4}  \Big|_{t_1=t_2=0} = -\frac{1}{4}
+\]
+
+Luego la covarianza de $X$ e $Y$ será:
+\[
+Cov[x,y]=E[x,y]-E[x]E[y]=\frac{1}{4}-\frac{3}{4}\frac{3}{8}=-\frac{1}{32}
+\]
+
+Ya tenemos la matriz de covarianzas:
+
+\[
+Cov_{xy} = \left( \begin{array}{cc}
+\displaystyle\frac{3}{16} & -\displaystyle\frac{1}{32} \\
+-\displaystyle\frac{1}{32} & \displaystyle\frac{951}{64}
+\end{array} \right)
+\]
+
+\section*{Ejercicio 2}
+Calcular la recta y la curva de regresión de $Y$ sobre $X$ del vector aleatorio continuo ($X$,$Y$) con función de densidad:
+\[
+f(x,y) = \frac{1}{50}, \quad -2<x<8, \enskip 3-x<y<5
+\]
+Además calcular el coeficiente de determinación lineal y la razón de correlación.\\[0.5cm]
+Empezamos por calcular las curvas de regresión, primero la de $X$ sobre $Y$:
+\[
+f_2(y)=\int_{-2}^8\frac{1}{50}dx=\frac{1}{5} \quad -5<y<5 \Longrightarrow 
+\]\[
+\Longrightarrow f(x|y=y_0)=\frac{f(x,y_0)}{f_2(y_0)}= \frac{\frac{1}{50}}{\frac{1}{5}}=\frac{1}{10} \Longrightarrow
+\]
+\[
+\Longrightarrow E[x|y_0]=\int_{-\infty}^{+\infty}xf(x|y=y_0)dx=\int_{-2}^{8}\frac{x}{10}dx=1 \quad -5<y<5.
+\]
+
+Ahora la de $Y$ sobre $X$:
+\[
+f_1(x)=\int_{3-x}^5\frac{1}{50}dy=\frac{x+2}{50} \quad -2<x<8 \Longrightarrow 
+\]\[
+\Longrightarrow f(y|x=x_0)=\frac{f(x_0,y)}{f_1(x_0)}= \frac{\frac{1}{50}}{\frac{x+2}{50}}=\frac{1}{x+2} \Longrightarrow
+\]
+\[
+\Longrightarrow E[y|x_0]=\int_{-\infty}^{+\infty}yf(y|x=x_0)dx=\int_{3-x}^{5}\frac{y}{x+2}dy=\frac{25-(3-x)^2}{2(x+2)} \quad -2<x<8.
+\]
+
+Por lo que nuestras curvas de regresión son:
+\[
+y=\varphi(x)=E[Y/X]=\frac{25-(3-x)^2}{2(x+2)}  \quad x=\varphi(y)=E[X/Y]=1
+\]
+
+Para las rectas de regresión necesitamos:
+\[
+E[x]=\int_{-\infty}^{+\infty}\int_{-\infty}^{+\infty}xf(x,y)dydx=\int_{-2}^{8}\int_{3-x}^{5}\frac{x}{50} dydx=\frac{14}{3}
+\]
+\[
+E[y]=\int_{-\infty}^{+\infty}\int_{-\infty}^{+\infty}yf(x,y)dydx=\int_{-2}^{8}\int_{3-x}^{5}\frac{y}{50} dydx=\frac{5}{3}
+\]
+\[
+E[x^2]=\int_{-\infty}^{+\infty}\int_{-\infty}^{+\infty}x^2f(x,y)dydx=\int_{-2}^{8}\int_{3-x}^{5}\frac{x^2}{50} dydx=\frac{82}{3}
+\]
+\[
+E[y^2]=\int_{-\infty}^{+\infty}\int_{-\infty}^{+\infty}y^2f(x,y)dydx=\int_{-2}^{8}\int_{3-x}^{5}\frac{y^2}{50} dydx=\frac{25}{3}
+\]
+\[
+E[xy]=\int_{-\infty}^{+\infty}\int_{-\infty}^{+\infty}xyf(x,y)dydx=\int_{-2}^{8}\int_{3-x}^{5}\frac{xy}{50} dydx=5
+\]
+\[
+Var[X]=E[x^2]-E[x]^2=\frac{82}{3}-\left(\frac{14}{3}\right)^2=\frac{50}{9}
+\]
+\[
+Var[Y]=E[y^2]-E[y]^2=\frac{25}{3}-\left(\frac{5}{3}\right)^2=\frac{50}{9}
+\]
+\[
+Cov(X,Y)=E[xy]-E[x]E[y]=5-\frac{14}{3}\frac{5}{3}=-\frac{25}{9}
+\]
+
+Recta de regresión de $Y$ sobre $X$:
+\[
+a=\frac{Cov(X,Y)}{Var[y]}=\frac{\frac{-25}{9}}{\frac{50}{9}}=-\frac{1}{2} \quad b=E[y]-aE[x]=\frac{5}{3}+\frac{1}{2}\frac{14}{3}=4 \Longrightarrow y=-\frac{x}{2}+4
+\]
+Recta de regresión de $X$ sobre $Y$:
+\[
+a'=\frac{Cov(X,Y)}{Var[x]}=\frac{\frac{-25}{9}}{\frac{50}{9}}=-\frac{1}{2} \quad b'=E[x]-aE[y]=\frac{14}{3}+\frac{1}{2}\frac{5}{3}=\frac{11}{2} \Longrightarrow x=-\frac{y}{2}+\frac{11}{2}
+\]
+
+Coeficiente de determinación lineal:
+\[
+\rho=\frac{Cov(x,y)}{\sqrt{Var[x]Var[y]}}=\frac{\frac{-25}{9}}{\frac{50}{9}\frac{50}{9}}=-\frac{9}{100}
+\]
+
+\end{document}
