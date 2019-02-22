@@ -24,7 +24,7 @@ def regulafalsi(f, a, b, epsilon, delta=10**(-15)):
     return c
 
 
-print(colored("========= Método de bisección =========", "red"))
+print(colored("========= Método de regula falsi =========", "red"))
 solFalsi = regulafalsi(f, -2, -1, 10**(-5))
 print(colored("Solución método regula falsi: ", "red"),
       colored(str(solFalsi), "blue"))
