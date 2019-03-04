@@ -12,7 +12,7 @@ def regulafalsi(f, a, b, epsilon, delta=10**(-15)):
     print()
     c = (b-(b-a)*f(b))/(f(b)-f(a))
     i = 0
-    while np.abs(f(c)) >= delta:
+    while np.abs(f(c)) > delta:
         c = b-(b-a)*f(b)/(f(b)-f(a))
         print(str(i) + "\t" + str(c) + "\t" + str(f(c)))
         aux = f(a)*f(c)

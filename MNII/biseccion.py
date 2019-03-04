@@ -32,7 +32,11 @@ def biseccion(f, a, b, epsilon, delta=10**(-15)):
     return c
 
 
-print(colored("========= Método de bisección =========", "red"))
-solBiseccion = biseccion(f, -0.5, 1.5, 10**(-5))
-print(colored("Solución método bisección: ", "red"),
-      colored(str(solBiseccion), "blue"))
+def main():
+    print(colored("========= Método de bisección =========", "red"))
+    solBiseccion = biseccion(f, -0.5, 1.5, 10**(-5))
+    print(colored("Solución método bisección: ", "red"),
+          colored(str(solBiseccion), "blue"))
+
+
+# main()
