@@ -101,7 +101,7 @@ Ahora hay que repetir esto para los otros tres _Volumen cifrado (lo que sea aqui
 
 2. Te esperas un buen ratico a que termine e instalas el cargador de arranque en _sda_. Luego le das a todo a que sí y demases y pones las contraseñas de tu cifrado.
 
-3. Inicias sesión con tus datos y puedes ejecutar `lsblk` para ver un listado de los bloques, algo así debería aparecer:
+3. Inicias sesión con tus datos y puedes ejecutar `lsblk` para ver un listado de las particiones, algo así debería aparecer:
 
 ![fotico](images/15.png)
 
@@ -150,3 +150,85 @@ Si ahora ejecutamos `ping 192.168.57.105` y funciona, es que lo has hecho bien :
 Y esto es todo, aquí termina la sesión 1 (no borres la máquina virtual).
 
 ## Sesión 2 (CentOS)
+
+1. Definir una nueva máquina virtual en Virtual Box
+
+   - Nombre: ubuise2.
+   - Tipo: Linux.
+   - Versión: Red Hat 64 bits.
+   - Lo demás por defecto (darle siempre a Next, a lo del disco duro también)
+
+2. Click derecho sobre la máquina virtual -> Settings -> Storage.
+
+   1. Primero añadimos la ISO de CentOS: (botoncico del cd).
+   2. Luego pulsamos _Choose disk_ y seleccionamos la ISO de CentOS que nos hemos descargado.
+   3. Opcionalmente podemos borrar el disco donde pone _Empty_.
+   4. Encedemos la máquina.
+
+3. Instalar, idioma en inglés. Vemos que _Instalation destination_ sale en rojo, eso es porque hay que configurarlo, clickamos sobre él. Y ahora le damos a _Done_ (sin tocar nada antes) que está arriba a la izquierda y luego a _Begin installation_.
+
+   1. **IMPORTANTE:** pon el teclado en español, si no las vas a pasar canutas buscando donde están las teclas.
+
+4. Le ponemos contraseña al usuario _root_ y creamos un usuario para nosotro y cuando se termine de instalar reiniciamos la máquina.
+
+5. Iniciamos sesión como root y ejecutamos `lsblk` para ver las particiones y saldrán las que hace CentOS por defecto. `df -h` muestra el sistema de archivos montados en el sistema y su tamaño. Debería salir esto:
+
+![fotico](images/20.png)
+
+6. Creación de un nuevo disco duro:
+
+   1. `poweroff`
+   2. Settings => Storage => SATA => Add disk (como antes vaya, todo por defecto)
+   3. Iniciamos la máquina y nos logeamos como root.
+   4. Si ejecutamos `sblk` deberíamos ver el nuevo disco creado.
+
+![fotico](images/21.png)
+
+7. Configuración del _sdb_:
+
+   1. `pvdisplay` => muestra los volúmenes físicos configurados (PV => phisical volume (/dev/sda2), VG => volume group (cl)).
+   2. `lvmdiskscan` => ver unidades de disco y cómo de gestionan en VM.
+   3. `pvcreate /dev/sdb`
+   4. `pvdisplay` => debería aparecer esto:
+
+      ![fotico](images/22.png)
+
+   5. `vgs` => información de volúmenos también.
+   6. `vgextended cl /dev/sdb` => para extender el grupo de volúmenes
+   7. `vgs` => ahora debería aparecer PV a 2 y en `vgdisplay` ActPV a 2.
+   8. `lvdisplay` => para ver los volúmenes configurados
+   9. `lvdisplay | more root` (o swap)
+
+8. Creación de un volumen lógico:
+
+   1. `lvcreate -L 4G -n newvar cl`
+   2. `lvdisplay | more`
+   3. `mkfs -t ext4 /dev/cl/newvar`
+   4. `lsblk` (debería aparecer un newvar colgando por ahí, pero sin punto de montaje)
+   5. `df -h`
+
+9. Vamos a cambiar el var a newvar:
+
+   1. Arrancamos CentOS en runlevel 1: `systemctl isolate runlevel1.target`
+   2. `systemctl status` => deberíamos ver _maintenance_ en naranjilla o así.
+   3. `mkdir /mnt/vartemp`
+   4. `mount /dev/cl/newvar /mnt/vartemp`
+   5. `df -h` => en la última línea saldrá _newvar_ montado en _vartemp_
+   6. `cp -a /var/* /mnt/vartemp` => copiar conservando metadatos, contexto y recursivamente)
+   7. `ls -l /mnt/vartemp` => veremos que está todo lo que antes estaba en var
+   8. `mv /var /oldvar` => ya la ruta de _/var_ como tal no existe, está todo movido y los datos en _newvar_.
+
+10. Hacer que los nuevos datos de _newvar_ se pasen a _var_ y que ya sea el definitivo.
+
+    1. mkdir var
+    2. cat /etc/fstab
+    3. cp /etc/fstab /etc/fstab.bk (copia de seguridad)
+    4. nano /etc/fstab (a mi nano no me servia asi que use vi => i para escribir, luego :wq + enter para guardar)
+
+    ![fotico](images/23.png)
+
+    5. `umount /mnt/vartemp`
+    6. `mount -a`
+    7. `lbslk`
+    8. `blkid`
+    9. `vgs`
