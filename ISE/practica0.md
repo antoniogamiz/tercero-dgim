@@ -13,7 +13,11 @@
     - Lo demás por defecto (darle siempre a Next, a lo del disco duro también)
 
 3. Click derecho sobre la máquina virtual -> Settings -> Storage. Una vez ahí pulsamos el botón de la derecha (Adds hard disk:
-  ![fotico](./1.png)
-  Luego le damos a crear *Create new disk* y lo dejamos todo por defecto (nombre ubuise2, para que sea más reconocible después).
+
+  ![fotico](./images/1.png)
+
+Luego le damos a crear *Create new disk* y lo dejamos todo por defecto (nombre ubuise2, para que sea más reconocible después).
+
 4.
+
 5.
