@@ -1,5 +1,7 @@
 # Práctica 0
 
+## Sesión 1 (Ubuntu)
+
 ### Parte 1: Configuración de VM y de los discos
 
 1. Descargar las siguientes imágenes:
@@ -146,3 +148,5 @@ ifconfig (tenemos que ver que enp0s8 está configurada)
 Si ahora ejecutamos `ping 192.168.57.105` y funciona, es que lo has hecho bien :D. (esta red no tiene acceso a Internet).
 
 Y esto es todo, aquí termina la sesión 1 (no borres la máquina virtual).
+
+## Sesión 2 (CentOS)
