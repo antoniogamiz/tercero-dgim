@@ -93,7 +93,7 @@ Ahora hay que repetir esto para los otros tres _Volumen cifrado (lo que sea aqui
 
 ![fotico](images/14.png)
 
-### Parte 2: Instalación del sistema
+### Parte 2: Instalación del sistema y configuración de red
 
 1. Lo que sale del proxy déjalo en blanco, dale a enter solo. Actualizaciones automáticas tampoco. También dejar en blanco lo de programas a instalar, excepto el _standard system utilities_ que viene por defecto marcado.
 
@@ -107,4 +107,42 @@ Si no sale así bueno, cuando termines de llorar porque te has equivocado, vuelv
 
 4. Ahora poner `sudo bash` y luego `grub-install /dev/sdb` para instalar el cargador de arranque en `sdb`.
 
-5.
+5. Ejecuta `ifconfig` y donde pone `enp0s3` es donde aparece la información sobre nuestra interfaz de red virtual. Con `lspci | grep Ether` podemos localizar dicha interfaz. Y con `cat /etc/network/interfaces` podemos ver el contenido del archivo donde vamos a definir nuevas interfaces.
+
+6. Apagamos la máquina ejecutando el comando `poweroff`.
+
+7. Arriba a la izquierda le das a `File` -> `Host Network Manager` -> Iconico verde de crear -> Acuerdate del nombre de la interfaz, seguramente será: _vboxnet0_
+
+![fotico](images/16.png)
+
+8. Le damos a _Esc_ para quitar la ventana que ha aparecido antes. Luego pinchamos sobre la máquina virtual y le damos a Settings, y configuramos como aparece en la foto:
+
+![fotico](images/17.png)
+
+Y encedemos la máquina virtual again. Si todo ha saido bien al ejecutar `ifconfig -a` debería salirte:
+
+![fotico](images/18.png)
+
+9. Ahora ejecutamos todo esto:
+
+```
+sudo bash
+cp /etc/network/interfaces /etc/network/interfaces.bk (copia de seguridad por si la pifiamos)
+lspci | grep Ethernet
+nano /etc/network/interfaces
+```
+
+Y al final de eso escribimos:
+
+![fotico](images/19.png)
+
+Luego ejecutamos:
+
+```
+ifup enp0s8
+ifconfig (tenemos que ver que enp0s8 está configurada)
+```
+
+Si ahora ejecutamos `ping 192.168.57.105` y funciona, es que lo has hecho bien :D. (esta red no tiene acceso a Internet).
+
+Y esto es todo, aquí termina la sesión 1 (no borres la máquina virtual).
