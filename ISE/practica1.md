@@ -151,6 +151,8 @@ Y esto es todo, aquí termina la sesión 1 (no borres la máquina virtual).
 
 ## Sesión 2 (CentOS)
 
+### Parte 1: configuración de los discos
+
 1. Definir una nueva máquina virtual en Virtual Box
 
    - Nombre: ubuise2.
@@ -180,7 +182,7 @@ Y esto es todo, aquí termina la sesión 1 (no borres la máquina virtual).
    1. `poweroff`
    2. Settings => Storage => SATA => Add disk (como antes vaya, todo por defecto)
    3. Iniciamos la máquina y nos logeamos como root.
-   4. Si ejecutamos `sblk` deberíamos ver el nuevo disco creado.
+   4. Si ejecutamos `lsblk` deberíamos ver el nuevo disco creado.
 
 ![fotico](images/21.png)
 
@@ -194,7 +196,7 @@ Y esto es todo, aquí termina la sesión 1 (no borres la máquina virtual).
       ![fotico](images/22.png)
 
    5. `vgs` => información de volúmenos también.
-   6. `vgextended cl /dev/sdb` => para extender el grupo de volúmenes
+   6. `vgextend cl /dev/sdb` => para extender el grupo de volúmenes
    7. `vgs` => ahora debería aparecer PV a 2 y en `vgdisplay` ActPV a 2.
    8. `lvdisplay` => para ver los volúmenes configurados
    9. `lvdisplay | more root` (o swap)
@@ -210,13 +212,14 @@ Y esto es todo, aquí termina la sesión 1 (no borres la máquina virtual).
 9. Vamos a cambiar el var a newvar:
 
    1. Arrancamos CentOS en runlevel 1: `systemctl isolate runlevel1.target`
-   2. `systemctl status` => deberíamos ver _maintenance_ en naranjilla o así.
-   3. `mkdir /mnt/vartemp`
-   4. `mount /dev/cl/newvar /mnt/vartemp`
-   5. `df -h` => en la última línea saldrá _newvar_ montado en _vartemp_
-   6. `cp -a /var/* /mnt/vartemp` => copiar conservando metadatos, contexto y recursivamente)
-   7. `ls -l /mnt/vartemp` => veremos que está todo lo que antes estaba en var
-   8. `mv /var /oldvar` => ya la ruta de _/var_ como tal no existe, está todo movido y los datos en _newvar_.
+   2. `cd /` (muy **importante**)
+   3. `systemctl status` => deberíamos ver _maintenance_ en naranjilla o así.
+   4. `mkdir /mnt/vartemp`
+   5. `mount /dev/cl/newvar /mnt/vartemp`
+   6. `df -h` => en la última línea saldrá _newvar_ montado en _vartemp_
+   7. `cp -a /var/* /mnt/vartemp` => copiar conservando metadatos, contexto y recursivamente)
+   8. `ls -l /mnt/vartemp` => veremos que está todo lo que antes estaba en var
+   9. `mv /var /oldvar` => ya la ruta de _/var_ como tal no existe, está todo movido y los datos en _newvar_.
 
 10. Hacer que los nuevos datos de _newvar_ se pasen a _var_ y que ya sea el definitivo.
 
@@ -227,8 +230,49 @@ Y esto es todo, aquí termina la sesión 1 (no borres la máquina virtual).
 
     ![fotico](images/23.png)
 
-    5. `umount /mnt/vartemp`
-    6. `mount -a`
-    7. `lbslk`
-    8. `blkid`
-    9. `vgs`
+    1. `umount /mnt/vartemp`
+    2. `mount -a`
+    3. `lbslk`
+    4. `blkid` (para ver las ids)
+    5. `vgs` => Debería aparecer algo como esto
+
+    ![fotico](images/24.png)
+
+11. Ahora vamos a extender (el tamaño) del volumen lógico `newvar`:
+
+    1. `lvresize -L +2G /dev/mapper/cl-newvar` => **Importante** el signo `+`, que si no lo que hace es cambiarle el tamaño a 2G en lugar de ampliarlo.
+    2. `lsblk` => debería aparecer el tamaño cambiado (6G)
+    3. `df -h` => aquí aparecerá que su tamaño es 4G
+    4. Para actualizar ese valor, ejecutar: `resize2fs /dev/mapper/cl-newvar`
+
+    ![fotico](images/25.png)
+
+    5. `reboot` y luego `lsblk`, `df -h`, `ls -la /var` para ver los cambios hechos.
+
+### Parte 2: configuración de red
+
+1. Vamos a configurar una NAT:
+
+   1. `ipaddr` => muestra las interfaces de red (parecido a `ifconfig`)
+   2. `cd /etc/sysconfig/network-scripts`
+   3. `ls` => veremos los ficheros que se usan para configurar la red
+   4. `cat ifcfg-enp0s3` => ver info de esa NAT (`enp0s3`)
+   5. `vi ifcfg-enp0s3` y al final del todo cambiamos `ONBOOT=NO` por `ONBOOT=yes` => para que la NAT se activa cuando encendamos la máquina.
+   6. `ip addr` => la veremos sin configurar
+   7. `ifup ifcfg-enp0s3` => para que se configure
+   8. `ip addr` => ya debería aparecer configurada
+   9. `poweroff`
+
+2. Como en la sesión anterior, `Settings` -> `Network` -> `Adapter 2` -> `Enable network adapter` -> `host only` -> Iniciar la máquina virtual.
+
+3. `ip addr` => Debería aparecer un adaptador nuevo
+4. `cd /etc/sysconfig/network-scripts`
+5. `cp ifcfg-enp0s3 ifcfg-enp0s8`
+6. `vi ifcfg-enp0s8` y dejarlo como en la siguiente captura:
+
+   ![fotico](images/26.png)
+
+7. `ifup ifcfg-enp0s8` => también está el equivalente `ifdown` que es para desactivar la NAT.
+8. Para ver si lo has hecho bien puedes hacer `reboot` y luego `ping 192.168.57.118`: si sale que se mandan paquetitos está todo correcto y ya puedes mandar a esta práctica a tomar viento :).
+
+**IMPORTANTE**: en el examen pueden preguntar qué hacen los comandos que han aparecido aquí, así que estaría bien buscarlo. Además no borres las máquinas virtuales porque puede pedirte que se la enseñes y te haga preguntas.
