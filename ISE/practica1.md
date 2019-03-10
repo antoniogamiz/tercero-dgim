@@ -51,7 +51,7 @@ http://atcproyectos.ugr.es/esriie/CentOS-7-x86_64-Minimal-1611.iso
 
    ![fotico](./images/6.png)
 
-   - Guardamos los cambios y le damos a _Terminar_ =>
+   - Guardamos los cambios y le damos a _Terminar_
 
 5. Ahora le damos a _Configurar el sistema de volúmenes lógicos_ => Le damos a que _sí_ queremos mantener las particiones => Crear grupo de volúmenes => Le ponemos de nombre _servidor_:
 
@@ -171,7 +171,7 @@ Y esto es todo, aquí termina la sesión 1 (no borres la máquina virtual).
 
    1. **IMPORTANTE:** pon el teclado en español, si no las vas a pasar canutas buscando donde están las teclas.
 
-4. Le ponemos contraseña al usuario _root_ y creamos un usuario para nosotro y cuando se termine de instalar reiniciamos la máquina.
+4. Le ponemos contraseña al usuario _root_ y creamos un usuario para nosotros y cuando se termine de instalar reiniciamos la máquina.
 
 5. Iniciamos sesión como root y ejecutamos `lsblk` para ver las particiones y saldrán las que hace CentOS por defecto. `df -h` muestra el sistema de archivos montados en el sistema y su tamaño. Debería salir esto:
 
