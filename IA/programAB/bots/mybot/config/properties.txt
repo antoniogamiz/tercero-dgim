@@ -1,6 +1,8 @@
-name:botForIA
+name:Luffy
 email:nobody@nowhere.com
 gender:male
-botmaster:theBoss	
+botmaster:Oda	
 organization:ugr
 version:0.0.4
+age: 20
+job: piratilla
