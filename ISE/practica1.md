@@ -276,3 +276,88 @@ Y esto es todo, aquí termina la sesión 1 (no borres la máquina virtual).
 8. Para ver si lo has hecho bien puedes hacer `reboot` y luego `ping 192.168.57.118`: si sale que se mandan paquetitos está todo correcto y ya puedes mandar a esta práctica a tomar viento :).
 
 **IMPORTANTE**: en el examen pueden preguntar qué hacen los comandos que han aparecido aquí, así que estaría bien buscarlo. Además no borres las máquinas virtuales porque puede pedirte que se la enseñes y te haga preguntas.
+
+## Sesión 3 (CentOS + LUKS)
+
+### Parte 1
+
+Primero vamos a hacer una snapshot de la maquina de CentOS (buscarlo en las opciones y darle a take) para guardar el estado de la mv de la sesión anterior.
+Hoy vamos a mover el directorio /var de antes a un RAID1, por lo que vamos a tener que añadir dos discos mas y vamos a cifrarlo con LUKS
+
+1. Añadimos dos discos (CentosR1D1 y CentosR1D2)
+2. arrancamos la mv
+3. lsblk para ver los discos añadidos
+4. las utilidades del raid 1 se llaman mdadm (muldi disk administration) hay que instalarlas
+5. yum install mdadm
+6. mdadm --create /dev/md0/ --level=1 --raid-devices=2 /dev/sdc /dev/sdd(comando para crear raid)
+7. Lanzara una advertencia porque al crear una version raid de esta forma no podremos arrancar el sistema desde el raid
+8. lsblk y vemos que ya esta hecho el raid 1
+9. A partir de aqui es bastante identico a la practica de la semana pasada
+10. pvcreate /dev/md0
+11. pvdisplay (si añadimos a un mismo grupo de volumenes un disco sin raid y otros con raid el problema que tenemos es que no sabremos si los datos iran a un raid o no, porque lo gestiona lvm)
+12. vgcreate radi1 /dev/mod0
+13. vgdisplay
+14. lvcreate -L +7G -n rvar raid1
+15. vgdisplay
+16. mkfs -t xfs /dev/raid1/rvar (le hemos dado xfs por variar ha dicho el profe)
+17. mount /dev/raid1/rvar /mnt/nvar (reutilizamos el directorio de la practica pasada)
+18. IMPORTANTE: ahora necesitamos movernos a sistema monousuario
+19. systemctl isolate runlevel1.target
+20. cp -a /var/\* /mnt/nvar/
+21. cd /
+22. cp -a /var /oldvar
+23. Ahora editar fichero /etc/fstab
+    Sustituimos la ultima linea por eso
+    /dev/raid1/rvar /var xfs defaults 0 0
+24. umoun /mnt/nvar
+25. mount -a
+26. reboot
+27. cd /
+28. rm -rf oldvar
+29. lvremove /dev/cl/nvar
+30. vgdisplay
+31. lvextend -L +6G /dev/cl/root
+32. df -h
+33. xfs_growfs /dev/cl/root (lo mismo que resize2fs pero este para xfs)
+
+PRIMERA PARTE TERMIANDA
+
+SEGUNDA PARTE
+
+1. Ahora vamos a montar LUKS encima de lvm para cifrar las cosicas.
+2. necesitamos instalar la utilidad cryptsetup
+   yum install crypsetup (search si no funciona)
+   necesitamos reformatear var sin perder el contenido actual por lo que modo mantenimiento
+   systemctl isolate runlevel1.target
+   cd
+   rm -rf var
+   cd /
+   cp -a var oldvar
+   ahora ya
+   ahora ya si podemos darle formato de cifrado a var pero esta montado
+   umoun /var
+   mount : grep var (mount sin parametros nos dice que esta montado)
+   cryptsetup luksFormat /dev/raid1/rvar
+   lsblk
+   ahora vamos a abrir el dispositivo (descifrarlo) para ver como esta configurado
+   sin abrirlo no nos dejara montarlo, mount -a dara error
+   cryptsetup luksOpen /dev/mapper/raid1-rvar raid1-rvar-crypt (lo ultimo es el nombre que tendra el dispositivo una vez descifrado)
+   lsblk
+   mkfs -t xfs /dev/mapper/raid1-rvar-crypt
+   mount /dev/mapper/raid1-rvar-crypt /mnt/var (no se puede acceder de la otra forma)
+   cp -a /oldvar/\* /mnt/nvar
+
+El fichero /etc/crypttab nos permitira descifrar el disco cunado arranque el SO
+necesitamos el identificador del volumen odnde vamos a hacerlo (con blkid)
+blkid el dev mapper raid1-rvar
+blkid : grep crypto > /etc/cryptattab (porque no podemos cortar y pegar)
+vi /etc/cryptab
+raid1-rvar-crypt UUID=ewfwefew none (importante quitar las comillas)
+
+vi /etc/fstab (cambiamos la ultima lina por eso)
+/dev/mapper/raid1-rvar-crypt /var xfs defaults 0 0
+
+umoun /mnt/var
+mount -a (lo monta bien porque lo hemos abierto antes)
+lo que no hemos podido probar es que el fichero crypttab esta correctamente escrito y ademas no hay forma de hacerlo asi que hacemos reboot y si hay algun error nos saldra la consola para ver que ha pasado )
+reboot
