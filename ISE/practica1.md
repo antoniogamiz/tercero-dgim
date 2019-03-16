@@ -293,15 +293,15 @@ Y esto es todo, aquí termina la sesión 1 (no borres la máquina virtual).
 - Observación: si añadimos a un mismo grupo de volúmenes un disco sin raid y otros con raid el problema que tenemos es que no sabremos si los datos irán al raid o no, ya que lo gestiona lvm.
 
 1. `pvcreate /dev/md0` y `pvdisplay`
-2. `vgcreate radi1 /dev/mod0` y `vgdisplay`
+2. `vgcreate raid1 /dev/mod0` y `vgdisplay`
 3. `lvcreate -L +7G -n rvar raid1` y `vgdisplay`
 4. `mkfs -t xfs /dev/raid1/rvar`
-5. `mount /dev/raid1/rvar /mnt/nvar`
-6. `systemctl isolate runlevel1.target`
-7. `cp -a /var/\* /mnt/nvar/` y `cd /` y `cp -a /var /oldvar`
-8. Ahora tenemos que editar el fichero `/etc/fstab`. Sustituimos la ultima linea por: `/dev/raid1/rvar /var xfs defaults 0 0`
-9. `umoun /mnt/nvar` y `mount -a` y `reboot`
-10. `cd /` y `rm -rf oldvar`
+5. `mkdir /mnt/nvar`
+6. `mount /dev/raid1/rvar /mnt/nvar`
+7. `systemctl isolate runlevel1.target`
+8. `cp -a /var/* /mnt/nvar/` y `cd /` y `cp -a /var /oldvar`
+9. Ahora tenemos que editar el fichero `/etc/fstab`. Sustituimos la ultima linea por: `/dev/raid1/rvar /var xfs defaults 0 0`
+10. `umount /mnt/nvar` y `mount -a` y `reboot`
 11. `lvremove /dev/cl/nvar` y `vgdisplay`
 12. `lvextend -L +6G /dev/cl/root` y `df -h`
 13. `xfs_growfs /dev/cl/root`
