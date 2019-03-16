@@ -286,7 +286,7 @@ Y esto es todo, aquí termina la sesión 1 (no borres la máquina virtual).
 1. Añadimos dos discos (CentosR1D1 y CentosR1D2) como antes.
 2. arrancamos la máquina virtual y comprobamos con `lsblk` que aparecen dos nuevos discos.
 3. las utilidades del raid 1 se llaman mdadm (muldi disk administration): `yum install mdadm`
-4. `mdadm --create /dev/md0/ --level=1 --raid-devices=2 /dev/sdc /dev/sdd` => comando para crear una raid1. Lanzará una advertencia porque al crear un raid de esta forma no podremos arrancar el sistema desde el RAID creado. `lsblk` para ver el RAID.
+4. `mdadm --create /dev/md0 --level=1 --raid-devices=2 /dev/sdc /dev/sdd` => comando para crear una raid1. Lanzará una advertencia porque al crear un raid de esta forma no podremos arrancar el sistema desde el RAID creado. `lsblk` para ver el RAID.
 
 ### Parte 2 (muy parecido a la Sesión 2)
 
@@ -302,7 +302,7 @@ Y esto es todo, aquí termina la sesión 1 (no borres la máquina virtual).
 8. `cp -a /var/* /mnt/nvar/` y `cd /` y `cp -a /var /oldvar`
 9. Ahora tenemos que editar el fichero `/etc/fstab`. Sustituimos la ultima linea por: `/dev/raid1/rvar /var xfs defaults 0 0`
 10. `umount /mnt/nvar` y `mount -a` y `reboot`
-11. `lvremove /dev/cl/nvar` y `vgdisplay`
+11. `lvremove /dev/cl/newvar` y `vgdisplay`
 12. `lvextend -L +6G /dev/cl/root` y `df -h`
 13. `xfs_growfs /dev/cl/root`
 
@@ -314,12 +314,12 @@ Y esto es todo, aquí termina la sesión 1 (no borres la máquina virtual).
 4. `cryptsetup luksFormat /dev/raid1/rvar` y `lsblk`
 5. `cryptsetup luksOpen /dev/mapper/raid1-rvar raid1-rvar-crypt` y `lsblk`
 6. `mkfs -t xfs /dev/mapper/raid1-rvar-crypt`
-7. `mount /dev/mapper/raid1-rvar-crypt /mnt/var`
-8. `cp -a /oldvar/\* /mnt/nvar`
+7. `mount /dev/mapper/raid1-rvar-crypt /mnt/nvar`
+8. `cp -a /oldvar/* /mnt/nvar`
 
 El fichero /etc/crypttab nos permitirá descifrar el disco cunado arranque el SO. Necesitamos el identificador del volumen donde vamos a hacerlo, podemos obtenerlo con el comando `blkid` => `blkid : grep crypto > /etc/cryptattab`
 
 1. `vi /etc/cryptab` => raid1-rvar-crypt UUID=ewfwefew none (importante quitar las comillas)
 2. `vi /etc/fstab` => cambiamos la ultima lina por: `/dev/mapper/raid1-rvar-crypt /var xfs defaults 0 0`
-3. `umount /mnt/var` y `mount -a`
+3. `umount /mnt/nvar` y `mount -a`
 4. `reboot`
