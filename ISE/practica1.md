@@ -1,8 +1,8 @@
-# Práctica 0
+# Práctica 1
 
 ## Sesión 1 (Ubuntu)
 
-### Parte 1: Configuración de VM y de los discos
+### Parte 1: Configuración de la VM y de los discos
 
 1. Descargar las siguientes imágenes:
 
@@ -28,7 +28,7 @@ http://atcproyectos.ugr.es/esriie/CentOS-7-x86_64-Minimal-1611.iso
 
 4. Encedemos la máquina virtual y seguimos las instrucciones:
 
-   - El espacio sirve para pinchar sobres las opciones.
+   - El espacio sirve para pinchar sobre las opciones.
    - **NO** cifrar nuestra carpeta personal
    - Usuario: user. Password: practicaISE.
    - Particionado -> **Manual**.
@@ -40,7 +40,7 @@ http://atcproyectos.ugr.es/esriie/CentOS-7-x86_64-Minimal-1611.iso
 
    ![fotico](./images/4.png)
 
-   - Le damos a _Configuración del RAID por software_
+   - Le damos a _Configurar RAID por software_
    - Le damos a que sí cuando nos pregunta si queremos escribir los cambios en disco.
    - Cuando llegemos a aquí, seleccionamos la opción _Crear un dispositivo MD_.
 
@@ -87,7 +87,7 @@ En punto de montaje le damos y seleccionamos _/boot_.
 
 Y ya estaría chicos luego le damos a _Se ha terminado de definir la partición_.
 
-Ahora hay que repetir esto para los otros tres _Volumen cifrado (lo que sea aqui)_, seleccionando las mismas opciones, pero en punto de montaje seleccionamos _/_ o _/home_. Para el swap, no hace falta seleccionar punto de montaje, porque en la opción _Utiliar como_ hay que seleccionar _área de intercambio_. Si lo has hecho bien debería quedarte algo así:
+Ahora hay que repetir esto para los otros tres _Volumen cifrado (lo que sea aqui)_, seleccionando las mismas opciones, pero en punto de montaje seleccionamos _/_ o _/home_. Para el swap, no hace falta seleccionar punto de montaje, porque en la opción _Utilizar como_ hay que seleccionar _área de intercambio_. Si lo has hecho bien debería quedarte algo así:
 
 ![fotico](images/13.png)
 
@@ -121,7 +121,7 @@ Si no sale así bueno, cuando termines de llorar porque te has equivocado, vuelv
 
 ![fotico](images/17.png)
 
-Y encedemos la máquina virtual again. Si todo ha saido bien al ejecutar `ifconfig -a` debería salirte:
+Y encendemos la máquina virtual again. Si todo ha ido bien al ejecutar `ifconfig -a` debería salirte:
 
 ![fotico](images/18.png)
 
