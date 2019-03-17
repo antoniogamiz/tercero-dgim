@@ -165,9 +165,9 @@ Y esto es todo, aquí termina la sesión 1 (no borres la máquina virtual).
    1. Primero añadimos la ISO de CentOS: (botoncico del cd).
    2. Luego pulsamos _Choose disk_ y seleccionamos la ISO de CentOS que nos hemos descargado.
    3. Opcionalmente podemos borrar el disco donde pone _Empty_.
-   4. Encedemos la máquina.
+   4. Encendemos la máquina.
 
-3. Instalar, idioma en inglés. Vemos que _Instalation destination_ sale en rojo, eso es porque hay que configurarlo, clickamos sobre él. Y ahora le damos a _Done_ (sin tocar nada antes) que está arriba a la izquierda y luego a _Begin installation_.
+3. Instalar, idioma en inglés. Vemos que _Installation destination_ sale en rojo, eso es porque hay que configurarlo, clickamos sobre él. Y ahora le damos a _Done_ (sin tocar nada antes) que está arriba a la izquierda y luego a _Begin installation_.
 
    1. **IMPORTANTE:** pon el teclado en español, si no las vas a pasar canutas buscando donde están las teclas.
 
@@ -188,14 +188,14 @@ Y esto es todo, aquí termina la sesión 1 (no borres la máquina virtual).
 
 7. Configuración del _sdb_:
 
-   1. `pvdisplay` => muestra los volúmenes físicos configurados (PV => phisical volume (/dev/sda2), VG => volume group (cl)).
-   2. `lvmdiskscan` => ver unidades de disco y cómo de gestionan en VM.
+   1. `pvdisplay` => muestra los volúmenes físicos configurados (PV => physical volume (/dev/sda2), VG => volume group (cl)).
+   2. `lvmdiskscan` => ver unidades de disco y cómo se gestionan en VM.
    3. `pvcreate /dev/sdb`
    4. `pvdisplay` => debería aparecer esto:
 
       ![fotico](images/22.png)
 
-   5. `vgs` => información de volúmenos también.
+   5. `vgs` => información de volúmenes también.
    6. `vgextend cl /dev/sdb` => para extender el grupo de volúmenes
    7. `vgs` => ahora debería aparecer PV a 2 y en `vgdisplay` ActPV a 2.
    8. `lvdisplay` => para ver los volúmenes configurados
@@ -257,7 +257,7 @@ Y esto es todo, aquí termina la sesión 1 (no borres la máquina virtual).
    2. `cd /etc/sysconfig/network-scripts`
    3. `ls` => veremos los ficheros que se usan para configurar la red
    4. `cat ifcfg-enp0s3` => ver info de esa NAT (`enp0s3`)
-   5. `vi ifcfg-enp0s3` y al final del todo cambiamos `ONBOOT=NO` por `ONBOOT=yes` => para que la NAT se activa cuando encendamos la máquina.
+   5. `vi ifcfg-enp0s3` y al final del todo cambiamos `ONBOOT=NO` por `ONBOOT=yes` => para que la NAT se active cuando encendamos la máquina.
    6. `ip addr` => la veremos sin configurar
    7. `ifup ifcfg-enp0s3` => para que se configure
    8. `ip addr` => ya debería aparecer configurada
@@ -272,8 +272,8 @@ Y esto es todo, aquí termina la sesión 1 (no borres la máquina virtual).
 
    ![fotico](images/26.png)
 
-7. `ifup ifcfg-enp0s8` => también está el equivalente `ifdown` que es para desactivar la NAT.
-8. Para ver si lo has hecho bien puedes hacer `reboot` y luego `ping 192.168.57.118`: si sale que se mandan paquetitos está todo correcto y ya puedes mandar a esta práctica a tomar viento :).
+7. `ifup ifcfg-enp0s8` => también está el equivalente `ifdown`, que es para desactivar la NAT.
+8. Para ver si lo has hecho bien puedes hacer `reboot` y luego `ping 192.168.57.118`; si sale que se mandan paquetitos está todo correcto y ya puedes mandar esta práctica a tomar viento :).
 
 **IMPORTANTE**: en el examen pueden preguntar qué hacen los comandos que han aparecido aquí, así que estaría bien buscarlo. Además no borres las máquinas virtuales porque puede pedirte que se la enseñes y te haga preguntas.
 
@@ -281,11 +281,11 @@ Y esto es todo, aquí termina la sesión 1 (no borres la máquina virtual).
 
 ### Parte 1
 
-- Objetivo: mover el directorio /var de antes a un RAID1, por lo que vamos a tener que añadir dos discos mas y vamos a cifrarlo con `luks`. Por lo que primero vamos a hacer una snapshot de la maquina de CentOS (buscarlo en las opciones y darle a take) para guardar el estado de la máquina virtual de la sesión anterior.
+- Objetivo: mover el directorio /var de antes a un RAID1, por lo que vamos a tener que añadir dos discos más y vamos a cifrarlo con `luks`. Por lo que primero vamos a hacer una snapshot de la maquina de CentOS (buscarlo en las opciones y darle a take) para guardar el estado de la máquina virtual de la sesión anterior.
 
 1. Añadimos dos discos (CentosR1D1 y CentosR1D2) como antes.
-2. arrancamos la máquina virtual y comprobamos con `lsblk` que aparecen dos nuevos discos.
-3. las utilidades del raid 1 se llaman mdadm (muldi disk administration): `yum install mdadm`
+2. Arrancamos la máquina virtual y comprobamos con `lsblk` que aparecen dos nuevos discos.
+3. Las utilidades del raid 1 se llaman mdadm (muldi disk administration): `yum install mdadm`
 4. `mdadm --create /dev/md0 --level=1 --raid-devices=2 /dev/sdc /dev/sdd` => comando para crear una raid1. Lanzará una advertencia porque al crear un raid de esta forma no podremos arrancar el sistema desde el RAID creado. `lsblk` para ver el RAID.
 
 ### Parte 2 (muy parecido a la Sesión 2)
@@ -300,13 +300,13 @@ Y esto es todo, aquí termina la sesión 1 (no borres la máquina virtual).
 6. `mount /dev/raid1/rvar /mnt/nvar`
 7. `systemctl isolate runlevel1.target`
 8. `cp -a /var/* /mnt/nvar/` y `cd /` y `cp -a /var /oldvar`
-9. Ahora tenemos que editar el fichero `/etc/fstab`. Sustituimos la ultima linea por: `/dev/raid1/rvar /var xfs defaults 0 0`
+9. Ahora tenemos que editar el fichero `/etc/fstab`. Sustituimos la última línea por: `/dev/raid1/rvar /var xfs defaults 0 0`
 10. `umount /mnt/nvar` y `mount -a` y `reboot`
 11. `lvremove /dev/cl/newvar` y `vgdisplay`
 12. `lvextend -L +6G /dev/cl/root` y `df -h`
 13. `xfs_growfs /dev/cl/root`
 
-### Parte 3: Encryptación
+### Parte 3: Encriptación
 
 1. `yum install crypsetup`
 2. `systemctl isolate runlevel1.target` y `cd`
@@ -317,9 +317,9 @@ Y esto es todo, aquí termina la sesión 1 (no borres la máquina virtual).
 7. `mount /dev/mapper/raid1-rvar-crypt /mnt/nvar`
 8. `cp -a /oldvar/* /mnt/nvar`
 
-El fichero /etc/crypttab nos permitirá descifrar el disco cunado arranque el SO. Necesitamos el identificador del volumen donde vamos a hacerlo, podemos obtenerlo con el comando `blkid` => `blkid : grep crypto > /etc/cryptattab`
+El fichero /etc/crypttab nos permitirá descifrar el disco cuando arranque el SO. Necesitamos el identificador del volumen donde vamos a hacerlo, podemos obtenerlo con el comando `blkid` => `blkid : grep crypto > /etc/cryptattab`
 
 1. `vi /etc/cryptab` => raid1-rvar-crypt UUID=ewfwefew none (importante quitar las comillas)
-2. `vi /etc/fstab` => cambiamos la ultima lina por: `/dev/mapper/raid1-rvar-crypt /var xfs defaults 0 0`
+2. `vi /etc/fstab` => cambiamos la ultima línea por: `/dev/mapper/raid1-rvar-crypt /var xfs defaults 0 0`
 3. `umount /mnt/nvar` y `mount -a`
 4. `reboot`
