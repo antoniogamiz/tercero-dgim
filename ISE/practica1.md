@@ -310,7 +310,7 @@ Y esto es todo, aquí termina la sesión 1 (no borres la máquina virtual).
 
 1. `yum install crypsetup`
 2. `systemctl isolate runlevel1.target` y `cd`
-3. `rm -rf var && cd / && cp -a var oldvar && umount /var`
+3. `cp -a var oldvar && umount /var`
 4. `cryptsetup luksFormat /dev/raid1/rvar` y `lsblk`
 5. `cryptsetup luksOpen /dev/mapper/raid1-rvar raid1-rvar-crypt` y `lsblk`
 6. `mkfs -t xfs /dev/mapper/raid1-rvar-crypt`
