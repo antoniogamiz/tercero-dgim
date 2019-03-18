@@ -253,7 +253,7 @@ Y esto es todo, aquí termina la sesión 1 (no borres la máquina virtual).
 
 1. Vamos a configurar una NAT:
 
-   1. `ipaddr` => muestra las interfaces de red (parecido a `ifconfig`)
+   1. `ip addr` => muestra las interfaces de red (parecido a `ifconfig`)
    2. `cd /etc/sysconfig/network-scripts`
    3. `ls` => veremos los ficheros que se usan para configurar la red
    4. `cat ifcfg-enp0s3` => ver info de esa NAT (`enp0s3`)
@@ -323,3 +323,42 @@ El fichero /etc/crypttab nos permitirá descifrar el disco cunado arranque el SO
 2. `vi /etc/fstab` => cambiamos la ultima lina por: `/dev/mapper/raid1-rvar-crypt /var xfs defaults 0 0`
 3. `umount /mnt/nvar` y `mount -a`
 4. `reboot`
+
+## Gloario de comandos
+
+- `lsblk` => lists information about all available or the specified block devices.
+- `grub-install <path>` => instalar el gesto de arranque grub en el disco `path`.
+- `lspci | grep Ether` => is a utility for displaying information about PCI buses in the system and devices connected to them.
+- `/etc/network/interfaces` => en ese archivo creamos y configuramos nuestras interfaces de red.
+- `ifconfig` => configure a network interface
+  - `-a` => display all interfaces which are currently available, even if down
+- `ifup` => bring a network interface up
+- `ifdown` => take a network interface down
+- `df` => report file system disk space usage
+  - `-h` => --human-readable. Print sizes in powers of 1024 (e.g., 1023M)
+- `mkfs -t <format> <disk>` => build a Linux filesystem
+- `systemctl isolate runlevel1.target` => nos pasamos a sistema monousuario
+- `mount <disk> </mnt/algo>` => mount a filesystem
+  - `-a` => mount all filesystems included in /etc/fstab
+- `blkid` => locate/print block device attributes
+- `resize2fs <disk>` => ext2/ext3/ext4 file system resizer
+- `xfs_growfs` = igual que el anterior pero para xfs
+- `ip addr` => muestra las interfaces de red, parecido a ifconfig
+
+### Comandos de lvm
+
+- `vgdisplay` => Display volume group information
+- `pvdisplay` => Display various attributes of physical volume(s)
+- `lvdisplay` => Display information about a logical volume
+- `vgs` => Display information about volume groups
+- `lvmdiskscan` => List devices that may be used as physical volumes
+- `pvcreate <path>` => Initialize physical volume(s) for use by LVM
+- `vgextend <vg name> <disk path>` => Add physical volumes to a volume group
+- `lvcreate -L <size> -n <name> <vg name>` => Create a logical volume
+- `lvresize -L +2G /dev/mapper/cl-newvar` => Resize a logical volume
+
+### Crypsetup y mdadm
+
+- `mdadm --create /dev/md0 --level=1 --raid-devices=2 /dev/sdc /dev/sdd`
+- `cryptsetup luksFormat /dev/raid1/rvar`
+- `cryptsetup luksOpen /dev/mapper/raid1-rvar raid1-rvar-crypt`
