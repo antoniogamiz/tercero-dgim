@@ -1,0 +1,6 @@
+genero:drama@crimen@biografia
+idiomas:espanol@ingles
+sinopsis:Narcos_es_una_serie_de_ficcion_historica_basada_en_la_lucha_contra_el_narcotrafico_en_Colombia_durante_los_anios_os_1990
+web:www_netflixes_es_en_title_984759843
+temporada1:ep1@30@ep2@40@ep3@50@ep4@50@ep5@50@ep6@30@ep7@40@ep8@40@ep9@40@ep10@40
+temporada2:ep1@30      

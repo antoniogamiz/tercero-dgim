@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+
+<!-- =========== NIVEL 1 =========== -->
+
+  <!-- ================== ANIADIR NUEVA SERIE ================== -->
+
+  <category>
+    <pattern> ^ [incluir aniadir anadir anade] capitulo ^ </pattern>
+    <template>
+      <think>
+        <set name="topic">aniadircapitulo</set>
+      </think>
+      Dime la serie a la que le quieres aniadir un capitulo
+    </template>
+  </category> 
+
+  <topic name="aniadircapitulo">
+    <category>
+      <pattern> <set>seriesnetflix</set> </pattern>
+      <template>
+        <think>
+          <set name="seriecap"><star/></set>
+          <set name="topic">temporadacapitulo</set>
+        </think>
+        Dime la temporada del capitulo
+      </template>
+    </category>
+
+    <category>
+      <pattern> * </pattern>
+      <template>
+        La serie <star/> no esta en el catalogo. 
+        Por favor incluya una que si lo este.
+      </template>
+    </category>
+  </topic>
+
+  <topic name="temporadacapitulo">
+    <category>
+      <pattern> * </pattern>
+      <template>
+        <think>
+          <set name="temporadacap"><star/></set>
+          <set name="topic">nombrecapitulo</set>
+        </think>
+        Dime el nombre del capitulo
+      </template>
+    </category>
+  </topic>
+
+  <topic name="nombrecapitulo">
+    <category>
+      <pattern> * </pattern>
+      <template>
+        <think>
+          <set name="nombrecap"><star/></set>
+          <set name="topic">duracioncapitulo</set>
+        </think>
+        Dime el la duracion del capitulo
+      </template>
+    </category>
+  </topic>
+
+  <topic name="duracioncapitulo">
+    <category>
+      <pattern> * </pattern>
+      <template>
+        <think>
+          <set name="duracioncap"><star/></set>
+          <set name="topic">unknown</set>
+          <set var="current">
+            <map><name><get name="seriecap"/></name><get name="temporadacap"/></map>
+          </set>
+          <modifymap>
+            <name><get name="seriecap"/></name>
+            <key><get name="temporadacap"/></key>
+            <value><get var="current"/>@<get name="nombrecap"/>@<get name="duracioncap"/></value>
+          </modifymap>
+        </think>
+        Capitulo aniadido correctamente
+      </template>
+    </category>
+  </topic>
+
+  <!-- <category>
+    <pattern> SERIE <set>seriesnetflix</set> TEMP * CAP * DUR * </pattern>
+    <template>
+      <think>
+        <set var="current">
+          <map><name><star/></name><star index="2"/></map>
+        </set>
+        <modifymap>
+          <name><star/></name>
+          <key><star index="2"/></key>
+          <value><get var="current"/>@<star index="3"/>@<star index="4"/></value>
+        </modifymap>
+      </think>
+      El capitulo ha sido aniadido correctamente.
+    </template>
+  </category>
+
+  <category>
+    <pattern> SERIE * TEMP * CAP * DUR * </pattern>
+    <template>
+      La serie <star/> no esta en el catalogo
+    </template>
+  </category> -->
+
+  <!-- ================== ANIADIR NUEVA SERIE ================== -->
+  <category>
+    <pattern> ^ [incluir aniadir anadir anade] serie *</pattern>
+    <template>
+      <think>
+        <set name="serie"><star index="2"/></set>
+        <set name="topic">plataforma</set>
+      </think>
+      Perfecto, te voy a preguntar datos sobre la serie <star index="2"/>.
+      Indicame la plataforma que lo ofrece
+    </template>
+  </category>  
+
+  <topic name="plataforma">
+    <category>
+      <pattern> * </pattern>
+      <template>
+        <think>
+          <set name="plataforma"><star/></set>
+          <set name="topic">genero</set>
+        </think>
+        A que genero pertenece
+      </template>
+    </category>
+  </topic>
+
+  <topic name="genero">
+    <category>
+      <pattern> * </pattern>
+      <template>
+        <think>
+          <set name="genero"><star/></set>
+          <set name="topic">sinopsis</set>
+        </think>
+        De que va la serie
+      </template>
+    </category>
+  </topic>
+
+  <topic name="sinopsis">
+    <category>
+      <pattern> * </pattern>
+      <template>
+        <think>
+          <set name="sinopsis"><srai>CODE <star/></srai></set>
+          <set name="topic">idiomas</set>
+        </think>
+        Dime la lista de idiomas (separados por espacios)
+      </template>
+    </category>
+  </topic>
+
+  <topic name="idiomas">
+    <category>
+      <pattern> * </pattern>
+      <template>
+        <think>
+          <set name="idiomas"><srai>CODE <star/></srai></set>
+          <set name="topic">web</set>
+        </think>
+        Dime la direccion web
+      </template>
+    </category>
+  </topic>
+
+  <topic name="web">
+    <category>
+      <pattern> * </pattern>
+      <template>
+        <think>
+        <set name="web"><star/></set>
+        <addtoset>
+          <name><get name="plataforma"/></name>
+          <key>
+            <get name="serie"/>
+          </key>
+        </addtoset>
+        <addtomap>
+          <name><get name="serie"/></name>
+          <key>genero</key>
+          <value><get name="genero"/></value>
+        </addtomap>
+        <addtomap>
+          <name><get name="serie"/></name>
+          <key>idiomas</key>
+          <value><get name="idiomas"/></value>
+        </addtomap>
+        <addtomap>
+          <name><get name="serie"/></name>
+          <key>sinopsis</key>
+          <value><get name="sinopsis"/></value>
+        </addtomap>
+        <addtomap>
+          <name><get name="serie"/></name>
+          <key>web</key>
+          <value><get name="web"/></value>
+        </addtomap>
+          <set name="topic">unknown</set>
+        </think>
+        Ya he creado la informacion basica de la serie.
+        Si quieres incluir capitulos me lo dices.
+      </template>
+    </category>
+  </topic>
+
+  <!-- =========== NIVEL 2 ===========  -->
+
+  <!-- CONSULTAR SINOPSIS + ANIADIR SERIE-->
+  <category>
+    <pattern> SINOPSIS <set>seriesnetflix</set> </pattern>
+    <template>
+     <srai> DECODE <map><name><star/></name>sinopsis</map> </srai>
+    </template>
+  </category>
+
+  <category>
+    <pattern> SINOPSIS * </pattern>
+    <template>
+      La serie <star/> no esta en el catalogo. Quieres aniadirla?
+      <think>
+        <set name="serieaaniadir"><star/></set>
+        <set name="topic">aniadirserie</set>
+      </think>
+    </template>
+  </category>
+
+  <topic name="aniadirserie">
+    <category>
+      <pattern>^ SI ^ A[NI N]ADELA</pattern>
+      <template>
+        ok, crea en la carpeta maps un archivo llamado <get name="serieaaniadir"/>.txt.
+        Cuando hayas terminado reiniciame y al volver, pideme que anada la serie <get name="serieaaniadir"/>.
+        <think>
+          <set name="topic">unknown</set>
+          <set name="serieaaniadir">unknown</set>
+        </think>
+      </template>
+    </category>
+
+    <category>
+      <pattern>^ NO ^ </pattern>
+      <template>
+        Ok.
+        <think>
+          <set name="topic">unknown</set>
+        </think>
+      </template>
+    </category>
+  </topic>
+
+  <!-- VARIACIONES -->
+
+  <category>
+    <pattern> DE QUE VA (LA SERIE) * </pattern>
+    <template>
+      <srai>SINOPSIS <star/> </srai>
+    </template>
+  </category>
+
+
+
+
+
+</aiml>
