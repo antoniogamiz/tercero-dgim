@@ -3,6 +3,28 @@
 
 <!-- =========== NIVEL 1 =========== -->
 
+	<!-- Regla que concatena una lista de palabras mediante un "_" -->
+	<category>
+	<pattern> CODEARROBA * </pattern>
+	<template> 
+	  <think>
+		<set var="tmp"><star/></set>
+		<set var="solucion"><first><get var="tmp"/></first></set>
+		<set var="tmp"><rest><get var="tmp"/></rest></set>
+		<condition var="tmp">
+			<li value="NIL">
+			</li>
+			<li>
+				<set var="solucion"><get var="solucion"/>@<first><get var="tmp"/></first></set>
+				<set var="tmp"><rest><get var="tmp"/></rest></set>
+				<loop/>
+			</li>
+		</condition>
+	  </think>
+	<get var="solucion"/>
+	</template>
+	</category>
+
   <!-- ================== ANIADIR NUEVA SERIE ================== -->
 
   <category>
@@ -31,7 +53,7 @@
       <pattern> * </pattern>
       <template>
         La serie <star/> no esta en el catalogo. 
-        Por favor incluya una que si lo este.
+        Por favor indica una que si lo este o aniadre <star/>
       </template>
     </category>
   </topic>
@@ -69,43 +91,34 @@
         <think>
           <set name="duracioncap"><star/></set>
           <set name="topic">unknown</set>
-          <set var="current">
+          <set name="current">
             <map><name><get name="seriecap"/></name><get name="temporadacap"/></map>
           </set>
-          <modifymap>
+
+          <!-- por si la temporada no existe -->
+          <set var="delimitador">@</set>
+          <condition name="current">
+            <li value="unknown">
+              <set name="current"></set>
+              <set var="delimitador"></set>
+            </li>
+            <li></li>
+          </condition>
+          <removefrommap>
             <name><get name="seriecap"/></name>
             <key><get name="temporadacap"/></key>
-            <value><get var="current"/>@<get name="nombrecap"/>@<get name="duracioncap"/></value>
-          </modifymap>
+          </removefrommap>
+          <!-- ================== -->
+          <addtomap>
+            <name><get name="seriecap"/></name>
+            <key><get name="temporadacap"/></key>
+            <value><get name="current"/><get var="delimitador"/><get name="nombrecap"/>@<get name="duracioncap"/></value>
+          </addtomap>
         </think>
         Capitulo aniadido correctamente
       </template>
     </category>
   </topic>
-
-  <!-- <category>
-    <pattern> SERIE <set>seriesnetflix</set> TEMP * CAP * DUR * </pattern>
-    <template>
-      <think>
-        <set var="current">
-          <map><name><star/></name><star index="2"/></map>
-        </set>
-        <modifymap>
-          <name><star/></name>
-          <key><star index="2"/></key>
-          <value><get var="current"/>@<star index="3"/>@<star index="4"/></value>
-        </modifymap>
-      </think>
-      El capitulo ha sido aniadido correctamente.
-    </template>
-  </category>
-
-  <category>
-    <pattern> SERIE * TEMP * CAP * DUR * </pattern>
-    <template>
-      La serie <star/> no esta en el catalogo
-    </template>
-  </category> -->
 
   <!-- ================== ANIADIR NUEVA SERIE ================== -->
   <category>
@@ -116,6 +129,7 @@
         <set name="topic">plataforma</set>
       </think>
       Perfecto, te voy a preguntar datos sobre la serie <star index="2"/>.
+      Asegurate de que existe un archivo llamado <star index="2"/>.txt en la carpeta maps.
       Indicame la plataforma que lo ofrece
     </template>
   </category>  
@@ -138,7 +152,7 @@
       <pattern> * </pattern>
       <template>
         <think>
-          <set name="genero"><star/></set>
+          <set name="genero"><srai>CODEARROBA <star/></srai></set>
           <set name="topic">sinopsis</set>
         </think>
         De que va la serie
@@ -164,7 +178,7 @@
       <pattern> * </pattern>
       <template>
         <think>
-          <set name="idiomas"><srai>CODE <star/></srai></set>
+          <set name="idiomas"><srai>CODEARROBA <star/></srai></set>
           <set name="topic">web</set>
         </think>
         Dime la direccion web
@@ -180,9 +194,7 @@
         <set name="web"><star/></set>
         <addtoset>
           <name><get name="plataforma"/></name>
-          <key>
-            <get name="serie"/>
-          </key>
+          <key><get name="serie"/></key>
         </addtoset>
         <addtomap>
           <name><get name="serie"/></name>
