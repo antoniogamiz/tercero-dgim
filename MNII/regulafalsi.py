@@ -3,7 +3,7 @@ import numpy as np
 
 
 def f(x):
-    return np.exp(x)-np.cos(x)
+    return np.log(x**2+1)-np.exp(x/2)*np.cos(3*x)
 
 
 def regulafalsi(f, a, b, epsilon, delta=10**(-15)):
@@ -25,6 +25,6 @@ def regulafalsi(f, a, b, epsilon, delta=10**(-15)):
 
 
 print(colored("========= Método de regula falsi =========", "red"))
-solFalsi = regulafalsi(f, -2, -1, 10**(-5))
+solFalsi = regulafalsi(f, -1, 0, 10**(-5), 10**(-6))
 print(colored("Solución método regula falsi: ", "red"),
       colored(str(solFalsi), "blue"))

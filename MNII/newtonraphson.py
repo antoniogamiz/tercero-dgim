@@ -4,12 +4,12 @@ from sympy import *
 
 
 def f(x):
-    return exp(x)-cos(x)
+    return log(x**2+1)-exp(x/2)*cos(3*x)
 
 
 def f_diff(x_0):
     x = Symbol('x')
-    y = exp(x)-cos(x)
+    y = log(x**2+1)-exp(x/2)*cos(3*x)
     fprime = diff(y, x)
     return fprime.evalf(subs={x: x_0})
 
@@ -20,23 +20,23 @@ def newtonraphson(f, a, b, epsilon, delta=10**(-15)):
     print()
 
     # tomamos el punto medio del intervalo como aproximacion inical
-    x_0 = (a+b)/2.0
+    x_0 = 0.4
     x_1 = x_0 - f(x_0)/f_diff(x_0)
     print(str(0) + "\t" + str(x_0) + "\t" + str(f(x_0)))
 
     i = 1
-    while np.abs(f(x_1)-f(x_0)) > delta:
+    while i <= 10:
         # corremos un elemento
         x_0 = x_1
         x_1 = x_0 - f(x_0)/f_diff(x_0)
 
-        i = i + 1
         print(str(i) + "\t" + str(x_0) + "\t" + str(f(x_0)))
+        i = i + 1
 
     return x_1
 
 
 print(colored("========= Método de Newton-Raphson =========", "red"))
-solNewton = newtonraphson(f, -2, -1, 10**(-5))
+solNewton = newtonraphson(f, 0, 1, 10**(-5), 10**(-6))
 print(colored("Solución método Newton-Raphson: ", "red"),
       colored(str(solNewton), "blue"))

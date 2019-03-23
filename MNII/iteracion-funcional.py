@@ -3,7 +3,7 @@ import numpy as np
 
 
 def f(x):
-    return (5*x**2+7)/(x**2+3)
+    return -1*(np.log(x**2+1)-np.exp(x/2)*np.cos(3*x))/3.0+x
 
 
 def iFuncional(f, x_0, delta=10**(-15)):
@@ -16,7 +16,7 @@ def iFuncional(f, x_0, delta=10**(-15)):
     print(str(i) + "\t" + str(x_n[i]))
     x_n.append(f(x_n[0]))
     i = 1
-    while np.abs(f(x_n[i])-f(x_n[i-1])) > delta:
+    while i <= 10:
         print(str(i) + "\t" + str(x_n[i]))
         i = i + 1
         x_n.append(f(x_n[i-1]))
@@ -25,7 +25,7 @@ def iFuncional(f, x_0, delta=10**(-15)):
 
 
 def main():
-    iFuncional(f, 5)
+    iFuncional(f, 0.4)
 
 
-# main()
+main()
