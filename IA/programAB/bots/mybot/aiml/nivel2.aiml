@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+
+  <!-- =========== NIVEL 2 ===========  -->
+
+	<!-- Regla que elimina los espacios de una lista de palabras -->
+	<category>
+        <pattern> DECODEARROBA * </pattern>
+        <template> 
+          <think>
+            <set var="palabra"></set>
+            <set var="solucion"></set>
+            <set var="tmp"><star/></set>
+            <set var="tmp"> <explode><get var="tmp"/></explode> </set>
+            <set var="caracter"><first><get var="tmp"/></first></set>
+            <set var="tmp"><rest><get var="tmp"/></rest></set>
+            <condition var="caracter">
+                <li value="NIL">
+                    <set var="solucion"><get var="solucion"/> <get var="palabra"/></set>
+                </li>
+                <li value="@"> 
+                    <set var="solucion"><get var="solucion"/> <get var="palabra"/></set>
+                    <set var="palabra"></set>
+                    <set var="caracter"><first><get var="tmp"/></first></set>
+                    <set var="tmp"><rest><get var="tmp"/></rest></set>
+                    <loop/>
+                </li>
+                <li>
+                    <set var="palabra"><get var="palabra"/><get var="caracter"/></set>
+                    <set var="caracter"><first><get var="tmp"/></first></set>
+                    <set var="tmp"><rest><get var="tmp"/></rest></set>
+                    <loop/>
+                </li>
+            </condition>
+          </think>
+        <get var="solucion"/>
+        </template>
+    </category>
+
+    <!-- IDIOMAS SERIE -->
+    <category>
+        <pattern> IDIOMAS <set>seriesnetflix</set> </pattern>
+        <template>
+          <think>
+            <set var="idiomas"><srai> DECODEARROBA <map><name><star/></name>idiomas</map> </srai></set>
+          </think>
+          Estos son los idiomas de la serie <star/>:
+          <get var="idiomas"/>
+        </template>
+      </category> 
+      <category>
+        <pattern> IDIOMAS * </pattern>
+        <template>
+          Esa serie no se encuentra disponible en el catalogo.
+        </template>
+      </category>
+
+    <!-- SUBTITULOS SERIE -->
+    <category>
+        <pattern> SUBTITULOS <set>seriesnetflix</set> </pattern>
+        <template>
+          <think>
+            <set var="subtitulos"><srai> DECODEARROBA <map><name><star/></name>subtitulos</map> </srai></set>
+          </think>
+          Estos son los subtitulos de la serie <star/>:
+          <get var="subtitulos"/>
+        </template>
+      </category> 
+      <category>
+        <pattern> SDUBTITULOS * </pattern>
+        <template>
+          Esa serie no se encuentra disponible en el catalogo.
+        </template>
+      </category>
+
+      <!-- PREGUNTAR SI UNA SERIE ESTA EN UN IDIOMA -->
+      <category>
+        <pattern> SERIE <set>seriesnetflix</set> IDIOMA *  </pattern>
+        <template>
+          <think>
+            <set var="_idioma"><srai> FINDITEM <star index="2"/> IN <srai>DECODEARROBA <map><name><star/></name>idiomas</map></srai></srai></set>
+          </think>
+          <condition var="_idioma">
+            <li value="0"> Ese idioma no esta disponible</li>
+            <li>Ese idioma esta dispoible</li>
+          </condition>
+        </template>
+      </category> 
+      <category>
+        <pattern> SERIE * IDIOMA * </pattern>
+        <template>
+          Esa serie no se encuentra disponible en el catalogo.
+        </template>
+      </category>
+
+      <!-- CONTAR NUMERO DE IDIOMAS -->
+      <category>
+        <pattern> CIDIOMAS <set>seriesnetflix</set> </pattern>
+        <template>
+          <think>
+            <set var="cidioma"><srai> COUNT <srai>DECODEARROBA <map><name><star/></name>idiomas</map></srai></srai></set>
+          </think>
+          El numero de idiomas de la serie <star/> es <get var="cidioma"/>
+        </template>
+      </category> 
+      <category>
+        <pattern> CIDIOMAS * </pattern>
+        <template>
+          Esa serie no se encuentra disponible en el catalogo.
+        </template>
+      </category>    
+
+      <!-- CONTAR NUMERO DE SUBTITULOS -->
+      <category>
+        <pattern> CSUBTITULOS <set>seriesnetflix</set> </pattern>
+        <template>
+          <think>
+            <set var="csubtitulos"><srai> COUNT <srai>DECODEARROBA <map><name><star/></name>subtitulos</map></srai></srai></set>
+          </think>
+          El numero de subtitulos de la serie <star/> es <get var="csubtitulos"/>
+        </template>
+      </category> 
+      <category>
+        <pattern> CSUBTITULOS * </pattern>
+        <template>
+          Esa serie no se encuentra disponible en el catalogo.
+        </template>
+      </category>
+
+      <!-- CONTAR CAPITULOS TEMPORADA -->
+      <category>
+        <pattern> CAPITULOS <set>seriesnetflix</set> TEMPORADA * </pattern>
+        <template>
+          <think>
+            <set var="capitulos">0</set>
+            <set var="temp"><srai>DECODEARROBA <map><name><star/></name><star index="2"/></map></srai></set>
+            <set var="length"><srai>COUNT <get var="temp"/> </srai></set>
+        </think>
+            <condition var="length">
+                <li value="0"></li>
+                <li>
+                    <think>
+                        <set var="temp"><srai> REMOVEITEM 1 IN <get var="temp"/></srai></set>
+                        <set var="temp"><srai> REMOVEITEM 1 IN <get var="temp"/></srai></set>
+                        <set var="length"><srai>COUNT <get var="temp"/> </srai></set>
+                        <set var="capitulos"><map name="successor"><get var="capitulos"/></map></set>
+                    </think>
+                    <loop/>
+                </li>
+            </condition>
+          El numero de capitulos de la serie <star/> es <get var="capitulos"/>
+        </template>
+      </category> 
+      <category>
+        <pattern> CAPITULOS * TEMPORADA * </pattern>
+        <template>
+          Esa serie no se encuentra disponible en el catalogo.
+        </template>
+      </category>
+
+      <!-- CONTAR CAPITULOS TOTALES -->
+      <category>
+        <pattern> CAPITULOST <set>seriesnetflix</set> </pattern>
+        <template>
+          <think>
+            <set var="tempt"><readkeys><star/></readkeys></set>
+            <set var="tempt"><srai>REMOVEITEM 1 IN <get var="tempt"/></srai></set>
+            <set var="tempt"><srai>REMOVEITEM 1 IN <get var="tempt"/></srai></set>
+            <set var="tempt"><srai>REMOVEITEM 1 IN <get var="tempt"/></srai></set>
+            <set var="tempt"><srai>REMOVEITEM 1 IN <get var="tempt"/></srai></set>
+            <set var="tempt"><srai>REMOVEITEM 1 IN <get var="tempt"/></srai></set>
+          </think>
+          <think>
+            <set var="capitulos">0</set>
+            <set var="length1"><srai>COUNT <get var="tempt"/> </srai></set>
+        </think>
+            <condition var="length1">
+                <li value="0">
+                </li>
+                <li>
+                    <think>
+                        <set var="current"><srai> TOP <get var="tempt"/></srai></set>
+                        <set var="tempt"><srai> REMOVEITEM 1 IN <get var="tempt"/></srai></set>
+                        <set var="length1"><srai>COUNT <get var="tempt"/> </srai></set>
+                        <set var="temp2"><srai>DECODEARROBA <map><name><star/></name><get var="current"/></map></srai></set>
+                        
+                    </think>
+                    <loop/>
+                </li>
+            </condition>
+          El numero de capitulos (en total)de la serie <star/> es <get var="capitulos"/>
+        </template>
+      </category> 
+      <category>
+        <pattern> CAPITULOS * TEMPORADA * </pattern>
+        <template>
+          Esa serie no se encuentra disponible en el catalogo.
+        </template>
+      </category>
+
+      <!-- NUMERO DE TEMPORADAS DE UNA SERIE -->
+      <category>
+        <pattern> CTEMPORADAS <set>seriesnetflix</set> </pattern>
+        <template>
+          <think>
+            <set var="tempt"><readkeys><star/></readkeys></set>
+            <set var="tempt"><srai>REMOVEITEM 1 IN <get var="tempt"/></srai></set>
+            <set var="tempt"><srai>REMOVEITEM 1 IN <get var="tempt"/></srai></set>
+            <set var="tempt"><srai>REMOVEITEM 1 IN <get var="tempt"/></srai></set>
+            <set var="tempt"><srai>REMOVEITEM 1 IN <get var="tempt"/></srai></set>
+            <set var="tempt"><srai>REMOVEITEM 1 IN <get var="tempt"/></srai></set>
+            <set var="ctemporadas"><srai> COUNT <get var="tempt"/></srai></set>
+          </think>
+          El numero de temporadas de la serie <star/> es <get var="ctemporadas"/>
+        </template>
+      </category> 
+      <category>
+        <pattern> CTEMPORADAS * </pattern>
+        <template>
+          Esa serie no se encuentra disponible en el catalogo.
+        </template>
+      </category>
+  <!-- CONSULTAR SINOPSIS + ANIADIR SERIE
+  <category>
+    <pattern> SINOPSIS <set>seriesnetflix</set> </pattern>
+    <template>
+     <srai> DECODE <map><name><star/></name>sinopsis</map> </srai>
+    </template>
+  </category>
+
+  <category>
+    <pattern> SINOPSIS * </pattern>
+    <template>
+      La serie <star/> no esta en el catalogo. Quieres aniadirla?
+      <think>
+        <set name="serieaaniadir"><star/></set>
+        <set name="topic">aniadirserie</set>
+      </think>
+    </template>
+  </category>
+
+  <topic name="aniadirserie">
+    <category>
+      <pattern>^ SI ^ A[NI N]ADELA</pattern>
+      <template>
+        ok, crea en la carpeta maps un archivo llamado <get name="serieaaniadir"/>.txt.
+        Cuando hayas terminado reiniciame y al volver, pideme que anada la serie <get name="serieaaniadir"/>.
+        <think>
+          <set name="topic">unknown</set>
+          <set name="serieaaniadir">unknown</set>
+        </think>
+      </template>
+    </category>
+
+    <category>
+      <pattern>^ NO ^ </pattern>
+      <template>
+        Ok.
+        <think>
+          <set name="topic">unknown</set>
+        </think>
+      </template>
+    </category>
+  </topic>
+    -->
+   <!-- VARIACIONES  -->
+
+  <!-- <category>
+    <pattern> DE QUE VA (LA SERIE) * </pattern>
+    <template>
+      <srai>SINOPSIS <star/> </srai>
+    </template>
+  </category>  -->
+
+</aiml>

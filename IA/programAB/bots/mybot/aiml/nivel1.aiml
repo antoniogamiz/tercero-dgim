@@ -179,6 +179,19 @@
       <template>
         <think>
           <set name="idiomas"><srai>CODEARROBA <star/></srai></set>
+          <set name="topic">subtitulos</set>
+        </think>
+        Dime la direccion web
+      </template>
+    </category>
+  </topic>
+
+  <topic name="subtitulos">
+    <category>
+      <pattern> * </pattern>
+      <template>
+        <think>
+          <set name="subtitulos"><srai>CODEARROBA <star/></srai></set>
           <set name="topic">web</set>
         </think>
         Dime la direccion web
@@ -208,6 +221,11 @@
         </addtomap>
         <addtomap>
           <name><get name="serie"/></name>
+          <key>subtitulos</key>
+          <value><get name="subtitulos"/></value>
+        </addtomap>
+        <addtomap>
+          <name><get name="serie"/></name>
           <key>sinopsis</key>
           <value><get name="sinopsis"/></value>
         </addtomap>
@@ -223,62 +241,6 @@
       </template>
     </category>
   </topic>
-
-  <!-- =========== NIVEL 2 ===========  -->
-
-  <!-- CONSULTAR SINOPSIS + ANIADIR SERIE-->
-  <category>
-    <pattern> SINOPSIS <set>seriesnetflix</set> </pattern>
-    <template>
-     <srai> DECODE <map><name><star/></name>sinopsis</map> </srai>
-    </template>
-  </category>
-
-  <category>
-    <pattern> SINOPSIS * </pattern>
-    <template>
-      La serie <star/> no esta en el catalogo. Quieres aniadirla?
-      <think>
-        <set name="serieaaniadir"><star/></set>
-        <set name="topic">aniadirserie</set>
-      </think>
-    </template>
-  </category>
-
-  <topic name="aniadirserie">
-    <category>
-      <pattern>^ SI ^ A[NI N]ADELA</pattern>
-      <template>
-        ok, crea en la carpeta maps un archivo llamado <get name="serieaaniadir"/>.txt.
-        Cuando hayas terminado reiniciame y al volver, pideme que anada la serie <get name="serieaaniadir"/>.
-        <think>
-          <set name="topic">unknown</set>
-          <set name="serieaaniadir">unknown</set>
-        </think>
-      </template>
-    </category>
-
-    <category>
-      <pattern>^ NO ^ </pattern>
-      <template>
-        Ok.
-        <think>
-          <set name="topic">unknown</set>
-        </think>
-      </template>
-    </category>
-  </topic>
-
-  <!-- VARIACIONES -->
-
-  <category>
-    <pattern> DE QUE VA (LA SERIE) * </pattern>
-    <template>
-      <srai>SINOPSIS <star/> </srai>
-    </template>
-  </category>
-
-
 
 
 
