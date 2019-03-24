@@ -3,6 +3,28 @@
 
   <!-- =========== NIVEL 2 ===========  -->
 
+    <!-- CONTAR ENTRE DOS -->
+    <category>
+        <pattern>NUMERO *</pattern>
+        <template>
+            <think>
+                <set var="contador">1</set>
+                <set var="salida">1</set>
+                <condition var="contador">
+                    <li><value><star/></value><get var="salida"/></li>
+                    <li>
+                        <think>
+                            <set var="contador">
+                                <map name="successor"><get var="contador"/></map>
+                            </set>
+                        </think>
+                        <loop/>
+                    </li>
+                </condition>
+            </think>
+            <get var="contador"/>
+        </template>
+    </category>
 	<!-- Regla que elimina los espacios de una lista de palabras -->
 	<category>
         <pattern> DECODEARROBA * </pattern>

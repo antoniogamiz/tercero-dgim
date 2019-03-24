@@ -39,7 +39,7 @@
 
   <!-- pregunta 5 -->
   <category>
-    <pattern> ^ desempeñar las funciones de este puesto ^ </pattern>
+    <pattern> ^ desempeniar las funciones de este puesto ^ </pattern>
     <template>
       Si, tengo varios anios de experiencia como pirata en el Grand Line, uno de
       los mares mas peligrosos
@@ -90,7 +90,7 @@
 
   <!-- pregunta 11 -->
   <category>
-    <pattern> ^ trabajos en esta tematica ^ </pattern>
+    <pattern> ^ trabajos ^ en esta tematica ^ </pattern>
     <template>
       Pues ha sido pirata durante los ultimos 2 anios
     </template>
