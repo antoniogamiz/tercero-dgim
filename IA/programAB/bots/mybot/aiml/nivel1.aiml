@@ -25,7 +25,7 @@
 	</template>
 	</category>
 
-  <!-- ================== ANIADIR NUEVA SERIE ================== -->
+  <!-- ================== ANIADIR NUEVO CAPITULO ================== -->
 
   <category>
     <pattern> ^ [incluir aniadir anadir anade] capitulo ^ </pattern>
@@ -181,7 +181,7 @@
           <set name="idiomas"><srai>CODEARROBA <star/></srai></set>
           <set name="topic">subtitulos</set>
         </think>
-        Dime la direccion web
+        Dime los subtitulos en los que se encuentra la serie
       </template>
     </category>
   </topic>
