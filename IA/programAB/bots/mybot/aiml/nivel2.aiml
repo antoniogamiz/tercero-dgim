@@ -236,34 +236,31 @@
         </template>
       </category>
 
-      <!-- CONTAR CAPITULOS TOTALES -->
       <category>
-        <pattern> CAPITULOST <set>seriesnetflix</set> </pattern>
+        <pattern> CONTAR CAPITULOS [<set>seriesnetflix</set> <set>seriesprime</set>] </pattern>
         <template>
           <think>
-            <!-- nos quedamos con las temporadas solo -->
-            <set var="temporadas"><readkeys><star/></readkeys></set>
-            <set var="index"><srai>FINDITEM genero IN <get var="temporadas"/></srai></set>
-            <set var="temporadas"><srai>REMOVEITEM <get var="index"/> IN <get var="temporadas"/></srai></set>
-            <set var="index"><srai>FINDITEM idiomas IN <get var="temporadas"/></srai></set>
-            <set var="temporadas"><srai>REMOVEITEM <get var="index"/> IN <get var="temporadas"/></srai></set>
-            <set var="index"><srai>FINDITEM subtitulos IN <get var="temporadas"/></srai></set>
-            <set var="temporadas"><srai>REMOVEITEM <get var="index"/> IN <get var="temporadas"/></srai></set>
-            <set var="index"><srai>FINDITEM sinopsis IN <get var="temporadas"/></srai></set>
-            <set var="temporadas"><srai>REMOVEITEM <get var="index"/> IN <get var="temporadas"/></srai></set>
-            <set var="index"><srai>FINDITEM web IN <get var="temporadas"/></srai></set>
-            <set var="temporadas"><srai>REMOVEITEM <get var="index"/> IN <get var="temporadas"/></srai></set>
+            <set var="t"><readkeys><star/></readkeys></set>
+            <set var="index"><srai>FINDITEM genero IN <get var="t"/></srai></set>
+            <set var="t"><srai>REMOVEITEM <get var="index"/> IN <get var="t"/></srai></set>
+            <set var="index"><srai>FINDITEM idiomas IN <get var="t"/></srai></set>
+            <set var="t"><srai>REMOVEITEM <get var="index"/> IN <get var="t"/></srai></set>
+            <set var="index"><srai>FINDITEM subtitulos IN <get var="t"/></srai></set>
+            <set var="t"><srai>REMOVEITEM <get var="index"/> IN <get var="t"/></srai></set>
+            <set var="index"><srai>FINDITEM sinopsis IN <get var="t"/></srai></set>
+            <set var="t"><srai>REMOVEITEM <get var="index"/> IN <get var="t"/></srai></set>
+            <set var="index"><srai>FINDITEM web IN <get var="t"/></srai></set>
+            <set var="t"><srai>REMOVEITEM <get var="index"/> IN <get var="t"/></srai></set>
           </think>
           <think>
-            <!-- concatenamos todas las temporadas -->
                 <set var="contador">1</set>
-                <set var="salida"><map name="successor"><srai>COUNT <get var="temporadas"/></srai></map></set>
+                <set var="salida"><map name="successor"><srai>COUNT <get var="t"/></srai></map></set>
                 <set var="concat"></set>
                 <set var="delim"></set>
                 <condition var="contador">
                     <li><value><get var="salida"/></value></li>
                     <li>
-                        <set var="concat"><get var="concat"/><get var="delim"/><map><name><star/></name><srai>SELECTITEM <get var="contador"/> IN <get var="temporadas"/></srai></map></set>
+                        <set var="concat"><get var="concat"/><get var="delim"/><map><name><star/></name><srai>SELECTITEM <get var="contador"/> IN <get var="t"/></srai></map></set>
                         <set var="delim">@</set>                        
                         <set var="contador"><map name="successor"><get var="contador"/></map></set>
                         <loop/>
@@ -271,7 +268,7 @@
                 </condition>
           <set var="respuesta"><srai> CONTAR  <get var="concat"/></srai></set>
           </think>
-          El numero total de capitulos es <get var="respuesta"/>
+          El numero total de capitulos de la serie <star/> es <get var="respuesta"/>
         </template>
       </category>
       <category>
@@ -303,7 +300,7 @@
             <set var="tempt"><srai>REMOVEITEM 1 IN <get var="tempt"/></srai></set>
             <set var="ctemporadas"><srai> COUNT <get var="tempt"/></srai></set>
           </think>
-          El numero de temporadas de la serie <star/> es <get var="ctemporadas"/>
+          El numero de t de la serie <star/> es <get var="ctemporadas"/>
         </template>
       </category> 
       <category>
@@ -315,7 +312,7 @@
 
       <category>
         <pattern>
-          ^ cuantas temporadas tiene la serie *
+          ^ cuantas t tiene la serie *
         </pattern>
         <template>
           <srai> CTEMPORADAS <star index="2"/></srai>

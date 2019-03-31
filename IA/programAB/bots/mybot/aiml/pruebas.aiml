@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+
+
+<!-- ===============Preguntas sobre el numero de capitulos de una temporada de una serie===============-->
+<category>
+        <pattern> [<set>seriesnetflix</set> <set>seriesprime</set>] tiene <set>number</set> capitulo+ en la temporada <set>number</set> </pattern>
+        <template>
+          <think>
+            <set var="num_cap_temp">
+              <srai> count <srai> decode_a <map><name><star/></name>temporada<star index="3"/></map> </srai> </srai>
+            </set>
+      
+            <set var="contador">2</set>
+            <set var="resultado">1</set>
+          </think>
+      
+          <condition var="num_cap_temp">
+            <li><value><get var="contador"/></value></li>
+            <li>
+              <think>
+                <set var="resultado"><map name="successor"><get var="resultado"/></map></set>
+                <set var="contador"><map name="successor"><get var="contador"/></map></set>
+                <set var="contador"><map name="successor"><get var="contador"/></map></set>
+              </think>
+              <loop/>
+            </li>
+          </condition>
+          <condition var="resultado">
+            <li><value><star index="2"/></value><set var="resultado2">Si</set></li>
+            <li><set var="resultado2">No</set></li>
+          </condition>
+        </template>
+      </category>
+      
+
+
+      <category>
+            <pattern> serie [<set>seriesnetflix</set> <set>seriesprime</set>] temporada <set>number</set> </pattern>
+            <template>
+              <think>
+                <set var="num_cap_temp">
+                  <srai> count <srai> decode_a <map><name><star/></name>temporada<star index="2"/></map> </srai> </srai>
+                </set>
+          
+                <set var="contador">2</set>
+                <set var="resultado">1</set>
+              </think>
+          
+              <condition var="num_cap_temp">
+                <li><value><get var="contador"/></value></li>
+                <li>
+                  <think>
+                    <set var="resultado"><map name="successor"><get var="resultado"/></map></set>
+                    <set var="contador"><map name="successor"><get var="contador"/></map></set>
+                    <set var="contador"><map name="successor"><get var="contador"/></map></set>
+                  </think>
+                  <loop/>
+                </li>
+              </condition>
+              <condition var="resultado">
+          </category>
+
+    <category>
+        <pattern>capitulos totales de [<set>seriesnetflix</set> <set>seriesprime</set>] </pattern>
+        <template>
+        
+        <think>
+            <set var="contador">1</set>
+            <set var="current"><map><name><star/></name>temporada<get var="contador"/></map></set>
+            
+            <condition var="current">
+                <li value="unknown"></li>
+                <li>
+                    <think>
+                        <set var="resultado"><map name="successor"><get var="resultado"/></map></set>
+                        <set var="contador"><map name="successor"><get var="contador"/></map></set>
+                    </think>
+                    <loop/>
+                </li>
+            </condition>
+            <condition var="resultado">
+            </think>
+        </template>
+    </category>
+                    
+                    <!--
+                        <category>
+                            <pattern> ^ numero (de) temporadas (que tiene) (la serie de) [<set>seriesnetflix</set> <set>seriesprime</set>] </pattern>
+
+  <template>
+    <think>
+      <set var="num_lineas"><readkeys><star index="2"/></readkeys></set>
+      <set var="num_lineas"><srai>REMOVEITEM 1 IN <get var="num_lineas"/></srai></set>
+      <set var="num_lineas"><srai>REMOVEITEM 1 IN <get var="num_lineas"/></srai></set>
+      <set var="num_lineas"><srai>REMOVEITEM 1 IN <get var="num_lineas"/></srai></set>
+      <set var="num_lineas"><srai>REMOVEITEM 1 IN <get var="num_lineas"/></srai></set>
+      <set var="num_lineas"><srai>REMOVEITEM 1 IN <get var="num_lineas"/></srai></set>
+      <set var="num_temporadas"><srai> count <get var="num_lineas"/></srai></set>
+    </think>
+    La serie <star/> tiene <get var="temporadas"/> temporadas
+    </template>
+  </category>
+
+  <category>
+  <pattern> CTEMPORADAS * </pattern>
+  <template>
+  Esa serie no se encuentra disponible en el catalogo.
+  </template>
+</category>
+
+-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</aiml>
