@@ -1,79 +1,198 @@
-### P2 Leccion 1: ssh + firewall
+### Lección 1 - ssh
 
-las imagenes las podemos borrar a partir de hoy
-creamos una maquina ubuntu y centos con la configuracion estandar para TODO
-lo primero que tenemos que hacer es instalar el servidor ssh, en centos viene por defecto
-hay dos formas de hacerl, una es usando la utilidad tasksel, pero al profe no le gusta por que en la vida real vamos a usar los paquetes de ubuntu de toda la vida
-las distribuciones de ubuntu y ubuntu son paquetes .deb y se gestionan con una utilidad que se llama apt. apt get y apt cache
-hacemos apt-cache para buscar
+#### Pequeña explicación sobre como funciona ssh
 
-apt-cache search sshd
+---
 
-sudo apt-get install openssh-server
+#### Instalación de SSH en Ubuntu
 
-lo unico que tenemos que tener en cuenta es que en ubuntu hay dos comandos, los dos anteriores, pero en centos se usa yump para los dos
-fijate que en la salida pone rsa, dsa y cosas asi que son algoritmos de cifrado
-Al instalarlo ya se queda el ssh como servicio
-Este comando sirve para que servicios hay
+- Crear máquinas virtuales CentOS y Ubuntu con la configuración estándar.
+- Hay que volver a configurar la tarjeta de red (adaptador 2) como Host only (igual que en la práctica anterior).
+- Instalar servidor ssh (en CentOS viene por defecto):
+  - `apt-cache search sshd`
+  - `sudo apt-get install openssh-server`
+- Con `systemctl status ssh` podemos ver el estado del servicio y con `systemctl list-unit-files` podemos ver todos los servicios que hay.
 
-systemctl list-unit-files | grep ssh
+#### Conexión mediante SSH a Ubuntu
 
-con el comando:
+- Necesitamos la IP de la máquina de Ubuntu. Para conseguirla, necesitamos configurar la red primero (como en la práctica 1). Una vez configurada, si ejecutamos `ifconfig -a` deberíamos ver nuestra IP.
+- Para conectarnos usamos `ssh <usuario>@ip` desde la máquina anfitriona (nuestro ordenador).
 
-systemctl status ssh
+#### Contenido carpeta .ssh (se encuentra en el cliente)
 
-vemos como esta el servicio. Como esta funcionando deberia ser capar de conectarme
+- `~/.ssh/id_rsa`: tu clave privada
+- `~/.ssh/id_rsa.pub`: tu clave pública
+- `~/.ssh/authorized_keys`: contiene una lista de claves públicas autorizadas para servidores. Cuando el cliente se conecta al servidor, esta autentica al cliente comprobando la firma de su clave pública guardada en este archivo.
+- `~/.ssh/known_hosts`: contiene claves DSA públicas de los servidores SSH accedidos por el usuario. Este archivo es muy importante para asegurar que el cliente SSH se está conectando con el servidor SSH correcto.
 
-Hemos instlado ssh, que son las siglas de secure shell, es una utilidad que usa protocolo de terminal, es decir nos permite conectarnos desde una terminal a un ordenador remoto y ejecutar cosicas,
-antiguamente se usaba una utilidad que se llama telnet, que ya no se instala por defecto (lo usaremos en la lecciono 3), una caracteristica de telnet era que al hacer telnet <ip> abria una conexion de terminal (se abria una terminal especial llamada rshell), la peculiaridad era que toda la comunicacion se hacia a traves de paquetes abiertos,de forma que no era seguro. No era seguro hasta el punto de que si en la terminal remote haciamos un cat /etc/password eso se transmitiria.
+#### Contenido carpeta /etc/ssh (en el servidor)
 
-SSH usa cifrado para que la comunicacion sea segura, usa dos protocolos, simetrico y asimetrico (o tambien llmado de clave publica)
-noso vamos a conectar desde mi ordenador anfitrion a mi mv, desde el momento que se abre el prompt, todo la comunicacion esta cifrada con una contraseña acordada por ambos anfitriones (por eso es simetrica).
+- `/etc/ssh/sshd_config`: archivo de configuración para el daemon de ssh. Campos que nos interesan:
+  - `Port`: puerto en el que va a escuchar el daemon.
+  - `PermitRootLogin`: para ver permitir acceso root o no.
 
-como lo probamos? nos vamos al ordenador anfitrion, en macs el cliente es ssh, en ubuntu tambien
+#### Modificando la configuración del cliente
 
-ssh david@ipdetuordenador (puedes comprobar tu ip con ifconfig -a, la que aparece en enp0s8)
+- Ejecutamos `vi /etc/ssh/sshd_config` y cambiamos el campo `Port 22` a `Port 22322`.
+- Reiniciamos el servicio con `systemctl restart ssh`.
+- Al hacer `ssh <usuario>ip` debería aparecernos conection refused.
+- Nos conectamos desde el cliente con `ssh -p 22322 <usuario>ip`.
+- Cambiamos el campo `PermitRootLogin prohibit-password` a `PermitRootLogin yes` para permitir el login al usuario root (normalmente esto se deshabilita).
+- Para conectarnos sin usar la contraseña usamos: `ssh-copy-id <usuario>@ip`.
+- Si copiamos el archivo `authorize_keys` en `/root` (que es el directorio home del usuario root) podremos acceder al usuario root mediante ssh.
+- Cambiamos el campo `PermitRootLogin` a `PermitRootLogin no` para deshabilitar el login al usuario root (el profesor lo pedirá así).
 
-david es tu usuario en el ordenador
+#### Conectarnos mediante SSH sin contraseña
 
-//// esto no entra
-al profe le ha salido un mensaje de error que pone WARNING REMOTE HOST IDENTIFICATION HAS CHANGED
-ssh usa un algoritmo de clave asimetrico para el handshake, pero una vez establecido pasa a simetrico porque es mas eficiente
+Nos vamos a la máquina desde la que nos queramos conectar, por ejemplo Ubuntu, y generamos nuestras llaves con `ssh-keygen` (le damos todo a enter) y luego ejecutamos `ssh-copy-id <usuariocentos>@ipcentos` y ya estaría. Ahora al hacer `ssh <usuariocentos>@ipcentos` se conectará directamente sin pedir contraseña.
 
-al principio todo el mundo usaba algoeritmos de clave simetrica, es decir, emisor y receptor compartian una misma llave, poniendose de acuerdo, o sea que cogemos un mensaje, lo ciframos con la llave, se lo mandamos al otro, que la descifraba tambien con la misma llave. Lo malo de esto es cuando tenemos una red con mas de una persona, cuando tenemos una red con varias personas tenemos varias alternativas, o todos tiene la misma llave (lo que se hacie en la segunda guerra mundial), el problema es que si se pierde la llave todo el sistema estaria en peligro, la alternative es que cada par de personas tengan una llave privada para ellos, pero creceria el numero de llaves por lo que seria complicado mantenerlos. Por estas razones se invento lo asimetrico
+#### Configuración del firewall
 
-Las claves son un chorro de bits (256, 1024, etc) cuanto mas grande mejor, mas seguro.
+##### Ubuntu
 
-Un algoritmo que sigue usando, simetrico, se llama des, tdes.
+`ufw` es el encargado de gestionar el firewall en Ubuntu. Con `ufw status` podemos ver si está habilitado a deshabilitado y con `ufw enable` y `ufw disable` lo activamos o desactivamos. Esos cambios solo se guardan localmente por lo que cuando reiniciemos la máquina se perderán. Para hacerlos de forma fija usamos `systemctl enable ufw` y `systemctl status ufw`.
 
-ASIMETRICO: algoritmo de llave publica. La diferencia con el anterior es que cad apersona tiene dos llaves, una llave que se llama privada, y otra llave que llamamos publica,no hay diferencia entre ellas. La publica se la damos a todo el mundo. Una caracteristica de este algoritmo es que cuando cifras algo usando tu llave privada, y se lo envias a alguien, se tiene que descifrar usando la llave publica, pero esto funciona en la dos direcciona, es decir, el emisor codifica con la publica del receptor. pero todo el mundo puede descifarlo, eso sirve para garantizar autencidad
+Si ahora nos intentamos conectar a la máquina usando ssh, veremos que no nos dejará. Tenemos que activar `OpenSSH` en el firewall: `ufw allow OpenSSH`.
 
-firma digital
+Si borramos las reglas anteriores (con `ufw deny OpenSSH` o `ufw delete 1`) y hacemos `ufw allow 22/tcp` también nos dejará conectarnos.
 
-a partir de aqui es un lio tomar apuntes, es igual que en fr asi que no hace falta tomarlos.
+##### CentOS
 
-////
+Si por comodidad, en lugar de usar ips, puedes crear un alias de la máquina usando `sudo hostname <alias>`.
 
-en el directorio .ssh (que esta en el tu directorio home) donde se almacenan las claves publicas y privadas
-como se inicia al handshajing de ssh? cuando lo instalamos
+Para poder hacerte root en CentOS necesitas modificar el archivo `/etc/sudoers` mediante el comando `usermod -G wheel <usuario>`.
 
-ssh david@2192.168.56.11
-si te crees que esa es tu llave publica, ya la tenemos, a partir de ahora podemos enviar info y aunque haya alguien en el medio que se quede con la llave publica no le vale para naada al no tener la privada del servidor. el cliente en secreto le propone una clave simetrica, que es mas eficiente y a partir de ahi se transmiten las cosas cifradas. cd .ssh, less known_hosts tiene las llaves publicas de toodos los sitios en los uqe me he conectado.
-7ç
-nos vamos a etc por estar alli los ficheros de configuracion, poniendonos en modo root. cd ssh/
-tenemos varios archvios de configuracion, nos vamos a sshd_config, para modificar el ssh del servidor, su daemon. si lo abrimos tenemos su puerto, si se permite o no root, vamos a cambiar el puerto por ver como funciona y desactivar el acceso remoto del root, que normalmente siempre se hace, sin permitir el acceso a root directamente. se cambia el puerto para que si alguien hace sniffer de puertos no le salga directamente.
-poenemos por ejemplo el puerto 22322, para que ssh coja los cambios tenemos que reiniciar el servicio systemctl restart ssh. si esta bien configurado, no matamos el servidor y lo volvemos a arrancar perderiamos la conexion ssh, pero eso no pasa, ssh engendra un nuevo hijo para atender las peticiones sin matar a los anteriores. al hacer systemctl status ssh me aparece el puerto 22322, y al hacer ssh david@ip ya no se conecta, hay que especificar el puerto con -p 22322 antes de poner david@ip, antes no habia uqe poner nada porque lo tomaba por defecto.
+En CentOS para configurar el firewall se usa el comando `firewall-cmd`. Para ver el estado del servicio usamos `systemctl status firewalld`. Los archivos de configuración se encuentran en `/etc/firewalld`.
 
-ubuntu por defecto no da contraseña al root, se la damos con passwd (estamos en modo root), pero no nos deja conectarnos porque en el archvio /etc/ssh pone prohibit--passwor para el usuario. toda la administracion moderna de servidores se basa en el servicio de automatizacion, mas rapida y control de calidad porque todas las acciones que hagamos con scripts automaticos es codigo, qeu se puede gestionar, mejorar,... para conseguir una comunicacion sin contraseña usaremos llave publica y llave privada. si le damos a ssh tabulador , al ejecutar keygen , ssh-keygen me dice que vamos a generar un par llave public y llave privada (lo hacemos en modo normal), en david, y nos pregunta si queremos contrasseña para la llave privada, para no tener que darla todo el rato esta ssh-agent, la primera vez qe nos conectamos si la pide pero futuros usos la tiene en memoria y ya no te la pide mas. en sistemas totalmente automaticos como ansible la llave privada esta protegida con un certificado, se descifra automaticamnete, pero no es lo normal. metemos contraseña para ver un caso real.
+- `firewall-cmd --remove service=ssh --permanent`
+- `firewall-cmd --add-service=ssh --permanent`
+- `firewall-cmd --add-port=22/tcp --permanent`
+- En lugar de `--permanent` podemos usar `--runtime-to-permanent`.
 
-nos da una representacion grafica de la entropia de la llave que hemos generado, cuanto mas aleatoria la secuencia de bits mejor. cd, cd .ssh y tenemos id_rsa y id_rsa.pub, una es la llave privada y otra la publica. less id_rsa.pub. cuando las generamos tambien podemos poner un comentario ssh-keygen -c 'correoelectronico propio', si no coge el nombre de usuario en la maquina. si hacemos lo anterior con la privada vemos uqe sale que esta encrypted.
+### Lección 2 - Backups y Sistemas de Control de Versiones
 
-ya tenemos llave publica y privada, como nos conectamos usandola??
+#### dd
 
-damos la llave publica y la usamos para autenticarnos, desde la maquina cliente le psaamos nuestra llave publica de manera que en el futuro cuando me vaya a conectar ciframos cualquier cadena, se la devolvemos cifrada con la llave privada, la descifra con la llave publica nuestra y se asegura asi que somos nosotros, es como un handshaking: el servidor me manda frase, se la devolvemos cifrada con la llave privada, el la descifra usando mi llave publica y ya obtiene la frase original pues. las compara, si son igual guay si no mal. como le hacemos llegar a un servidor nuestra llave publica, normalemnte copiando y pegando, por correo, en un pendrive, de cualquier forma porque es publica.
+Sistema de copias a nivel de dispositivos.
 
-nosotros lo hacemos entre dos maquinas linux. ssh-copy-id -p 22322david@ip, lo vamos a pasar por ftp. le damos a enter, me pide la contraseña, es la primera vez que me conecto, la ponemos. si volvemos a poner el puerto 22 mejor y nos ahorramos escribir. al hacer ls en el servidor ha aparecido un fichero nuevo, authorized keys. copiamos el comando que nos dice en el mac y nos pide contraseña, que es la que pide solo una vez, al hacer ssh-add, y hacemos ssh david@ip. nosotros no hace falta uqe cifremos la clave privda, cuando pida passphrase la dejamos en blanco. ssh-agent lanza el proceso y ssh-add añade la llave.
+Esta utilidad lo copia todo en raw por lo que nos saltamos el buffer del sistema de ficheros (algunas cosas podrían perderse).
 
-fijarnos en los ficheros que se generan eso si preguntara, para que se usa la llave publica, la privada,...
+- `dd if=/dev/sd1 of=./sda1.raw bs=1024k`
+- `dd if=/dev/zero of=./zeros.dat bs=1k count=5`
 
-gestion de los firewalls en ubuntu--- se gestionan con ufw, unified firewalls, su ayuda es bastante intuitiva. ufw status, como root, por defecto esta desactivada, en centos por defecto activado.
+#### cpio
+
+Sistema de copias a nivel de sistemas de ficheros.
+
+Es un formato estándar, se usa para meter estructuras de directorios complejas en un solo archivo.
+
+- `find /etc/ -iname '\*.conf' | cpio -ov > ./etc/Conf.cpio`
+- `cpio -iduv < ./etc/Conf.cpio`
+- `cpio -iduv '/etc/fuse.conf' < ./etc/Conf.cpio`
+
+#### tar
+
+Sistemas de copias a nivel de archivos
+
+- `tar czf /tmp/etc.tgz`
+- `tar xzf /tmp/etc.tgz`
+
+#### rsync
+
+Para mantener ficheros sincronizados entre dos máquinas.
+
+- `rsync -a ./dev antonio@ip ip:/home/antonio`
+- borramos algo
+- ejecutamos otra vez el comando anterior y vemos que reaparece.
+
+### Lección 3: LAMP Stack (Linux, Apache, MySQL, PHP)
+
+Nos vamos a Ubuntu y ejecutamos `tasksel`, buscamos la opción `LAMP server`, la seleccionamos con espacio y pulsamos enter.
+
+Con `systemctl status apache2` podemos ver que Apache está correctamente instalado. En `/etc/apache2` está la configuración. El archivo más importante es `apache2.conf`. Podemos comprobar que funciona correctamente lanzando un navegador y escribiendo `http://tuipdeubuntu`.
+
+Si no funciona puede ser porque el firewall esté activo: desactívalo o añade el puerto 80 con `ufw allow 80/tcp`. También podemos usar `lynx localhost` o `curl http://localhost` (con -v podemos ver las cabeceras de la petición).
+
+Ahora tenemos que comprobar que funciona MySQL ejecutando `mysql`. Con php igual: `php -a` (en `/etc/php/7.0` está la configuración)
+
+Añadimos a `var/www/html/index.html` en el body:
+
+```
+<?php
+phpinfo();
+?>
+```
+
+Y renombramos el archivo con: `mv index.html index.php`.
+
+Ahora nos cambiamos a CentOS y vamos a hacer lo mismo:
+
+- `yum install httpd`
+- `systemctl enable httpd`
+- `systemctl start httpd`
+- `firewall-cmd --add-service=http`
+- `yum install php`
+- `apachectl restart`
+
+Creamos `index.php` en `/var/www/html` conteniendo:
+
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<?php
+phpinfo();
+?>
+</body>
+</html>
+```
+
+Instalamos y configuramos MariaDB:
+
+- `yum install mariadb-server`
+- `systemctl enable mariadb`
+- `systemctl start mariadb`
+
+Es recomnedable ejecutar `mysql_secure_installation`.
+
+Creamos un usuario:
+
+- `mysql -uroot -pantonio`
+- `create database ise2019;`
+- `grant all privileges on ise2019.\* to 'isedev'@'localhost' identified by 'isedev';`
+- `flush privileges;`
+- `exit`
+- Para comprobar que funciona: `mysql -uisedev -pisedev ise2019`.
+- `yum install php-mysql` y reiniciamos apache `apachectl restart`.
+
+Y sustituimos el body de `/var/www/index.php`, quedándonos así:
+
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<?php
+<?php
+$link = mysql_connect('localhost', 'mysql_user', 'mysql_password');
+if (!$link) {
+    die('Could not connect: ' . mysql_error());
+}
+echo 'Connected successfully';
+mysql_close($link);
+?>
+?>
+</body>
+</html>
+```
