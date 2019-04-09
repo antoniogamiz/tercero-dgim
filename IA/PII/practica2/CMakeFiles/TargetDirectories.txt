@@ -1,0 +1,9 @@
+/home/antonio/Code/Universidad/tercero-dgim/IA/PII/practica2/CMakeFiles/BelkanSG.dir
+/home/antonio/Code/Universidad/tercero-dgim/IA/PII/practica2/CMakeFiles/Belkan.dir
+/home/antonio/Code/Universidad/tercero-dgim/IA/PII/practica2/CMakeFiles/rebuild_cache.dir
+/home/antonio/Code/Universidad/tercero-dgim/IA/PII/practica2/CMakeFiles/motorLib.dir
+/home/antonio/Code/Universidad/tercero-dgim/IA/PII/practica2/CMakeFiles/obj3DLib.dir
+/home/antonio/Code/Universidad/tercero-dgim/IA/PII/practica2/CMakeFiles/edit_cache.dir
+/home/antonio/Code/Universidad/tercero-dgim/IA/PII/practica2/CMakeFiles/GLUILib.dir
+/home/antonio/Code/Universidad/tercero-dgim/IA/PII/practica2/CMakeFiles/modelosBelkanLib.dir
+/home/antonio/Code/Universidad/tercero-dgim/IA/PII/practica2/CMakeFiles/comportamientosLib.dir
