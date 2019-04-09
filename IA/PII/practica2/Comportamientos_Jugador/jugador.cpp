@@ -11,33 +11,55 @@
 // sensores y devuelve la acción a realizar.
 Action ComportamientoJugador::think(Sensores sensores)
 {
-	Action accion = actIDLE;
-	// Estoy en el nivel 1
+	Action sigAccion = actIDLE;
 
+	// Estoy en el nivel 1
 	if (sensores.nivel != 4)
 	{
-		// if (sensores.mensajeF != -1){
-		// 	fil = sensores.mensajeF;
-		// 	col = sensores.mensajeC;
-		// 	brujula = 0; // 0 corresponde con Norte
+		//Capturar los valores de filas y columnas
+		if (sensores.mensajeF != -1)
+		{
+			fil = sensores.mensajeF;
+			col = sensores.mensajeC;
+		}
 
-		// 	actual.fila = fil;
-		// 	actual.columna = col;
-		// 	actual.orientacion = brujula;
+		// Actualizar el efecto de la ultima accion
+		switch (ultimaAccion)
+		{
+		case actTURN_R:
+			brujula = (brujula + 1) % 4;
+			break;
+		case actTURN_L:
+			brujula = (brujula + 3) % 4;
+			break;
+		case actFORWARD:
+			switch (brujula)
+			{
+			case 0:
+				fil--;
+				break;
+			case 1:
+				col++;
+				break;
+			case 2:
+				fil++;
+				break;
+			case 3:
+				col--;
+				break;
+			}
+			break;
+		}
 
-		// 	destino.fila = sensores.destinoF;
-		// 	destino.columna = sensores.destinoC;
-		// }
-
-		// bool hay_plan = pathFinding (sensores.nivel, actual, destino, plan);
+		// Sistema de movimiento
 		if (sensores.terreno[2] == 'P' or sensores.terreno[2] == 'M' or
 			sensores.terreno[2] == 'D' or sensores.superficie[2] == 'a')
 		{
-			accion = actTURN_R;
+			sigAccion = actTURN_R;
 		}
 		else
 		{
-			accion = actFORWARD;
+			sigAccion = actFORWARD;
 		}
 	}
 	else
@@ -46,7 +68,10 @@ Action ComportamientoJugador::think(Sensores sensores)
 		cout << "Aún no implementado el nivel 2" << endl;
 	}
 
-	return accion;
+	//Recordar la ultima accion
+	ultimaAccion = sigAccion;
+
+	return sigAccion;
 }
 
 // Llama al algoritmo de busqueda que se usará en cada comportamiento del agente
