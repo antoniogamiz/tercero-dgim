@@ -6,6 +6,7 @@
 #include <set>
 #include <stack>
 #include <queue>
+#include <limits.h>
 
 // Este es el método principal que debe contener los 4 Comportamientos_Jugador
 // que se piden en la práctica. Tiene como entrada la información de los
@@ -109,7 +110,7 @@ bool ComportamientoJugador::pathFinding(int level, const estado &origen, const e
 		break;
 	case 3:
 		cout << "Busqueda Costo Uniforme\n";
-		// Incluir aqui la llamada al busqueda de costo uniforme
+		return pathFinding_Peso(origen, destino, plan);
 		break;
 	case 4:
 		cout << "Busqueda para el reto\n";
@@ -180,6 +181,12 @@ struct nodo
 {
 	estado st;
 	list<Action> secuencia;
+	int peso = INT_MAX;
+
+	bool operator()(const nodo &lhs, const nodo &rhs)
+	{
+		return lhs.peso > rhs.peso;
+	}
 };
 
 struct ComparaEstados
@@ -349,6 +356,83 @@ bool ComportamientoJugador::pathFinding_Anchura(const estado &origen, const esta
 	return false;
 }
 
+bool ComportamientoJugador::pathFinding_Peso(const estado &origen, const estado &destino, list<Action> &plan)
+{
+	//Borro la lista
+	cout << "Calculando plan\n";
+	plan.clear();
+	set<estado, ComparaEstados> generados;		   // Lista de Cerrados
+	priority_queue<nodo, vector<nodo>, nodo> cola; // Lista de Abiertos
+
+	nodo current;
+	current.st = origen;
+	current.secuencia.empty();
+
+	cola.push(current);
+
+	while (!cola.empty() and (current.st.fila != destino.fila or current.st.columna != destino.columna))
+	{
+
+		cola.pop();
+		generados.insert(current.st);
+
+		// Generar descendiente de girar a la derecha
+		nodo hijoTurnR = current;
+		hijoTurnR.st.orientacion = (hijoTurnR.st.orientacion + 1) % 4;
+		if (generados.find(hijoTurnR.st) == generados.end())
+		{
+			hijoTurnR.secuencia.push_back(actTURN_R);
+			cola.push(hijoTurnR);
+		}
+
+		// Generar descendiente de girar a la izquierda
+		nodo hijoTurnL = current;
+		hijoTurnL.st.orientacion = (hijoTurnL.st.orientacion + 3) % 4;
+		if (generados.find(hijoTurnL.st) == generados.end())
+		{
+			hijoTurnL.secuencia.push_back(actTURN_L);
+			cola.push(hijoTurnL);
+		}
+
+		// Generar descendiente de avanzar
+		nodo hijoForward = current;
+		if (!HayObstaculoDelante(hijoForward.st))
+		{
+			if (generados.find(hijoForward.st) == generados.end())
+			{
+				hijoForward.secuencia.push_back(actFORWARD);
+				hijoForward.peso = calcularPeso(hijoForward.secuencia);
+				cola.push(hijoForward);
+			}
+		}
+
+		// Tomo el siguiente valor de la pila
+		if (!cola.empty())
+		{
+			current = cola.top();
+		}
+	}
+
+	cout << "Terminada la busqueda\n";
+
+	if (current.st.fila == destino.fila and current.st.columna == destino.columna)
+	{
+		cout << "Cargando el plan\n";
+		plan = current.secuencia;
+		cout << "Longitud del plan: " << plan.size() << endl;
+		PintaPlan(plan);
+		// ver el plan en el mapa
+		VisualizaPlan(origen, plan);
+		return true;
+	}
+	else
+	{
+		cout << "No encontrado plan\n";
+	}
+
+	return false;
+}
+
 // Sacar por la términal la secuencia del plan obtenido
 void ComportamientoJugador::PintaPlan(list<Action> plan)
 {
@@ -463,4 +547,60 @@ Action ComportamientoJugador::movimientoReactivo(Sensores sensores)
 	}
 
 	return sigAccion;
+}
+
+int ComportamientoJugador::calcularPeso(list<Action> &plan)
+{
+	estado current = actual;
+	int peso = 0;
+	for (list<Action>::iterator it = plan.begin(); it != plan.end(); ++it)
+	{
+		// prettier-ignore
+		switch (*it)
+		{
+		case actTURN_R:
+			current.orientacion = (current.orientacion + 1) % 4;
+			break;
+		case actTURN_L:
+			current.orientacion = (current.orientacion + 3) % 4;
+			break;
+		case actFORWARD:
+			peso += getPeso(current);
+			switch (current.orientacion)
+			{
+			case 0:
+				current.fila--;
+				break;
+			case 1:
+				current.columna++;
+				break;
+			case 2:
+				current.fila++;
+				break;
+			case 3:
+				current.columna--;
+				break;
+			}
+			break;
+		}
+	}
+	return peso;
+}
+
+int ComportamientoJugador::getPeso(const estado &casilla)
+{
+	switch (mapaResultado[casilla.fila][casilla.columna])
+	{
+	case 'A':
+		return 10;
+		break;
+	case 'B':
+		return 5;
+		break;
+	case 'S':
+		return 2;
+		break;
+	default:
+		return 1;
+	}
 }
