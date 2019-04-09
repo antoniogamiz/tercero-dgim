@@ -21,6 +21,7 @@ Action ComportamientoJugador::think(Sensores sensores)
 		{
 			fil = sensores.mensajeF;
 			col = sensores.mensajeC;
+			ultimaAccion = actIDLE;
 		}
 
 		// Actualizar el efecto de la ultima accion
@@ -51,15 +52,32 @@ Action ComportamientoJugador::think(Sensores sensores)
 			break;
 		}
 
-		// Sistema de movimiento
-		if (sensores.terreno[2] == 'P' or sensores.terreno[2] == 'M' or
-			sensores.terreno[2] == 'D' or sensores.superficie[2] == 'a')
+		// Mirar si ha cambiado el destino
+		if (sensores.destinoF != destino.fila or sensores.destinoC != destino.columna)
 		{
-			sigAccion = actTURN_R;
+			destino.fila = sensores.destinoF;
+			destino.columna = sensores.destinoC;
+			hayPlan = false;
+		}
+
+		//Calcular un camino hasta el destino
+		if (!hayPlan)
+		{
+			actual.fila = fil;
+			actual.columna = col;
+			actual.orientacion = brujula;
+			hayPlan = pathFinding(sensores.nivel, actual, destino, plan);
+		}
+
+		// Si hay plan, se sigue. En caso contrario comportamiento reactivo
+		if (hayPlan and plan.size() > 0)
+		{
+			sigAccion = plan.front();
+			plan.erase(plan.begin());
 		}
 		else
 		{
-			sigAccion = actFORWARD;
+			sigAccion = movimientoReactivo(sensores);
 		}
 	}
 	else
@@ -335,4 +353,37 @@ void ComportamientoJugador::VisualizaPlan(const estado &st, const list<Action> &
 int ComportamientoJugador::interact(Action accion, int valor)
 {
 	return false;
+}
+
+Action ComportamientoJugador::movimientoReactivo(Sensores sensores)
+{
+	Action sigAccion = actIDLE;
+	unsigned char casilla;
+	switch (brujula)
+	{
+	case 0:
+		casilla = mapaResultado[fil - 1][col];
+		break;
+	case 1:
+		casilla = mapaResultado[fil][col + 1];
+		break;
+	case 2:
+		casilla = mapaResultado[fil + 1][col];
+		break;
+	case 3:
+		casilla = mapaResultado[fil][col - 1];
+		break;
+	}
+
+	if (casilla == 'P' or casilla == 'M' or
+		casilla == 'D' or sensores.superficie[2] == 'a')
+	{
+		sigAccion = actTURN_R;
+	}
+	else
+	{
+		sigAccion = actFORWARD;
+	}
+
+	return sigAccion;
 }
