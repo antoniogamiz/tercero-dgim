@@ -7,6 +7,8 @@
 #include <stack>
 #include <queue>
 #include <limits.h>
+#include <stdlib.h>
+#include <time.h>
 
 // Este es el método principal que debe contener los 4 Comportamientos_Jugador
 // que se piden en la práctica. Tiene como entrada la información de los
@@ -84,8 +86,19 @@ Action ComportamientoJugador::think(Sensores sensores)
 	}
 	else
 	{
-		// Estoy en el nivel 2
-		cout << "Aún no implementado el nivel 2" << endl;
+		//no sabemos destino todavia
+		if (destino.fila == -1)
+		{
+			sigAccion = randomMove(sensores);
+		}
+
+		if (sensores.mensajeF != -1)
+		{
+			fil = sensores.mensajeF;
+			col = sensores.mensajeC;
+			cout << "Punto de referencia encontrado!" << endl;
+			mapaResultado[fil][col] = 'K';
+		}
 	}
 
 	//Recordar la ultima accion
@@ -127,7 +140,7 @@ bool ComportamientoJugador::pathFinding(int level, const estado &origen, const e
 // pasar por ella sin riegos de morir o chocar.
 bool EsObstaculo(unsigned char casilla)
 {
-	if (casilla == 'P' or casilla == 'M' or casilla == 'D')
+	if (casilla == 'P' or casilla == 'M' or casilla == 'D' or casilla == 'a')
 		return true;
 	else
 		return false;
@@ -136,6 +149,7 @@ bool EsObstaculo(unsigned char casilla)
 // Comprueba si la casilla que hay delante es un obstaculo. Si es un
 // obstaculo devuelve true. Si no es un obstaculo, devuelve false y
 // modifica st con la posición de la casilla del avance.
+
 bool ComportamientoJugador::HayObstaculoDelante(estado &st)
 {
 	int fil = st.fila, col = st.columna;
@@ -382,6 +396,7 @@ bool ComportamientoJugador::pathFinding_Peso(const estado &origen, const estado 
 		if (generados.find(hijoTurnR.st) == generados.end())
 		{
 			hijoTurnR.secuencia.push_back(actTURN_R);
+			hijoTurnR.peso = calcularPeso(hijoTurnR.secuencia);
 			cola.push(hijoTurnR);
 		}
 
@@ -391,6 +406,7 @@ bool ComportamientoJugador::pathFinding_Peso(const estado &origen, const estado 
 		if (generados.find(hijoTurnL.st) == generados.end())
 		{
 			hijoTurnL.secuencia.push_back(actTURN_L);
+			hijoTurnL.peso = calcularPeso(hijoTurnL.secuencia);
 			cola.push(hijoTurnL);
 		}
 
@@ -553,16 +569,20 @@ int ComportamientoJugador::calcularPeso(list<Action> &plan)
 {
 	estado current = actual;
 	int peso = 0;
+	int distance;
 	for (list<Action>::iterator it = plan.begin(); it != plan.end(); ++it)
 	{
+		distance = sqrt((destino.fila - current.fila) ^ 2 + (destino.columna - current.columna) ^ 2);
 		// prettier-ignore
 		switch (*it)
 		{
 		case actTURN_R:
 			current.orientacion = (current.orientacion + 1) % 4;
+			peso += 1;
 			break;
 		case actTURN_L:
 			current.orientacion = (current.orientacion + 3) % 4;
+			peso += 1;
 			break;
 		case actFORWARD:
 			peso += getPeso(current);
@@ -584,7 +604,7 @@ int ComportamientoJugador::calcularPeso(list<Action> &plan)
 			break;
 		}
 	}
-	return peso;
+	return peso + distance;
 }
 
 int ComportamientoJugador::getPeso(const estado &casilla)
@@ -602,5 +622,109 @@ int ComportamientoJugador::getPeso(const estado &casilla)
 		break;
 	default:
 		return 1;
+	}
+}
+
+// devuelve un movimiento random valido
+Action ComportamientoJugador::randomMove(Sensores sensores)
+{
+	Action sigAccion = actIDLE;
+	srand(time(NULL));
+	float num = (1 + rand() % 100) / 100.0;
+	if (num < 0.1)
+	{
+		sigAccion = actTURN_L;
+	}
+	else if (0.1 <= num and num < 0.2)
+	{
+		sigAccion = actTURN_R;
+	}
+	else
+	{
+		sigAccion = actFORWARD;
+	}
+	if (HayObstaculoDelante2(sensores) and sigAccion == actFORWARD)
+	{
+		sigAccion = actTURN_R;
+	}
+
+	return sigAccion;
+}
+
+estado ComportamientoJugador::move(const estado &st, Action accion)
+{
+	estado nst = st;
+	switch (st.orientacion)
+	{
+	case 0:
+		switch (accion)
+		{
+		case actFORWARD:
+			nst.fila--;
+			break;
+		case actTURN_R:
+			nst.orientacion = (nst.orientacion + 1) % 4;
+			break;
+		case actTURN_L:
+			nst.orientacion = (nst.orientacion + 3) % 4;
+			break;
+		}
+		break;
+	case 1:
+		switch (accion)
+		{
+		case actFORWARD:
+			nst.columna++;
+			break;
+		case actTURN_R:
+			nst.orientacion = (nst.orientacion + 1) % 4;
+			break;
+		case actTURN_L:
+			nst.orientacion = (nst.orientacion + 3) % 4;
+			break;
+		}
+		break;
+	case 2:
+		switch (accion)
+		{
+		case actFORWARD:
+			nst.fila++;
+			break;
+		case actTURN_R:
+			nst.orientacion = (nst.orientacion + 1) % 4;
+			break;
+		case actTURN_L:
+			nst.orientacion = (nst.orientacion + 3) % 4;
+			break;
+		}
+		break;
+	case 3:
+		switch (accion)
+		{
+		case actFORWARD:
+			nst.columna--;
+			break;
+		case actTURN_R:
+			nst.orientacion = (nst.orientacion + 1) % 4;
+			break;
+		case actTURN_L:
+			nst.orientacion = (nst.orientacion + 3) % 4;
+			break;
+		}
+		break;
+	}
+	return nst;
+}
+
+bool ComportamientoJugador::HayObstaculoDelante2(Sensores sensores)
+{
+	// Miro si en esa casilla hay un obstaculo infranqueable
+	if (!EsObstaculo(sensores.terreno[2]) and !EsObstaculo(sensores.superficie[2]))
+	{
+		return false;
+	}
+	else
+	{
+		return true;
 	}
 }

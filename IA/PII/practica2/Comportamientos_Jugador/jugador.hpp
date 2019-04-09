@@ -56,7 +56,8 @@ private:
   bool hayPlan;
 
   // Métodos privados de la clase
-  bool pathFinding(int level, const estado &origen, const estado &destino, list<Action> &plan);
+  bool
+  pathFinding(int level, const estado &origen, const estado &destino, list<Action> &plan);
   bool pathFinding_Profundidad(const estado &origen, const estado &destino, list<Action> &plan);
   bool pathFinding_Anchura(const estado &origen, const estado &destino, list<Action> &plan);
   bool pathFinding_Peso(const estado &origen, const estado &destino, list<Action> &plan);
@@ -68,6 +69,9 @@ private:
   Action movimientoReactivo(Sensores sensores);
   int calcularPeso(list<Action> &plan);
   int getPeso(const estado &casilla);
+  Action randomMove(Sensores sensores);
+  estado move(const estado &st, Action accion);
+  bool HayObstaculoDelante2(Sensores sensores);
 };
 
 #endif
