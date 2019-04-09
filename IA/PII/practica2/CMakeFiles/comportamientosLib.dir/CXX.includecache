@@ -35,6 +35,8 @@ set
 -
 stack
 -
+queue
+-
 
 /home/antonio/Code/Universidad/tercero-dgim/IA/PII/practica2/Comportamientos_Jugador/jugador.hpp
 comportamientos/comportamiento.hpp
