@@ -25,6 +25,7 @@ public:
     destino.orientacion = -1;
     ultimaAccion = actIDLE;
     hayPlan = false;
+    pkencontrado = false;
   }
   ComportamientoJugador(std::vector<std::vector<unsigned char>> mapaR) : Comportamiento(mapaR)
   {
@@ -36,6 +37,7 @@ public:
     destino.orientacion = -1;
     ultimaAccion = actIDLE;
     hayPlan = false;
+    pkencontrado = false;
   }
   ComportamientoJugador(const ComportamientoJugador &comport) : Comportamiento(comport) {}
   ~ComportamientoJugador() {}
@@ -54,6 +56,7 @@ private:
   // Nuevas variable de estado
   Action ultimaAccion;
   bool hayPlan;
+  bool pkencontrado;
 
   // Métodos privados de la clase
   bool
@@ -72,6 +75,8 @@ private:
   Action randomMove(Sensores sensores);
   estado move(const estado &st, Action accion);
   bool HayObstaculoDelante2(Sensores sensores);
+  void updateView(const estado &pos, vector<unsigned char> &terreno);
+  int updateBrujula(int current, Action accion);
 };
 
 #endif

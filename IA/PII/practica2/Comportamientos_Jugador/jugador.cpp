@@ -16,7 +16,7 @@
 Action ComportamientoJugador::think(Sensores sensores)
 {
 	Action sigAccion = actIDLE;
-
+	actual.orientacion = 0;
 	// Estoy en el nivel 1
 	if (sensores.nivel != 4)
 	{
@@ -86,24 +86,61 @@ Action ComportamientoJugador::think(Sensores sensores)
 	}
 	else
 	{
-		//no sabemos destino todavia
-		if (destino.fila == -1)
+		/*====== ACTUALIZACION POSICION ======*/
+		if (sensores.mensajeF != -1 and !pkencontrado)
 		{
-			sigAccion = randomMove(sensores);
+			actual.fila = sensores.mensajeF;
+			actual.columna = sensores.mensajeC;
+			pkencontrado = true;
+		}
+		brujula = updateBrujula(brujula, ultimaAccion);
+		actual.orientacion = brujula;
+		actual = move(actual, ultimaAccion);
+		/*====================================*/
+		if (pkencontrado)
+		{
+			cout << "Actual: " << actual.fila << " " << actual.columna << " " << actual.orientacion << endl;
+			updateView(actual, sensores.terreno);
 		}
 
-		if (sensores.mensajeF != -1)
-		{
-			fil = sensores.mensajeF;
-			col = sensores.mensajeC;
-			cout << "Punto de referencia encontrado!" << endl;
-			mapaResultado[fil][col] = 'K';
-		}
+		/*====== MOVIMIENTO ======*/
+		sigAccion = randomMove(sensores);
+		/*====================================*/
+
+		// if (pkencontrado)
+		// {
+		// 	cout << "Actual: " << old.fila << " " << old.columna << " " << old.orientacion << endl;
+		// 	updateView(old, sensores.terreno);
+		// }
+		// //no sabemos destino todavia
+		// // if (destino.fila == -1 || pkencontrado)
+		// // {
+		// sigAccion = randomMove(sensores);
+		// actual.orientacion = brujula;
+		// actual = move(actual, ultimaAccion);
+		// old = actual;
+		// brujula = updateBrujula(brujula, ultimaAccion);
+		// // }
+
+		// if (sensores.mensajeF != -1 and !pkencontrado)
+		// {
+		// 	cout << "Punto de referencia encontrado!" << endl;
+		// 	cout << sensores.mensajeF << sensores.mensajeC << endl;
+		// 	mapaResultado[sensores.mensajeF][sensores.mensajeC] = 'K';
+		// 	actual.fila = sensores.mensajeF;
+		// 	actual.columna = sensores.mensajeC;
+		// 	pkencontrado = true;
+		// }
+
+		// if (pkencontrado)
+		// {
+		// 	cout << "Actual: " << actual.fila << " " << actual.columna << " " << actual.orientacion << endl;
+		// 	updateView(actual, sensores.terreno);
+		// }
 	}
 
 	//Recordar la ultima accion
 	ultimaAccion = sigAccion;
-
 	return sigAccion;
 }
 
@@ -653,67 +690,37 @@ Action ComportamientoJugador::randomMove(Sensores sensores)
 
 estado ComportamientoJugador::move(const estado &st, Action accion)
 {
-	estado nst = st;
-	switch (st.orientacion)
+	estado cst;
+	cst.fila = st.fila;
+	cst.columna = st.columna;
+	cst.orientacion = st.orientacion;
+	if (accion == actFORWARD)
 	{
-	case 0:
-		switch (accion)
+		switch (cst.orientacion)
 		{
-		case actFORWARD:
-			nst.fila--;
+		case 0:
+			cst.fila--;
 			break;
-		case actTURN_R:
-			nst.orientacion = (nst.orientacion + 1) % 4;
+		case 1:
+			cst.columna++;
 			break;
-		case actTURN_L:
-			nst.orientacion = (nst.orientacion + 3) % 4;
+		case 2:
+			cst.fila++;
+			break;
+		case 3:
+			cst.columna--;
 			break;
 		}
-		break;
-	case 1:
-		switch (accion)
-		{
-		case actFORWARD:
-			nst.columna++;
-			break;
-		case actTURN_R:
-			nst.orientacion = (nst.orientacion + 1) % 4;
-			break;
-		case actTURN_L:
-			nst.orientacion = (nst.orientacion + 3) % 4;
-			break;
-		}
-		break;
-	case 2:
-		switch (accion)
-		{
-		case actFORWARD:
-			nst.fila++;
-			break;
-		case actTURN_R:
-			nst.orientacion = (nst.orientacion + 1) % 4;
-			break;
-		case actTURN_L:
-			nst.orientacion = (nst.orientacion + 3) % 4;
-			break;
-		}
-		break;
-	case 3:
-		switch (accion)
-		{
-		case actFORWARD:
-			nst.columna--;
-			break;
-		case actTURN_R:
-			nst.orientacion = (nst.orientacion + 1) % 4;
-			break;
-		case actTURN_L:
-			nst.orientacion = (nst.orientacion + 3) % 4;
-			break;
-		}
-		break;
 	}
-	return nst;
+	// else if (accion == actTURN_R)
+	// {
+	// 	cst.orientacion = (cst.orientacion + 1) % 4;
+	// }
+	// else
+	// {
+	// 	cst.orientacion = (cst.orientacion + 3) % 4;
+	// }
+	return cst;
 }
 
 bool ComportamientoJugador::HayObstaculoDelante2(Sensores sensores)
@@ -727,4 +734,81 @@ bool ComportamientoJugador::HayObstaculoDelante2(Sensores sensores)
 	{
 		return true;
 	}
+}
+
+bool validIndex(int i, int j, int n)
+{
+	if (i < 0 || i >= n)
+		return false;
+	if (j < 0 || j >= n)
+		return false;
+	return true;
+}
+
+void ComportamientoJugador::updateView(const estado &pos, vector<unsigned char> &view)
+{
+	switch (pos.orientacion)
+	{
+	case 0:
+		for (int i = 0; i < 4; i++)
+		{
+			for (int j = 0; j < 2 * i + 1; j++)
+			{
+				if (validIndex(pos.fila - i, pos.columna - i + j, mapaResultado.size()))
+				{
+					mapaResultado[pos.fila - i][pos.columna - i + j] = view[i * i + j];
+					// cout << "case0" << endl;
+				}
+			}
+		}
+		break;
+	case 1:
+		for (int j = 0; j < 4; j++)
+		{
+			for (int i = 0; i < 2 * j + 1; i++)
+			{
+				if (validIndex(pos.fila - j + i, pos.columna + j, mapaResultado.size()))
+				{
+					mapaResultado[pos.fila - j + i][pos.columna + j] = view[j * j + i];
+					// cout << "case1" << endl;
+				}
+			}
+		}
+		break;
+	case 2:
+		for (int i = 0; i < 4; i++)
+		{
+			for (int j = 0; j < 2 * i + 1; j++)
+			{
+				if (validIndex(pos.fila + i, pos.columna + i - j, mapaResultado.size()))
+				{
+					mapaResultado[pos.fila + i][pos.columna + i - j] = view[i * i + j];
+					// cout << "case2" << endl;
+				}
+			}
+		}
+		break;
+	case 3:
+		for (int j = 0; j < 4; j++)
+		{
+			for (int i = 0; i < 2 * j + 1; i++)
+			{
+				if (validIndex(pos.fila + j - i, pos.columna - j, mapaResultado.size()))
+				{
+					mapaResultado[pos.fila + j - i][pos.columna - j] = view[j * j + i];
+					// cout << "case3" << endl;
+				}
+			}
+		}
+		break;
+	}
+}
+
+int ComportamientoJugador::updateBrujula(int current, Action accion)
+{
+	if (accion == 1)
+		return (current + 3) % 4;
+	if (accion == 2)
+		return (current + 1) % 4;
+	return current;
 }
