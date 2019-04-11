@@ -87,61 +87,64 @@ Action ComportamientoJugador::think(Sensores sensores)
 	else
 	{
 		/*====== ACTUALIZACION POSICION ======*/
-		if (sensores.mensajeF != -1 and !pkencontrado)
+		if (sensores.mensajeF != -1 and !pkencontrado and sensores.mensajeC != sensores.destinoC)
 		{
 			actual.fila = sensores.mensajeF;
 			actual.columna = sensores.mensajeC;
 			pkencontrado = true;
+			// Pintar(actual);
 		}
+		destino.fila = sensores.destinoF;
+		destino.columna = sensores.destinoC;
 		brujula = updateBrujula(brujula, ultimaAccion);
 		actual.orientacion = brujula;
 		actual = move(actual, ultimaAccion);
 		/*====================================*/
+		if (!pkencontrado)
+		{
+			// buf.push(pair<Action, vector<unsigned char>>(ultimaAccion, sensores.terreno));
+		}
 		if (pkencontrado)
 		{
-			cout << "Actual: " << actual.fila << " " << actual.columna << " " << actual.orientacion << endl;
+			// cout << "Actual: " << actual.fila << " " << actual.columna << " " << actual.orientacion << endl;
 			updateView(actual, sensores.terreno);
 		}
-
 		/*====== MOVIMIENTO ======*/
-		sigAccion = randomMove(sensores);
+		//Calcular un camino hasta el destino
+		if (!hayPlan)
+		{
+			hayPlan = pathFinding(3, actual, destino, plan);
+		}
+
+		// Si hay plan, se sigue. En caso contrario comportamiento reactivo
+		if (plan.size() == 0)
+			hayPlan = false;
+		if (hayPlan and plan.size() > 0)
+		{
+			if (recalcular)
+			{
+				recalcular = false;
+				hayPlan = pathFinding(3, actual, destino, plan);
+			}
+			sigAccion = plan.front();
+			plan.erase(plan.begin());
+
+			if (HayObstaculoDelante2(sensores) and sigAccion == actFORWARD)
+			{
+				sigAccion = randomMove(sensores);
+				recalcular = true;
+			}
+		}
+		else
+		{
+			sigAccion = randomMove(sensores);
+		}
 		/*====================================*/
 
-		// if (pkencontrado)
-		// {
-		// 	cout << "Actual: " << old.fila << " " << old.columna << " " << old.orientacion << endl;
-		// 	updateView(old, sensores.terreno);
-		// }
-		// //no sabemos destino todavia
-		// // if (destino.fila == -1 || pkencontrado)
-		// // {
-		// sigAccion = randomMove(sensores);
-		// actual.orientacion = brujula;
-		// actual = move(actual, ultimaAccion);
-		// old = actual;
-		// brujula = updateBrujula(brujula, ultimaAccion);
-		// // }
-
-		// if (sensores.mensajeF != -1 and !pkencontrado)
-		// {
-		// 	cout << "Punto de referencia encontrado!" << endl;
-		// 	cout << sensores.mensajeF << sensores.mensajeC << endl;
-		// 	mapaResultado[sensores.mensajeF][sensores.mensajeC] = 'K';
-		// 	actual.fila = sensores.mensajeF;
-		// 	actual.columna = sensores.mensajeC;
-		// 	pkencontrado = true;
-		// }
-
-		// if (pkencontrado)
-		// {
-		// 	cout << "Actual: " << actual.fila << " " << actual.columna << " " << actual.orientacion << endl;
-		// 	updateView(actual, sensores.terreno);
-		// }
+		//Recordar la ultima accion
+		ultimaAccion = sigAccion;
+		return sigAccion;
 	}
-
-	//Recordar la ultima accion
-	ultimaAccion = sigAccion;
-	return sigAccion;
 }
 
 // Llama al algoritmo de busqueda que se usará en cada comportamiento del agente
@@ -811,4 +814,52 @@ int ComportamientoJugador::updateBrujula(int current, Action accion)
 	if (accion == 2)
 		return (current + 1) % 4;
 	return current;
+}
+
+estado ComportamientoJugador::undoMove(const estado &st, Action accion)
+{
+	estado cst;
+	cst.fila = st.fila;
+	cst.columna = st.columna;
+	cst.orientacion = st.orientacion;
+	if (accion == actFORWARD)
+	{
+		switch (cst.orientacion)
+		{
+		case 0:
+			cst.fila++;
+			break;
+		case 1:
+			cst.columna--;
+			break;
+		case 2:
+			cst.fila--;
+			break;
+		case 3:
+			cst.columna++;
+			break;
+		}
+	}
+	else if (accion == actTURN_R)
+	{
+		cst.orientacion = (cst.orientacion + 3) % 4;
+	}
+	else
+	{
+		cst.orientacion = (cst.orientacion + 1) % 4;
+	}
+	return cst;
+}
+
+void ComportamientoJugador::Pintar(const estado &st)
+{
+	pair<Action, vector<unsigned char>> current;
+	estado mov = st;
+	while (!buf.empty())
+	{
+		current = buf.top();
+		mov = undoMove(mov, current.first);
+		updateView(mov, current.second);
+		buf.pop();
+	}
 }
