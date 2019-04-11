@@ -86,65 +86,70 @@ Action ComportamientoJugador::think(Sensores sensores)
 	}
 	else
 	{
-		/*====== ACTUALIZACION POSICION ======*/
-		if (sensores.mensajeF != -1 and !pkencontrado and sensores.mensajeC != sensores.destinoC)
-		{
-			actual.fila = sensores.mensajeF;
-			actual.columna = sensores.mensajeC;
-			pkencontrado = true;
-			// Pintar(actual);
-		}
+		/*======================== ACTUALIZACION POSICION Y MAPAS ========================*/
 		destino.fila = sensores.destinoF;
 		destino.columna = sensores.destinoC;
 		brujula = updateBrujula(brujula, ultimaAccion);
 		actual.orientacion = brujula;
 		actual = move(actual, ultimaAccion);
+		if (sensores.mensajeF != -1 and !pkencontrado and sensores.mensajeC != sensores.destinoC)
+		{
+			actual.fila = sensores.mensajeF;
+			actual.columna = sensores.mensajeC;
+			pkencontrado = true;
+			Pintar(actual);
+		}
 		/*====================================*/
 		if (!pkencontrado)
 		{
-			// buf.push(pair<Action, vector<unsigned char>>(ultimaAccion, sensores.terreno));
+			buf.push(pair<Action, vector<unsigned char>>(ultimaAccion, sensores.terreno));
 		}
 		if (pkencontrado)
 		{
-			// cout << "Actual: " << actual.fila << " " << actual.columna << " " << actual.orientacion << endl;
 			updateView(actual, sensores.terreno);
-		}
-		/*====== MOVIMIENTO ======*/
-		//Calcular un camino hasta el destino
-		if (!hayPlan)
-		{
-			hayPlan = pathFinding(3, actual, destino, plan);
+			updateViewAldeanos(actual, sensores.superficie);
 		}
 
-		// Si hay plan, se sigue. En caso contrario comportamiento reactivo
-		if (plan.size() == 0)
-			hayPlan = false;
-		if (hayPlan and plan.size() > 0)
+		/*===================================================================================================*/
+
+		/*======================== MOVIMIENTO ========================*/
+		if (pkencontrado)
 		{
-			if (recalcular)
+
+			if (!hayPlan || recalcular)
 			{
-				recalcular = false;
 				hayPlan = pathFinding(3, actual, destino, plan);
+				recalcular = false;
 			}
-			sigAccion = plan.front();
-			plan.erase(plan.begin());
 
-			if (HayObstaculoDelante2(sensores) and sigAccion == actFORWARD)
+			if (hayPlan and plan.size() > 0 and !recalcular)
+			{
+				sigAccion = plan.front();
+				plan.erase(plan.begin());
+
+				if (HayObstaculoDelante2(sensores) and sigAccion == actFORWARD)
+				{
+					sigAccion = randomMove(sensores);
+					recalcular = true;
+				}
+			}
+			else
 			{
 				sigAccion = randomMove(sensores);
-				recalcular = true;
+				recalcular = false;
 			}
+
+			if (actual.fila == sensores.destinoF and actual.columna == sensores.destinoC || plan.size() == 0)
+				hayPlan = false;
 		}
 		else
 		{
 			sigAccion = randomMove(sensores);
 		}
 		/*====================================*/
-
-		//Recordar la ultima accion
-		ultimaAccion = sigAccion;
-		return sigAccion;
 	}
+	ultimaAccion = sigAccion;
+	return sigAccion;
 }
 
 // Llama al algoritmo de busqueda que se usará en cada comportamiento del agente
@@ -162,7 +167,7 @@ bool ComportamientoJugador::pathFinding(int level, const estado &origen, const e
 		return pathFinding_Anchura(origen, destino, plan);
 		break;
 	case 3:
-		cout << "Busqueda Costo Uniforme\n";
+		// cout << "Busqueda Costo Uniforme\n";
 		return pathFinding_Peso(origen, destino, plan);
 		break;
 	case 4:
@@ -413,7 +418,7 @@ bool ComportamientoJugador::pathFinding_Anchura(const estado &origen, const esta
 bool ComportamientoJugador::pathFinding_Peso(const estado &origen, const estado &destino, list<Action> &plan)
 {
 	//Borro la lista
-	cout << "Calculando plan\n";
+	// cout << "Calculando plan\n";
 	plan.clear();
 	set<estado, ComparaEstados> generados;		   // Lista de Cerrados
 	priority_queue<nodo, vector<nodo>, nodo> cola; // Lista de Abiertos
@@ -469,7 +474,7 @@ bool ComportamientoJugador::pathFinding_Peso(const estado &origen, const estado 
 		}
 	}
 
-	cout << "Terminada la busqueda\n";
+	// cout << "Terminada la busqueda\n";
 
 	if (current.st.fila == destino.fila and current.st.columna == destino.columna)
 	{
@@ -483,7 +488,7 @@ bool ComportamientoJugador::pathFinding_Peso(const estado &origen, const estado 
 	}
 	else
 	{
-		cout << "No encontrado plan\n";
+		// cout << "No encontrado plan\n";
 	}
 
 	return false;
@@ -807,6 +812,69 @@ void ComportamientoJugador::updateView(const estado &pos, vector<unsigned char> 
 	}
 }
 
+void ComportamientoJugador::updateViewAldeanos(const estado &pos, vector<unsigned char> &view)
+{
+	switch (pos.orientacion)
+	{
+	case 0:
+		for (int i = 0; i < 4; i++)
+		{
+			for (int j = 0; j < 2 * i + 1; j++)
+			{
+				if (validIndex(pos.fila - i, pos.columna - i + j, mapaResultado.size()))
+				{
+					if (mapaResultado[pos.fila - i][pos.columna - i + j] == 'a')
+						mapaResultado[pos.fila - i][pos.columna - i + j] = view[i * i + j];
+					// cout << "case0" << endl;
+				}
+			}
+		}
+		break;
+	case 1:
+		for (int j = 0; j < 4; j++)
+		{
+			for (int i = 0; i < 2 * j + 1; i++)
+			{
+				if (validIndex(pos.fila - j + i, pos.columna + j, mapaResultado.size()))
+				{
+					if (mapaResultado[pos.fila - j + i][pos.columna + j] == 'a')
+						mapaResultado[pos.fila - j + i][pos.columna + j] = view[j * j + i];
+					// cout << "case1" << endl;
+				}
+			}
+		}
+		break;
+	case 2:
+		for (int i = 0; i < 4; i++)
+		{
+			for (int j = 0; j < 2 * i + 1; j++)
+			{
+				if (validIndex(pos.fila + i, pos.columna + i - j, mapaResultado.size()))
+				{
+					if (mapaResultado[pos.fila + i][pos.columna + i - j] == 'a')
+						mapaResultado[pos.fila + i][pos.columna + i - j] = view[i * i + j];
+					// cout << "case2" << endl;
+				}
+			}
+		}
+		break;
+	case 3:
+		for (int j = 0; j < 4; j++)
+		{
+			for (int i = 0; i < 2 * j + 1; i++)
+			{
+				if (validIndex(pos.fila + j - i, pos.columna - j, mapaResultado.size()))
+				{
+					if (mapaResultado[pos.fila + j - i][pos.columna - j] == 'a')
+						mapaResultado[pos.fila + j - i][pos.columna - j] = view[j * j + i];
+					// cout << "case3" << endl;
+				}
+			}
+		}
+		break;
+	}
+}
+
 int ComportamientoJugador::updateBrujula(int current, Action accion)
 {
 	if (accion == 1)
@@ -858,8 +926,8 @@ void ComportamientoJugador::Pintar(const estado &st)
 	while (!buf.empty())
 	{
 		current = buf.top();
-		mov = undoMove(mov, current.first);
 		updateView(mov, current.second);
+		mov = undoMove(mov, current.first);
 		buf.pop();
 	}
 }

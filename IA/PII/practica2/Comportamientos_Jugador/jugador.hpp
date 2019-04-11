@@ -84,6 +84,7 @@ private:
   estado move(const estado &st, Action accion);
   bool HayObstaculoDelante2(Sensores sensores);
   void updateView(const estado &pos, vector<unsigned char> &terreno);
+  void updateViewAldeanos(const estado &pos, vector<unsigned char> &terreno);
   int updateBrujula(int current, Action accion);
   estado undoMove(const estado &st, Action accion);
   void Pintar(const estado &st);
