@@ -765,7 +765,6 @@ void ComportamientoJugador::updateView(const estado &pos, vector<unsigned char> 
 				if (validIndex(pos.fila - i, pos.columna - i + j, mapaResultado.size()))
 				{
 					mapaResultado[pos.fila - i][pos.columna - i + j] = view[i * i + j];
-					// cout << "case0" << endl;
 				}
 			}
 		}
@@ -778,7 +777,6 @@ void ComportamientoJugador::updateView(const estado &pos, vector<unsigned char> 
 				if (validIndex(pos.fila - j + i, pos.columna + j, mapaResultado.size()))
 				{
 					mapaResultado[pos.fila - j + i][pos.columna + j] = view[j * j + i];
-					// cout << "case1" << endl;
 				}
 			}
 		}
@@ -791,7 +789,6 @@ void ComportamientoJugador::updateView(const estado &pos, vector<unsigned char> 
 				if (validIndex(pos.fila + i, pos.columna + i - j, mapaResultado.size()))
 				{
 					mapaResultado[pos.fila + i][pos.columna + i - j] = view[i * i + j];
-					// cout << "case2" << endl;
 				}
 			}
 		}
@@ -804,7 +801,6 @@ void ComportamientoJugador::updateView(const estado &pos, vector<unsigned char> 
 				if (validIndex(pos.fila + j - i, pos.columna - j, mapaResultado.size()))
 				{
 					mapaResultado[pos.fila + j - i][pos.columna - j] = view[j * j + i];
-					// cout << "case3" << endl;
 				}
 			}
 		}
