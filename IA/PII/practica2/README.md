@@ -7,18 +7,15 @@ simplemente he sustituido la estructura de datos `stack` por una `queue`, en el 
 en profundidad.
 
 Para la búsqueda de coste justo he sustituido la estructura de datos `stack` por una `priority_queue` y he 
-usado como peso la suma del coste de ciclos de pasar por cada una de las casillas de los ciclos junto con la
-distancia ecuclídea hasta el objeitvo. El paso es calculado por la siguiente función: 
+usado como peso la suma del coste de ciclos de pasar por cada una de las casillas de los ciclos. El peso es calculado por la siguiente función: 
 
 ~~~C++
 int ComportamientoJugador::calcularPeso(list<Action> &plan)
 {
 	estado current = actual;
 	int peso = 0;
-	int distance;
 	for (list<Action>::iterator it = plan.begin(); it != plan.end(); ++it)
 	{
-		distance = sqrt((destino.fila - current.fila) ^ 2 + (destino.columna - current.columna) ^ 2);
 		switch (*it)
 		{
 		case actTURN_R:
@@ -49,13 +46,8 @@ int ComportamientoJugador::calcularPeso(list<Action> &plan)
 			break;
 		}
 	}
-	return peso + distance;
-}
+	return peso;
 ~~~
-
-Sumar la distancia euclídea entre el personaje y el objetivo penaliza encontrar la solución óptima pero reduce 
-enormemente el tiempo de ejecución del algoritmo en mapas como el de las islas (en las que la mayor parte del 
-mapa tiene el mismo terreno, agua, por lo que encuentra la solución más lento).
 
 ### Nivel 2
 
@@ -128,7 +120,7 @@ debemos mantenerla actualizada con nuestros movimientos. Todo esto es hecho por 
 			actual.fila = sensores.mensajeF;
 			actual.columna = sensores.mensajeC;
 			pkencontrado = true;
-			Pintar(actual); // ignorar por ahora
+			// Pintar(actual); => No funciona correctamente
 		}
 ~~~
 
@@ -189,33 +181,40 @@ Ya podemos movernos sin morir y ver sin problemas, hora de conseguir comida. Est
 vez encontrado un punto de referencia (si no se ha encontrado simplemente nos movemos como antes he explicado):
 
 ~~~C++
-			if (!hayPlan || recalcular)
+		if (pkencontrado)
+		{
+
+			if (!hayPlan)
 			{
 				hayPlan = pathFinding(3, actual, destino, plan);
-				recalcular = false;
 			}
 
-			if (hayPlan and plan.size() > 0 and !recalcular)
+			if (hayPlan and plan.size() > 0)
 			{
 				sigAccion = plan.front();
 				plan.erase(plan.begin());
 
 				if (HayObstaculoDelante2(sensores) and sigAccion == actFORWARD)
 				{
-					sigAccion = randomMove(sensores);
-					recalcular = true;
+					sigAccion = actIDLE;
+					hayPlan = false;
 				}
 			}
 			else
 			{
-				sigAccion = randomMove(sensores);
-				recalcular = false;
+				sigAccion = actIDLE;
+				hayPlan = false;
 			}
 
 			if (actual.fila == sensores.destinoF and actual.columna == sensores.destinoC || plan.size() == 0)
 				hayPlan = false;
+		}
+		else
+		{
+			sigAccion = randomMove(sensores);
+		}
 ~~~
 
-Simplemente usamos la función `pathFinding` con el algoritmo de peso justo para calcular el camino hacia el objetivo. El segundo if se encarga de seguir el camino generado, y en caso de encontrar un obstáculo, se mueve aleatoriamente y pone `recalcular`  a `true` para rehacer el camino una vez evitado el obstáculo.
+Simplemente usamos la función `pathFinding` con el algoritmo de peso justo para calcular el camino hacia el objetivo. El segundo if se encarga de seguir el camino generado, y en caso de encontrar un obstáculo, se mueve aleatoriamente y pone `hayPlan`  a `true` para rehacer el camino una vez evitado el obstáculo.
 
 El último if es un pequeño ajuste para que no se bloquee cuando llegue a un objetivo y pueda seguir avanzando.
