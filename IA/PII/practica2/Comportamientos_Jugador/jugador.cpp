@@ -97,7 +97,7 @@ Action ComportamientoJugador::think(Sensores sensores)
 			actual.fila = sensores.mensajeF;
 			actual.columna = sensores.mensajeC;
 			pkencontrado = true;
-			Pintar(actual);
+			// Pintar(actual);
 		}
 		/*====================================*/
 		if (!pkencontrado)
@@ -116,27 +116,26 @@ Action ComportamientoJugador::think(Sensores sensores)
 		if (pkencontrado)
 		{
 
-			if (!hayPlan || recalcular)
+			if (!hayPlan)
 			{
 				hayPlan = pathFinding(3, actual, destino, plan);
-				recalcular = false;
 			}
 
-			if (hayPlan and plan.size() > 0 and !recalcular)
+			if (hayPlan and plan.size() > 0)
 			{
 				sigAccion = plan.front();
 				plan.erase(plan.begin());
 
 				if (HayObstaculoDelante2(sensores) and sigAccion == actFORWARD)
 				{
-					sigAccion = randomMove(sensores);
-					recalcular = true;
+					sigAccion = actIDLE;
+					hayPlan = false;
 				}
 			}
 			else
 			{
-				sigAccion = randomMove(sensores);
-				recalcular = false;
+				sigAccion = actIDLE;
+				hayPlan = false;
 			}
 
 			if (actual.fila == sensores.destinoF and actual.columna == sensores.destinoC || plan.size() == 0)
@@ -148,6 +147,7 @@ Action ComportamientoJugador::think(Sensores sensores)
 		}
 		/*====================================*/
 	}
+
 	ultimaAccion = sigAccion;
 	return sigAccion;
 }
@@ -614,10 +614,8 @@ int ComportamientoJugador::calcularPeso(list<Action> &plan)
 {
 	estado current = actual;
 	int peso = 0;
-	int distance;
 	for (list<Action>::iterator it = plan.begin(); it != plan.end(); ++it)
 	{
-		distance = sqrt((destino.fila - current.fila) ^ 2 + (destino.columna - current.columna) ^ 2);
 		// prettier-ignore
 		switch (*it)
 		{
@@ -649,7 +647,7 @@ int ComportamientoJugador::calcularPeso(list<Action> &plan)
 			break;
 		}
 	}
-	return peso + distance;
+	return peso;
 }
 
 int ComportamientoJugador::getPeso(const estado &casilla)
@@ -817,11 +815,9 @@ void ComportamientoJugador::updateViewAldeanos(const estado &pos, vector<unsigne
 		{
 			for (int j = 0; j < 2 * i + 1; j++)
 			{
-				if (validIndex(pos.fila - i, pos.columna - i + j, mapaResultado.size()))
+				if (validIndex(pos.fila - i, pos.columna - i + j, mapaResultado.size()) and view[i * i + j] == 'a')
 				{
-					if (mapaResultado[pos.fila - i][pos.columna - i + j] == 'a')
-						mapaResultado[pos.fila - i][pos.columna - i + j] = view[i * i + j];
-					// cout << "case0" << endl;
+					mapaResultado[pos.fila - i][pos.columna - i + j] = 'a';
 				}
 			}
 		}
@@ -831,11 +827,9 @@ void ComportamientoJugador::updateViewAldeanos(const estado &pos, vector<unsigne
 		{
 			for (int i = 0; i < 2 * j + 1; i++)
 			{
-				if (validIndex(pos.fila - j + i, pos.columna + j, mapaResultado.size()))
+				if (validIndex(pos.fila - j + i, pos.columna + j, mapaResultado.size()) and view[j * j + i] == 'a')
 				{
-					if (mapaResultado[pos.fila - j + i][pos.columna + j] == 'a')
-						mapaResultado[pos.fila - j + i][pos.columna + j] = view[j * j + i];
-					// cout << "case1" << endl;
+					mapaResultado[pos.fila - j + i][pos.columna + j] = 'a';
 				}
 			}
 		}
@@ -845,11 +839,9 @@ void ComportamientoJugador::updateViewAldeanos(const estado &pos, vector<unsigne
 		{
 			for (int j = 0; j < 2 * i + 1; j++)
 			{
-				if (validIndex(pos.fila + i, pos.columna + i - j, mapaResultado.size()))
+				if (validIndex(pos.fila + i, pos.columna + i - j, mapaResultado.size()) and view[i * i + j] == 'a')
 				{
-					if (mapaResultado[pos.fila + i][pos.columna + i - j] == 'a')
-						mapaResultado[pos.fila + i][pos.columna + i - j] = view[i * i + j];
-					// cout << "case2" << endl;
+					mapaResultado[pos.fila + i][pos.columna + i - j] = 'a';
 				}
 			}
 		}
@@ -859,11 +851,9 @@ void ComportamientoJugador::updateViewAldeanos(const estado &pos, vector<unsigne
 		{
 			for (int i = 0; i < 2 * j + 1; i++)
 			{
-				if (validIndex(pos.fila + j - i, pos.columna - j, mapaResultado.size()))
+				if (validIndex(pos.fila + j - i, pos.columna - j, mapaResultado.size()) and view[j * j + i] == 'a')
 				{
-					if (mapaResultado[pos.fila + j - i][pos.columna - j] == 'a')
-						mapaResultado[pos.fila + j - i][pos.columna - j] = view[j * j + i];
-					// cout << "case3" << endl;
+					mapaResultado[pos.fila + j - i][pos.columna - j] = 'a';
 				}
 			}
 		}

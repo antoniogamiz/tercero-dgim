@@ -29,7 +29,6 @@ public:
     pkencontrado = false;
     buf = stack<pair<Action, vector<unsigned char>>>();
     plan = list<Action>();
-    recalcular = false;
   }
   ComportamientoJugador(std::vector<std::vector<unsigned char>> mapaR) : Comportamiento(mapaR)
   {
@@ -44,7 +43,6 @@ public:
     pkencontrado = false;
     buf = stack<pair<Action, vector<unsigned char>>>();
     plan = list<Action>();
-    recalcular = false;
   }
   ComportamientoJugador(const ComportamientoJugador &comport) : Comportamiento(comport) {}
   ~ComportamientoJugador() {}
@@ -65,7 +63,7 @@ private:
   bool hayPlan;
   bool pkencontrado;
   stack<pair<Action, vector<unsigned char>>> buf;
-  bool recalcular;
+
   // Métodos privados de la clase
   bool
   pathFinding(int level, const estado &origen, const estado &destino, list<Action> &plan);
