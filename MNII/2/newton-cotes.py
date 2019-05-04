@@ -9,7 +9,7 @@ x = Symbol('x')
 
 
 def f(x):
-    return (x**4) * exp(-2*(x**2))
+    return np.exp(np.sin(x)**2-2)
 
 # =====================================================================
 
@@ -64,7 +64,7 @@ def newtonCotes(f, a, b, n):
 # =====================================================================
 
 
-sol = newtonCotes(f, 0, 2, 6)
+sol = newtonCotes(f, 0, 2, 9)
 print(colored("Solución método Newton-Cotes: ", "red"),
       colored(str(sol), "blue"))
 print(colored("Error método Newton-Cotes: ", "red"),

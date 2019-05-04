@@ -42,25 +42,31 @@ if __name__ == '__main__':
     import math
 
     def f(x):
-        return math.exp(x) * math.cos(x)
+        return (math.cos(math.pi*x)+1) ** (10/3.0)
 
     n = 7
-    v, R = romberg(0, math.pi, n, f)
+    v, R = romberg(0, 1, n, f)
 
-    I = sp.integrate(sp.exp(x) * sp.cos(x), (x, 0, math.pi))
+    I = sp.integrate((sp.cos(x)+1)**(10/3.0), (x, 0, 1))
 
     dR = [[0 for i in range(n+1)] for j in range(n+1)]
 
-    for i in range(len(R)):
-        for j in range(i+1):
-            dR[i][j] = abs(R[i][j]-I)
+    # for i in range(len(R)):
+    #     for j in range(i+1):
+    #         dR[i][j] = abs(R[i][j]-I)
 
-    for row in dR:
-        print(row)
+    # for row in dR:
+    #     print(row)
 
-    print(I, v)
+    print(v)
+    print(3.000492123714049-v)
 
-
+# 0.6539307238542182
+# -0.036748306954090815
+# 0.00015680136484608198
+# 5.591016795314374e-06
+# -2.400999132845527e-08
+# 2.2005952615700153e-11
 """
 22 
 5 

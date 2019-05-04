@@ -1,7 +1,7 @@
 from termcolor import colored
 import numpy as np
 from sympy import *
-from math import factorial
+from math import *
 
 x = Symbol('x')
 
@@ -9,11 +9,12 @@ x = Symbol('x')
 
 
 def f(x):
-    return (1/(1+x**2))
+    return np.exp(np.sin(x)**2-2)
+    # return np.power(cos(pi * x)-1, 10/3.0)
+    # return (cos(pi*x)+1) ** (10/3.0)
+
 
 # =====================================================================
-
-
 def nodos(a, b, n):
     nodes = []
     h = (b-a)/n
@@ -58,14 +59,31 @@ def simpsonCompuesta(f, a, b, m):
 # =====================================================================
 
 
-sol = trapecioCompuesta(f, -4, 4, 10)
-print(colored("Solución método Trapecio Compuesto: ", "red"),
-      colored(str(sol), "blue"))
-print(colored("Error método Trapecio Compuesto: ", "red"),
-      colored(str(errorT(-4, 4, 10, 0.5)), "blue"))
+# -0.019349976075697217
+# -2.314466535269233e-05
+# -9.00015630911355e-08
+# -4.192397540236925e-10
+#  -2.035260848742837e-12
+# -1.0658141036401503e-14
 
-sol = simpsonCompuesta(f, -4, 4, 10)
+
+# 0.6539307238542182
+# -0.036748306954090815
+# 0.00015680136484608198
+# 5.591016795314374e-06
+# -2.400999132845527e-08
+# 2.2005952615700153e-11
+# sol = trapecioCompuesta(f, 0, 1, 64)
+# print(colored("Solución método Trapecio Compuesto: ", "red"),
+#       colored(str(sol), "blue"))
+
+
+# print(3.000492123714049-sol)
+# print(colored("Error método Trapecio Compuesto: ", "red"),
+#       colored(str(errorT(0, 1, 8, 0.73576)), "blue"))
+
+sol = simpsonCompuesta(f, 0, 2, 107)
 print(colored("Solución método Simpson Compuesto: ", "red"),
       colored(str(sol), "blue"))
-print(colored("Error método simpson Compuesto: ", "red"),
-      colored(str(errorS(-4, 4, 10, 24)), "blue"))
+# print(colored("Error método simpson Compuesto: ", "red"),
+#       colored(str(errorS(-4, 4, 10, 24)), "blue"))
