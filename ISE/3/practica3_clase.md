@@ -1,0 +1,113 @@
+### Lección 1: Monitoring and Profiling
+
+Lo vamos a hacer mediante ssh en Ubuntu, pero es igual en CentOS.
+
+`dmesg` es un buffer circular de tamaño fijo (se puede configurar recompilando el kernel). Su uso
+principal es para depurar hardware.
+
+```
+dmesg
+dmesg -Hw
+```
+
+A continuación vamos a ver el sistema de ficheros `/proc`, uno de los más importantes de Linux. Se
+usa para reflejar el estado del kernel de Linux en todo momento. Si entramos al directorio, vemos
+que está lleno de carpetas numeradas, cada una correspondiente al PID de un proceso corriendo en el
+sistema. Este directorio es volátil, por lo que cualquier cambio que hagamos sobre él se perderá al
+reiniciar la máquina.
+
+El comando `top` hace uso de este sistema de ficheros para funcionar.
+
+`load average` viene escrito en un formato estándar que se llama CPU load. Son tres cifras que expresan
+la carga media del sistema en 1min, 5min y 15min.
+
+Si uno de esos números vale 1, significa que tiene una carga del 100%. Si vale más de 1 significa que
+hay procesos que están a la espera de poder ejecutarse. Lo recomendado es no pasarse de 0.75. Esto es
+para un sólo core, luego si tenemos dos o más cores tendremos que dividir ese valor entre el número de
+cores.
+
+Los datos de la línea de `%Cpu(s)` significan ([+info](https://unix.stackexchange.com/questions/18918/in-linux-top-command-what-are-us-sy-ni-id-wa-hi-si-and-st-for-cpu-usage)):
+
+```
+us: user cpu time (or) % CPU time spent in user space
+sy: system cpu time (or) % CPU time spent in kernel space
+ni: user nice cpu time (or) % CPU time spent on low priority processes
+id: idle cpu time (or) % CPU time spent idle
+wa: io wait cpu time (or) % CPU time spent in wait (on disk)
+hi: hardware irq (or) % CPU time spent servicing/handling hardware interrupts
+si: software irq (or) % CPU time spent servicing/handling software interrupts
+st: steal time - - % CPU time in involuntary wait by virtual cpu while hypervisor is servicing another processor (or) % CPU time stolen from a virtual machine
+```
+
+El campo `avail Mem` es la cantidad de memoria que puede usar una app sin llegar a usar memoria
+swap. El campo `buff/cache` es la cantidad de memoria principal que está siendo usada como cache
+o buffer.
+
+La siguiente tabla muestra estadísticas de cada proceso, su sifnificado es ([+info](https://www.linux.com/learn/uncover-meaning-tops-statistics)):
+
+Para los campos `VIRT`, `RES` y `SHR` hay que entender la diferencia entre los dos tipos de memoria
+existentes: la anónima (reservada por llamadas a funciones como malloc()) y la file-backed, que es la
+ocupada por librerías o archivos que nuestro programa importa.
+
+- `PID`: process id.
+- `NI`: es una prioridad estática asignada cuando un proceso es inicializado. Al principio siempre
+  vale 0.
+- `PR`: es la prioridad dinámica del proceso. Se calcula como NI + 20. Luego si queremos que un proceso tenga prioridad 0, tenemos que darle -20 al valor de NI.
+- `USER`: usuario que lo invocó.
+- `VIRT`: cantidad de memoria que tienes
+- `RES`: cantidad de bloques o páginas que estás consumiendo realmente.
+- `SHR`: `RES` contiene también los bloques que usan las librerías que importamos, pero eso no es
+  necesariamente memoria consumida por nuestro programa: por ejemplo, si dos programas usan la misma
+  librería, ésta será sólo cargada una vez en memoria. Aquí es donde entra `SHR`, que es justamente
+  la cantidad de bloques que ocupan las librerías que importamos. Luego la memoria anónima, la que
+  realmente consume el proceso, se calcula como `RES`-`SHR`.
+- `S`: muestra el estado en el que se encuentra el proceso. Puede tomar los siguientes valores:
+  ```
+  'D' = uninterruptible sleep
+  'R' = running
+  'S' = sleeping
+  'T' = traced or stopped
+  'Z' = zombie
+  ```
+
+Otro sistema de ficheros muy importante es `var/log`, que es un directorio de contenido variable donde
+se almacenan todos los logs del sistema. El principal problema de los logs es su gran tamaño, luego
+existe software que nos ayuda a manejarlos.
+
+Uno de estos programas es `logRotate`, que podemos configurarlo para que, por ejemplo, a cierta hora
+todos los días comprima los logs, los guarde y cuando tenga cierto número de archivos comprimidos los
+empieze a borrar. Su configuración se encuentra en `/etc/logrotate.conf`, pero ahí dentro se encuentra
+un include del archivo `/etc/logrotate.d`, que es donde de verdad se configura.
+
+un poblema con el archivo de log es que es muy gande, por lo que hay sotware que lo gestiona.
+hay un pograma que todas las noches ervisa los arhivos de logs que tiene que ambia y empieza a omprimirlos, y por ejemplo cuando tiene 2389 comprimidos empieza a borar. o te los puedes lleva ra otos sitios.
+
+(si me acuerdo añadir el formato con el que se hacen los cron jobs)
+
+### Notas práctica
+
+en swad hay una guia para los monitories del sistema, al final de la presentacion esta el ejericio que tenemos que entregar.
+
+hay que demostrar que se estan monitoizando, para eso vamos a esibi runa guia donde queramos y la subimos eal esapacio de trabajos ocmpraritods en swad, hay que instibir pasao a paso todo lo que haecmos y ocn capturas de pnantalla, para demotras que lo estamos monitoizando, lanzamos ssh lo tirrramos y lo volvemos a levanta.
+hay que entegarlo antes del examen.
+
+para instala zabix nos vamos a su ayuda.
+instalamos zabbix 3.4
+zabbix se compone de varios elementos, en la ayuda zzbiz poesses estan desitos.
+tenemos que saber usar setver get y agent.
+server es un proeos que corer en una maquina y se dedica unicamente a reibir logs, de por si no genera nada, en sever corern los agentes,el serrver esta en ubntu , y en centos instalamos solo los agentes. ademas vamos a instala run agente tambien en ubunut para monitoizar nuesta popia maquina- DeADEmas mavamos a instalar UI para verlo en el neavagado
+
+ademas tenemos que instala subyaentemente una base de datos, elegimos mysql que ya esta instalado.
+
+zabbix funciona ocn dos ambitos: pull y push
+pull significa que el servidor se dedia a erabar la informacion de todos los agentes.
+si no es eiciente puede tardar mucho en haer un muesteo, po eso existe el Poxy, que es un sevicio intermedio que se dedia a muesterarr a agentes y se los pasa al sevido,
+push lo otro,
+incoveniente de que pel serve se puede satuar, ventaja de que puede ocmunicar eventos asincronos, los agentes pueden ocmunicar mas rapido ylsoo eventos asincocrnos mas erpiado.
+
+eordaemos que en centos tenemos un irewall asi que hay ue busa recual es el puerto del agente y pemitilo. En centos el agente de zabbix tnneesita mas permisos que los que entos da, paa soluionalo usamos la eerenia del profeb bug 134nuevenuevenuveohco.
+
+muy impotante usa l a instalacion po paquetes de la pagina, usamos para ecntros la 7 nos slatamos la pate del servido.
+uidado ocn la vesion de ubuntu!! que etenmos la 16.ero4
+
+tenemos que ocnoecs los items de zabbix de system.pu-.\* y proc.mem
