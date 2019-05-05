@@ -97,17 +97,6 @@ zabbix se compone de varios elementos, en la ayuda zzbiz poesses estan desitos.
 tenemos que saber usar setver get y agent.
 server es un proeos que corer en una maquina y se dedica unicamente a reibir logs, de por si no genera nada, en sever corern los agentes,el serrver esta en ubntu , y en centos instalamos solo los agentes. ademas vamos a instala run agente tambien en ubunut para monitoizar nuesta popia maquina- DeADEmas mavamos a instalar UI para verlo en el neavagado
 
-ademas tenemos que instala subyaentemente una base de datos, elegimos mysql que ya esta instalado.
-
-zabbix funciona ocn dos ambitos: pull y push
-pull significa que el servidor se dedia a erabar la informacion de todos los agentes.
-si no es eiciente puede tardar mucho en haer un muesteo, po eso existe el Poxy, que es un sevicio intermedio que se dedia a muesterarr a agentes y se los pasa al sevido,
-push lo otro,
-incoveniente de que pel serve se puede satuar, ventaja de que puede ocmunicar eventos asincronos, los agentes pueden ocmunicar mas rapido ylsoo eventos asincocrnos mas erpiado.
-
 eordaemos que en centos tenemos un irewall asi que hay ue busa recual es el puerto del agente y pemitilo. En centos el agente de zabbix tnneesita mas permisos que los que entos da, paa soluionalo usamos la eerenia del profeb bug 134nuevenuevenuveohco.
-
-muy impotante usa l a instalacion po paquetes de la pagina, usamos para ecntros la 7 nos slatamos la pate del servido.
-uidado ocn la vesion de ubuntu!! que etenmos la 16.ero4
 
 tenemos que ocnoecs los items de zabbix de system.pu-.\* y proc.mem
