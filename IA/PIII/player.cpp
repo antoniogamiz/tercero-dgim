@@ -58,9 +58,86 @@ double ValoracionTest(const Environment &estado, int jugador)
 
 // ------------------- Los tres metodos anteriores no se pueden modificar
 
+// 0 => vacio
+// 1 => jugador 1
+// 2 => jugador 2
+// 0110
+double situacion1(const Environment &estado, int jugador)
+{
+   double suma = 0;
+   for (int i = 0; i < 7; i++)
+   {
+      for (int j = 0; j < 4; j++)
+      {
+         if (estado.See_Casilla(i, j) == 0 && estado.See_Casilla(i, j + 1) == jugador && estado.See_Casilla(i, j + 2) == jugador && estado.See_Casilla(i, j + 3) == 0)
+         {
+            suma += 100;
+         }
+      }
+   }
+   return suma;
+}
+
+// 11
+double situacion2(const Environment &estado, int jugador)
+{
+   double suma = 0;
+   for (int i = 0; i < 7; i++)
+   {
+      for (int j = 0; j < 6; j++)
+      {
+         if (estado.See_Casilla(i, j) == jugador && estado.See_Casilla(i, j + 1) == jugador)
+         {
+            suma += 5;
+         }
+         if (estado.See_Casilla(j, i) == jugador && estado.See_Casilla(j + 1, i) == jugador)
+         {
+            suma += 5;
+         }
+      }
+   }
+   return suma;
+}
+
+// 111
+double situacion3(const Environment &estado, int jugador)
+{
+   double suma = 0;
+   for (int i = 0; i < 7; i++)
+   {
+      for (int j = 0; j < 5; j++)
+      {
+         if (estado.See_Casilla(i, j) == jugador && estado.See_Casilla(i, j + 1) == jugador && estado.See_Casilla(i, j + 2) == jugador)
+         {
+            suma += 10;
+         }
+         if (estado.See_Casilla(j, i) == jugador && estado.See_Casilla(j + 1, i) == jugador && estado.See_Casilla(j + 2, i) == jugador)
+         {
+            suma += 10;
+         }
+      }
+   }
+   return suma;
+}
+
+double Puntuacion2(const Environment &estado, int jugador)
+{
+   return situacion1(estado, jugador) + situacion2(estado, jugador) + situacion3(estado, jugador);
+}
+
 // Funcion heuristica (ESTA ES LA QUE TENEIS QUE MODIFICAR)
 double Valoracion(const Environment &estado, int jugador)
 {
+   int ganador = estado.RevisarTablero();
+
+   if (ganador == jugador)
+      return 99999999.0; // Gana el jugador que pide la valoracion
+   else if (ganador != 0)
+      return -99999999.0; // Pierde el jugador que pide la valoracion
+   else if (estado.Get_Casillas_Libres() == 0)
+      return 0; // Hay un empate global y se ha rellenado completamente el tablero
+   else
+      return Puntuacion2(estado, jugador);
 }
 
 // Esta funcion no se puede usar en la version entregable
@@ -113,7 +190,7 @@ Environment::ActionType Player::Think()
          cout << " " << actual_.ActionStr(static_cast<Environment::ActionType>(t));
    cout << endl;
 
-   //--------------------- AQUI EMPIEZA LA PARTE A REALIZAR POR EL ALUMNO ------------------------------------------------
+   // --------------------- AQUI EMPIEZA LA PARTE A REALIZAR POR EL ALUMNO ------------------------------------------------
    double values[8];
    for (int i = 0; i < 8; i++)
    {
@@ -122,53 +199,51 @@ Environment::ActionType Player::Think()
    for (int i = 0; i < 8; i++)
    {
       if (aplicables[i])
-         values[i] = Poda(actual_, jugador_, 0, PROFUNDIDAD_ALFABETA, static_cast<Environment::ActionType>(i), -99999, 99999);
+         values[i] = Poda(actual_, actual_.JugadorActivo(), 0, PROFUNDIDAD_ALFABETA, static_cast<Environment::ActionType>(i), -99999, 99999);
    }
-   int max = 0;
-   int index;
+   double max = -9999;
+   int index = 0;
    for (int i = 0; i < 8; i++)
    {
-      if (values[i] > max)
+      if (values[i] > max && aplicables[i])
       {
          index = i;
          max = values[i];
       }
    };
+
    accion = static_cast<Environment::ActionType>(index);
 
    return accion;
 }
 
-double Player::Poda(const Environment &envi, int jug, int profundidad, int COTA_PROF, Environment::ActionType accion, double alpha, double beta)
+double Player::Poda(const Environment envi, int jug, int profundidad, int COTA_PROF, Environment::ActionType accion, double alpha, double beta)
 {
-   // actualizamos env con el movimiento accion
-   Environment env = envi;
-   env.AcceptAction(accion);
-   env.ChangePlayer();
-
    // si es un nodo hoja
    if (profundidad == COTA_PROF)
-      return ValoracionTest(env, jug);
+      return Valoracion(envi, jug);
+
+   Environment enviroments[8];
+   int n_act = envi.GenerateAllMoves(enviroments);
+
    // contamos cuantas acciones podemos hacer
-   bool aplicables[8];
-   env.possible_actions(aplicables);
 
    // dependiendo del jugador
    int nextPlayer = (jug == 1) ? 2 : 1;
    if (jug == 1)
    { // verde 1
       // calculamos alpha
-      for (int i = 0; i < 8; i++)
-         if (aplicables[i] && alpha < beta) // podamos si se puede
-            alpha = max(alpha, Poda(env, nextPlayer, profundidad + 1, COTA_PROF, static_cast<Environment::ActionType>(i), alpha, beta));
+      for (int i = 0; i < n_act; i++)
+         if (alpha < beta) // podamos si se puede
+            alpha = max(alpha, Poda(enviroments[i], enviroments[i].JugadorActivo(), profundidad + 1, COTA_PROF, static_cast<Environment::ActionType>(enviroments[i].Last_Action(jug)), alpha, beta));
       return alpha;
    }
    else
    { // azul 2
       // calculamos alpha
-      for (int i = 0; i < 8; i++)
-         if (aplicables[i] && alpha < beta) // podamos si se puede
-            beta = min(beta, Poda(env, nextPlayer, profundidad + 1, COTA_PROF, static_cast<Environment::ActionType>(i), alpha, beta));
+      for (int i = 0; i < n_act; i++)
+         if (alpha < beta) // podamos si se puede
+            beta = min(beta, Poda(enviroments[i], enviroments[i].JugadorActivo(), profundidad + 1, COTA_PROF, static_cast<Environment::ActionType>(enviroments[i].Last_Action(jug)), alpha, beta));
       return beta;
    }
 }
