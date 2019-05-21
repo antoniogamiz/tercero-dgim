@@ -9,7 +9,7 @@ public:
   Player(int jug);
   Environment::ActionType Think();
   void Perceive(const Environment &env);
-  double Poda(Environment env, int jug, int profundidad, int COTA_PROF, Environment::ActionType accion, double alpha, double beta);
+  double Poda(const Environment &envi, int jug, int profundidad, int COTA_PROF, Environment::ActionType accion, double alpha, double beta);
 
 private:
   int jugador_;

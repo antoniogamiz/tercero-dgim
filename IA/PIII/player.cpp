@@ -113,70 +113,36 @@ Environment::ActionType Player::Think()
          cout << " " << actual_.ActionStr(static_cast<Environment::ActionType>(t));
    cout << endl;
 
-   //--------------------- COMENTAR Desde aqui
-   // cout << "\n\t";
-   // int n_opciones = 0;
-   // JuegoAleatorio(aplicables, opciones, n_opciones);
-
-   // if (n_act == 0)
-   // {
-   //    (jugador_ == 1) ? cout << "Verde: " : cout << "Azul: ";
-   //    cout << " No puede realizar ninguna accion!!!\n";
-   //    //accion = Environment::actIDLE;
-   // }
-   // else if (n_act == 1)
-   // {
-   //    (jugador_ == 1) ? cout << "Verde: " : cout << "Azul: ";
-   //    cout << " Solo se puede realizar la accion "
-   //         << actual_.ActionStr(static_cast<Environment::ActionType>(opciones[0])) << endl;
-   //    accion = static_cast<Environment::ActionType>(opciones[0]);
-   // }
-   // else
-   // { // Hay que elegir entre varias posibles acciones
-   //    int aleatorio = rand() % n_opciones;
-   //    cout << " -> " << actual_.ActionStr(static_cast<Environment::ActionType>(opciones[aleatorio])) << endl;
-   //    accion = static_cast<Environment::ActionType>(opciones[aleatorio]);
-   // }
-
-   //--------------------- COMENTAR Hasta aqui
-
    //--------------------- AQUI EMPIEZA LA PARTE A REALIZAR POR EL ALUMNO ------------------------------------------------
-   if (actual_.N_Jugada() != 0)
+   double values[8];
+   for (int i = 0; i < 8; i++)
    {
-      cout << "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSs" << endl;
-      double values[8];
-      for (int i = 0; i < 8; i++)
+      values[i] = 0;
+   };
+   for (int i = 0; i < 8; i++)
+   {
+      if (aplicables[i])
+         values[i] = Poda(actual_, jugador_, 0, PROFUNDIDAD_ALFABETA, static_cast<Environment::ActionType>(i), -99999, 99999);
+   }
+   int max = 0;
+   int index;
+   for (int i = 0; i < 8; i++)
+   {
+      if (values[i] > max)
       {
-         values[i] = 0;
-      };
-      for (int i = 0; i < 8; i++)
-      {
-         if (aplicables[i])
-            values[i] = Poda(actual_, jugador_, 0, PROFUNDIDAD_ALFABETA, static_cast<Environment::ActionType>(i), -99999, 99999);
+         index = i;
+         max = values[i];
       }
-      int max = 0;
-      int index;
-      for (int i = 0; i < 8; i++)
-      {
-         if (values[i] > max)
-         {
-            index = i;
-            max = values[i];
-         }
-      };
-      accion = static_cast<Environment::ActionType>(index);
-   }
-   else
-   {
-      accion = Environment::PUT1;
-   }
+   };
+   accion = static_cast<Environment::ActionType>(index);
 
    return accion;
 }
 
-double Player::Poda(Environment env, int jug, int profundidad, int COTA_PROF, Environment::ActionType accion, double alpha, double beta)
+double Player::Poda(const Environment &envi, int jug, int profundidad, int COTA_PROF, Environment::ActionType accion, double alpha, double beta)
 {
    // actualizamos env con el movimiento accion
+   Environment env = envi;
    env.AcceptAction(accion);
    env.ChangePlayer();
 
