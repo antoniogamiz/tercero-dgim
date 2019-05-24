@@ -28,9 +28,9 @@ En Phoronix hay dos tipos de benchmarks: los test and see y las agrupaciones (va
 Para buscar benchmark que midan el procesador (que tienen menos dependencias) hacemos: `phoronix-test-suit list-available-tests | grep -i processor`. Para ver más información sobre alguno: `phoronix-test-suite info <nombre>` (el nombre es la primera columna).
 
 Yo voy a escoger el benchmark `pts/perl-benchmark` (el profesor escogió `pts/system-decompress-bzip2`).
-Para instalarlo ejecutamos: `phoronix-test-suite install <nombre>`. Para ejecutarlo `phoronix-test-suite <nombre>`.
+Para instalarlo ejecutamos: `phoronix-test-suite install <nombre>`. Para ejecutarlo `phoronix-test-suite run <nombre>`.
 
-Los resultados que nos de no nos sirve de mucho porque necesitamos una referencia con los que compararlos. Si queremos recuperar resultados antiguos: `phoronix-test-suite list-saved-results`. Para ver el contenido: `phorenix-test-suite result-file-to-text <idEjecucion>`.
+Los resultados que nos de no nos sirven de mucho porque necesitamos una referencia con los que compararlos. Si queremos recuperar resultados antiguos: `phoronix-test-suite list-saved-results`. Para que te compare con otros ordenadores: `phoronix-test-suite auto-compare <nombre_del_test_escogido>`. Para ver el contenido: `phorenix-test-suite result-file-to-text <idEjecucion>`, o simplemente metiéndonos en la página web que nos indica al finalizar los tests.
 
 El comando `phoronix-test-suite benchmark <nombre>` es lo mismo que instalarlo y ejecutarlo justo después.
 
@@ -43,10 +43,16 @@ El comando `phoronix-test-suite benchmark <nombre>` es lo mismo que instalarlo y
 
 ## L1.2 Apache Benchmark
 
-Se instala cuando instalamos Apache así que ya deberíamos tenerlo.
+Se instala cuando instalamos Apache así que ya deberíamos tenerlo. Para conectarnos a la página de la ugr primero hacemos `host ugr.es`, lo que nos devolverá algo así como:
+~~~shell 
+ugr.es has address 150.214.204.231
+ugr.es mail is handled by 10 mx01.puc.rediris.es.
+ugr.es mail is handled by 10 mx02.puc.rediris.es.
+~~~
+Con lo que ponemos ahora sí (no olvidar la barra última!!):
 
 ```
-ab -n 1 http://ugr.es
+ab -n 1 150.214.204.231/
 ```
 
 - `-n`: request => Number of requests to perform for the benchmarking session. The default is to just perform a single request which usually leads to non-representative benchmarking results.
@@ -55,15 +61,15 @@ ab -n 1 http://ugr.es
 
 El tiempo de conexión es en milisegundos, es el tiempo que pasa desde que se abre el socket hasta que se establece la conexión. Processing es el tiempo que pasa hasta que recibimos el primer byte del resultado. Waiting es el tiempo restante de la conexión. Luego aparecen los percentiles.
 
-El profe va a pedir que hagamos esto pero contra CentOS, así que encemos CentOS y ejecutamos desde nuestra máquina:
+El profe va a pedir que hagamos esto pero contra CentOS, así que encendemos CentOS y ejecutamos desde nuestra máquina:
 
 ```
-ab -n 100 -c 4 <ipcentos>
+ab -n 100 -c 4 <ipcentos>/
 ```
 
 ## L2: Jmeter
 
-Esta lección la haremos en el anfitrión porque necesitamos una interfez gráfica.
+Esta lección la haremos en el anfitrión porque necesitamos una interfaz gráfica.
 
 Lo que hay que instalar y configurar se explica [aquí](https://github.com/davidPalomar-ugr/iseP4JMeter).
 
