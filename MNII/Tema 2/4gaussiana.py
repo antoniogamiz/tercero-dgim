@@ -48,9 +48,13 @@ def gaussiana(f, a, b, n, nodos):
 
 # =====================================================================
 
+# AQUI EL MAXIMO DE LA DERIVADA TAMBIEN LO CALCULAMOS REPRESNETANDO LA DERIVADA Y VIENDOLO
+# A OJILLO
 
+
+# el ultimo array que se la pasa son las raices del polinomio de legendre!!
 sol = gaussiana(f, 0, 2, 3, [-0.861136, -0.339981, 0.339981, 0.861136])
-print(colored("Solución método Newton-Cotes: ", "red"),
+print(colored("Solución método Gaussiana: ", "red"),
       colored(str(sol), "blue"))
-print(colored("Error método Newton-Cotes: ", "red"),
+print(colored("Error método Gaussiana: ", "red"),
       colored(str(error(0, 2, 6, 80640)), "blue"))

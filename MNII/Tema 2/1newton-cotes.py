@@ -33,6 +33,9 @@ def l(nodes, i):
 
 # =====================================================================
 
+# esta funcion da el error para las aproximaciones de newton cotes abiertas
+# y cerradas!! ella sola sabe si es abierta o cerrada
+
 
 def error(a, b, n, max):
     y = Symbol('y')
@@ -64,6 +67,7 @@ def newtonCotes(f, a, b, n):
 # =====================================================================
 
 
+# se le pasa la funcion f, el intervalo a,b y el numero de iteraciones
 sol = newtonCotes(f, 0, 2, 9)
 print(colored("Solución método Newton-Cotes: ", "red"),
       colored(str(sol), "blue"))

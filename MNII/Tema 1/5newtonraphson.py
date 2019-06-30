@@ -3,17 +3,6 @@ import numpy as np
 from sympy import *
 
 
-def f(x):
-    return log(x**2+1)-exp(x/2)*cos(3*x)
-
-
-def f_diff(x_0):
-    x = Symbol('x')
-    y = log(x**2+1)-exp(x/2)*cos(3*x)
-    fprime = diff(y, x)
-    return fprime.evalf(subs={x: x_0})
-
-
 def newtonraphson(f, a, b, epsilon, delta=10**(-15)):
     print(colored("============= Iteraciones =============", "green"))
     print("n \t x_n \t f(x_n)")
@@ -34,6 +23,19 @@ def newtonraphson(f, a, b, epsilon, delta=10**(-15)):
         i = i + 1
 
     return x_1
+
+
+def f(x):
+    return log(x**2+1)-exp(x/2)*cos(3*x)
+
+
+def f_diff(x_0):
+    x = Symbol('x')
+    # DONDE PONE y = (...) TAMBIEN TIENES QUE ESCRIBIR f!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    # CON MODIFICAR ESTA LINEA Y LA DEFINICION DE LA f YATA
+    y = log(x**2+1)-exp(x/2)*cos(3*x)
+    fprime = diff(y, x)
+    return fprime.evalf(subs={x: x_0})
 
 
 print(colored("========= Método de Newton-Raphson =========", "red"))

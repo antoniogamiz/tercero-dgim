@@ -2,10 +2,6 @@ from termcolor import colored
 import numpy as np
 
 
-def f(x):
-    return np.exp(x)-np.cos(x)
-
-
 def secante(f, a, b, epsilon, delta=10**(-15)):
     print(colored("============= Iteraciones =============", "green"))
     print("n \t x_n \t f(x_n)")
@@ -22,6 +18,10 @@ def secante(f, a, b, epsilon, delta=10**(-15)):
 
         i = i + 1
     return c
+
+
+def f(x):
+    return np.exp(x)-np.cos(x)
 
 
 print(colored("========= Método de la secante =========", "red"))

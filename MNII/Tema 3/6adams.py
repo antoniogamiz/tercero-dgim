@@ -57,23 +57,23 @@ def adams(f, a, b, n, y0, aprox):
     return uj[n]
 
 
-def main():
-    # ejemplo diapositiva 15
-    def f(t, y):
-        return (2-2*t*y)/(1+t**2)
-
-    def sol(t):
-        return (2*t+1)/(t**2+1)
-
-    aprox = euler(f, 0, 1, 3, 1)
-    x = adams(f, 0, 1, 10, 1, aprox)
-    print("Valor: exacto ", sol(1), "Aprox: ", x, " Error: ", np.abs(sol(1)-x))
-    aprox = euler2(f, 0, 1, 3, 1)
-    x = adams(f, 0, 1, 10, 1, aprox)
-    print("Valor: exacto ", sol(1), "Aprox: ", x, " Error: ", np.abs(sol(1)-x))
-    aprox = runge(f, 0, 1, 3, 1)
-    x = adams(f, 0, 1, 10, 1, aprox)
-    print("Valor: exacto ", sol(1), "Aprox: ", x, " Error: ", np.abs(sol(1)-x))
+def f(t, y):
+    return (2-2*t*y)/(1+t**2)
 
 
-main()
+def sol(t):
+    return (2*t+1)/(t**2+1)
+
+# IMPORTNTE => este es el metodo de adams bashforth de tres formas distintas. Bueno en verdad es la misma
+# lo unico que varia es que las aproximaciones iniciales han sido obtenidas con metodos diferentes!
+
+
+aprox = euler(f, 0, 1, 3, 1)
+x = adams(f, 0, 1, 10, 1, aprox)
+print("Valor: exacto ", sol(1), "Aprox: ", x, " Error: ", np.abs(sol(1)-x))
+aprox = euler2(f, 0, 1, 3, 1)
+x = adams(f, 0, 1, 10, 1, aprox)
+print("Valor: exacto ", sol(1), "Aprox: ", x, " Error: ", np.abs(sol(1)-x))
+aprox = runge(f, 0, 1, 3, 1)
+x = adams(f, 0, 1, 10, 1, aprox)
+print("Valor: exacto ", sol(1), "Aprox: ", x, " Error: ", np.abs(sol(1)-x))

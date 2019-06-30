@@ -29,8 +29,4 @@ def steffsen(f, x_0, delta=10**(-15)):
     return x[len(x) - 1]
 
 
-def main():
-    steffsen(f, 5)
-
-
-main()
+steffsen(f, 5)

@@ -12,15 +12,12 @@ def euler(f, a, b, n, y0):
     return uj
 
 
-def main():
-    # ejemplo diapositiva 15
-    def f(t, y):
-        return np.sqrt(y)
-
-    result = euler(f, 0, 1, 10, 0.0001)
-
-    for x in result:
-        print(x)
+def f(t, y):
+    return np.sqrt(y)
 
 
-main()
+# esto devuelve todos los uj
+result = euler(f, 0, 1, 10, 0.0001)
+
+for x in result:
+    print(x)

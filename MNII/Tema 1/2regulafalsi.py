@@ -2,10 +2,6 @@ from termcolor import colored
 import numpy as np
 
 
-def f(x):
-    return np.log(x**2+1)-np.exp(x/2)*np.cos(3*x)
-
-
 def regulafalsi(f, a, b, epsilon, delta=10**(-15)):
     print(colored("============= Iteraciones =============", "green"))
     print("n \t x_n \t f(x_n)")
@@ -22,6 +18,10 @@ def regulafalsi(f, a, b, epsilon, delta=10**(-15)):
             a = c
         i = i + 1
     return c
+
+
+def f(x):
+    return np.log(x**2+1)-np.exp(x/2)*np.cos(3*x)
 
 
 print(colored("========= Método de regula falsi =========", "red"))

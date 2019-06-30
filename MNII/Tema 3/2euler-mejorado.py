@@ -12,15 +12,11 @@ def euler(f, a, b, n, y0):
     return uj
 
 
-def main():
-    # ejemplo diapositiva 15
-    def f(t, y):
-        return -y+t+1
-
-    result = euler(f, 0, 1, 10, 1)
-
-    for x in result:
-        print(x)
+def f(t, y):
+    return -y+t+1
 
 
-main()
+result = euler(f, 0, 1, 10, 1)
+
+for x in result:
+    print(x)
