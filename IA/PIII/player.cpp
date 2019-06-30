@@ -277,15 +277,7 @@ double Player::Poda(const Environment envi, const int jug, int profundidad, int 
       value = -99999999.0;
       for (int i = 0; i < n_act; i++)
       {
-         int j = enviroments[i].JugadorActivo() == 1 ? 2 : 1;
-         if (enviroments[i].Last_Action(j) != 7)
-            value = max(value, Poda(enviroments[i], jug, profundidad + 1, COTA_PROF, alpha, beta));
-         else
-         {
-            enviroments[i].ChangePlayer();
-            value = max(value, Poda(enviroments[i], jug, profundidad + 1, COTA_PROF, alpha, beta));
-         }
-
+         value = max(value, Poda(enviroments[i], jug, profundidad + 1, COTA_PROF, alpha, beta));
          alpha = max(value, alpha);
          if (alpha > beta)
             return value;
@@ -297,14 +289,8 @@ double Player::Poda(const Environment envi, const int jug, int profundidad, int 
       value = 99999999.0;
       for (int i = 0; i < n_act; i++)
       {
-         int j = enviroments[i].JugadorActivo() == 1 ? 2 : 1;
-         if (enviroments[i].Last_Action(j) != 7)
-            value = min(value, Poda(enviroments[i], jug, profundidad + 1, COTA_PROF, alpha, beta));
-         else
-         {
-            enviroments[i].ChangePlayer();
-            value = min(value, Poda(enviroments[i], jug, profundidad + 1, COTA_PROF, alpha, beta));
-         }
+         value = min(value, Poda(enviroments[i], jug, profundidad + 1, COTA_PROF, alpha, beta));
+         beta = min(value, beta);
          if (alpha > beta)
             return value;
       }
