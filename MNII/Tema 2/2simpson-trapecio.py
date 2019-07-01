@@ -1,4 +1,3 @@
-from termcolor import colored
 import numpy as np
 from sympy import *
 from math import *
@@ -62,14 +61,14 @@ def simpsonCompuesta(f, a, b, m):
 
 # funcion f, intervalo a,b, numero de iteraciones
 sol = simpsonCompuesta(f, 0, 2, 9)
-print(colored("Solución método Simpson Compuesto: ", "red"),
-      colored(str(sol), "blue"))
+print("Solución método Simpson Compuesto: ",
+      str(sol))
 
-print(colored("Error método Simpson Compuesto: ", "red"),
-      colored(str(errorS(0, 2, 9, 100)), "blue"))
+print("Error método Simpson Compuesto: ",
+      str(errorS(0, 2, 9, 100)))
 
 sol = trapecioCompuesta(f, 0, 2, 9)
-print(colored("Solución método Trapecio Compuesto: ", "red"),
-      colored(str(sol), "blue"))
-print(colored("Error método Trapecio Compuesto: ", "red"),
-      colored(str(errorT(0, 2, 9, 100)), "blue"))
+print("Solución método Trapecio Compuesto: ",
+      str(sol))
+print("Error método Trapecio Compuesto: ",
+      str(errorT(0, 2, 9, 100)))

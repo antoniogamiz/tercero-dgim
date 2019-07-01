@@ -1,4 +1,3 @@
-from termcolor import colored
 import numpy as np
 
 
@@ -13,8 +12,8 @@ def calcularN(a, b, epsilon):
 
 def biseccion(f, a, b, epsilon, delta=10**(-15)):
     n = calcularN(a, b, epsilon)
-    print(" - Número de pasos necesarios => ", colored("N="+str(n), "yellow"))
-    print(colored("============= Iteraciones =============", "green"))
+    print(" - Número de pasos necesarios => N= "+str(n))
+    print("============= Iteraciones =============")
     print("n \t x_n \t f(x_n)")
     print()
     c_ant = 0
@@ -39,7 +38,7 @@ def f(x):
     return np.log(x**2+1)-np.exp(x/2)*np.cos(3*x)
 
 
-print(colored("========= Método de bisección =========", "red"))
+print("========= Método de bisección =========")
 solBiseccion = biseccion(f, -1, 0, 10**(-6), 10**(-6))
-print(colored("Solución método bisección: ", "red"),
-      colored(str(solBiseccion), "blue"))
+print("Solución método bisección: ",
+      str(solBiseccion))

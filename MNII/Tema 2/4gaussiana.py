@@ -1,4 +1,3 @@
-from termcolor import colored
 import numpy as np
 from sympy import *
 from math import factorial
@@ -34,11 +33,6 @@ def l(nodes, i):
 # =====================================================================
 
 
-def error(a, b, n, max):
-    return 0
-# =====================================================================
-
-
 def gaussiana(f, a, b, n, nodos):
     result = 0
     for i in range(0, n+1):
@@ -54,7 +48,5 @@ def gaussiana(f, a, b, n, nodos):
 
 # el ultimo array que se la pasa son las raices del polinomio de legendre!!
 sol = gaussiana(f, 0, 2, 3, [-0.861136, -0.339981, 0.339981, 0.861136])
-print(colored("Solución método Gaussiana: ", "red"),
-      colored(str(sol), "blue"))
-print(colored("Error método Gaussiana: ", "red"),
-      colored(str(error(0, 2, 6, 80640)), "blue"))
+print("Solución método Gaussiana: ",
+      str(sol))

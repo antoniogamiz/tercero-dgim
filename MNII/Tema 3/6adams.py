@@ -1,6 +1,4 @@
-from termcolor import colored
 import numpy as np
-from columnar import columnar
 
 
 def runge(f, a, b, n, y0):

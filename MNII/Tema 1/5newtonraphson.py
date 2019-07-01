@@ -1,10 +1,9 @@
-from termcolor import colored
 import numpy as np
 from sympy import *
 
 
 def newtonraphson(f, a, b, epsilon, delta=10**(-15)):
-    print(colored("============= Iteraciones =============", "green"))
+    print("============= Iteraciones =============")
     print("n \t x_n \t f(x_n)")
     print()
 
@@ -38,7 +37,7 @@ def f_diff(x_0):
     return fprime.evalf(subs={x: x_0})
 
 
-print(colored("========= Método de Newton-Raphson =========", "red"))
+print("========= Método de Newton-Raphson =========",)
 solNewton = newtonraphson(f, 0, 1, 10**(-5), 10**(-6))
-print(colored("Solución método Newton-Raphson: ", "red"),
-      colored(str(solNewton), "blue"))
+print("Solución método Newton-Raphson: ",
+      str(solNewton))

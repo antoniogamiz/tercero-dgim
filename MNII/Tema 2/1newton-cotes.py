@@ -1,4 +1,3 @@
-from termcolor import colored
 import numpy as np
 from sympy import *
 from math import factorial
@@ -69,7 +68,7 @@ def newtonCotes(f, a, b, n):
 
 # se le pasa la funcion f, el intervalo a,b y el numero de iteraciones
 sol = newtonCotes(f, 0, 2, 9)
-print(colored("Solución método Newton-Cotes: ", "red"),
-      colored(str(sol), "blue"))
-print(colored("Error método Newton-Cotes: ", "red"),
-      colored(str(error(0, 2, 6, 80640)), "blue"))
+print("Solución método Newton-Cotes: ",
+      str(sol))
+print("Error método Newton-Cotes: ",
+      str(error(0, 2, 6, 80640)))

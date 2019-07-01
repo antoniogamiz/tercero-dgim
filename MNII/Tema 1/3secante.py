@@ -1,9 +1,8 @@
-from termcolor import colored
 import numpy as np
 
 
 def secante(f, a, b, epsilon, delta=10**(-15)):
-    print(colored("============= Iteraciones =============", "green"))
+    print("============= Iteraciones =============")
     print("n \t x_n \t f(x_n)")
     print()
     c = (b-(b-a)*f(b))/(f(b)-f(a))
@@ -24,7 +23,7 @@ def f(x):
     return np.exp(x)-np.cos(x)
 
 
-print(colored("========= Método de la secante =========", "red"))
+print("========= Método de la secante =========")
 solSecante = secante(f, -2, -1, 10**(-5))
-print(colored("Solución método secante: ", "red"),
-      colored(str(solSecante), "blue"))
+print("Solución método secante: ",
+      str(solSecante))

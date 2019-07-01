@@ -1,11 +1,10 @@
-from termcolor import colored
 import numpy as np
 
 
 def iFuncional(f, x_0, n, delta=10**(-15)):
     x_n = []
     x_n.append(x_0)
-    print(colored("============= Iteraciones =============", "green"))
+    print("============= Iteraciones =============")
     print("n \t x_n \t f(x_n)")
     print()
     i = 0

@@ -1,4 +1,3 @@
-from termcolor import colored
 import numpy as np
 
 
@@ -12,7 +11,7 @@ def steffsen(f, x_0, delta=10**(-15)):
     x.append(x_0)
     x_1 = f(x_0)
     x_2 = f(x_1)
-    print(colored("============= Iteraciones =============", "green"))
+    print("============= Iteraciones =============")
     print("n \t x_n")
     print("0" + "\t" + str(x[0]))
     i = 1

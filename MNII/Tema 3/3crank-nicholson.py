@@ -1,4 +1,3 @@
-from termcolor import colored
 from sympy import *
 
 y = Symbol('y')

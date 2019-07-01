@@ -1,9 +1,8 @@
-from termcolor import colored
 import numpy as np
 
 
 def regulafalsi(f, a, b, epsilon, delta=10**(-15)):
-    print(colored("============= Iteraciones =============", "green"))
+    print("============= Iteraciones =============")
     print("n \t x_n \t f(x_n)")
     print()
     c = (b-(b-a)*f(b))/(f(b)-f(a))
@@ -24,7 +23,7 @@ def f(x):
     return np.log(x**2+1)-np.exp(x/2)*np.cos(3*x)
 
 
-print(colored("========= Método de regula falsi =========", "red"))
+print("========= Método de regula falsi =========")
 solFalsi = regulafalsi(f, -1, 0, 10**(-5), 10**(-6))
-print(colored("Solución método regula falsi: ", "red"),
-      colored(str(solFalsi), "blue"))
+print("Solución método regula falsi: ",
+      str(solFalsi))
