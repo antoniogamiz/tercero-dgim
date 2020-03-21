@@ -46,6 +46,30 @@
 
 Nos vamos a la máquina desde la que nos queramos conectar, por ejemplo Ubuntu, y generamos nuestras llaves con `ssh-keygen` (le damos todo a enter) y luego ejecutamos `ssh-copy-id <usuariocentos>@ipcentos` y ya estaría. Ahora al hacer `ssh <usuariocentos>@ipcentos` se conectará directamente sin pedir contraseña.
 
+##### Añadir contraseña SSH  al agente SSH
+Cada vez que nos queramos queramos conectar a un servidor remoto se nos pedirá la contraseña, para evitarlo podemos dejar corriendo el agente ssh. Pasos a seguir:
+-  `ssh-agent` para activar el agente en background
+- `ssh-add`  Nos pedirá la contraseña y después de esto ninguna vez más :D (durante esta sesión)
+
+##### Crear alias para la conexión ssh
+
+Para evitar tener que estar introduciendo siempre la ip y el usuario, bastará con añadir un alias al archivo de configuración de ssh
+
+- Editamos el fichero `~\.ssh
+Supongamos que para acceder a nuestro servidor ejecutábamos `ssh usuario@192.168.56.103`
+Añadiendo las siguientes líneas
+
+```
+Host centos
+     User usuario
+     HostName 192.168.56.103⏎
+```
+
+Ahora para acceder solo tendriamos que escribir ssh `centos`
+
+
+
+
 #### Configuración del firewall
 
 ##### Ubuntu
