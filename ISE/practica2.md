@@ -62,12 +62,14 @@ Añadiendo las siguientes líneas
 ```
 Host centos
      User usuario
-     HostName 192.168.56.103⏎
+     HostName 192.168.56.103
 ```
+
+(Por supuesto también podriamos indicar otro parámetros como el puerto)
 
 Ahora para acceder solo tendriamos que escribir ssh `centos`
 
-
+Fuentes: https://www.howtogeek.com/75007/stupid-geek-tricks-use-your-ssh-config-file-to-create-aliases-for-hosts/
 
 
 #### Configuración del firewall
