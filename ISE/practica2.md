@@ -29,7 +29,7 @@
 
 - `/etc/ssh/sshd_config`: archivo de configuración para el daemon de ssh. Campos que nos interesan:
   - `Port`: puerto en el que va a escuchar el daemon.
-  - `PermitRootLogin`: para ver permitir acceso root o no.
+  - `PermitRootLogin`: para ver permitir acceso root o no, CentOS lo trae por defecto. 
 
 #### Modificando la configuración del cliente
 
@@ -48,7 +48,7 @@ Nos vamos a la máquina desde la que nos queramos conectar, por ejemplo Ubuntu, 
 
 ##### Añadir contraseña SSH  al agente SSH
 Cada vez que nos queramos queramos conectar a un servidor remoto se nos pedirá la contraseña, para evitarlo podemos dejar corriendo el agente ssh. Pasos a seguir:
--  `ssh-agent` para activar el agente en background
+-  ```eval `ssh-agent` ```  para activar el agente en background
 - `ssh-add`  Nos pedirá la contraseña y después de esto ninguna vez más :D (durante esta sesión)
 
 ##### Crear alias para la conexión ssh
@@ -105,12 +105,18 @@ Esta utilidad lo copia todo en raw por lo que nos saltamos el buffer del sistema
 
 - `dd if=/dev/sd1 of=./sda1.raw bs=1024k`
 - `dd if=/dev/zero of=./zeros.dat bs=1k count=5`
+Estos comandos tienen como problema que si hay un error, el comando fallará, con esot lo podemos evista
+`dd if=/dev/sda of=/dev/sdb conv=noerror,sync`  
+
+Fuentes:
+-  https://www.thegeekstuff.com/2010/10/dd-command-examples/
+- https://docs.oracle.com/cd/E19683-01/816-5042/chap7rt-57/index.html (este es para la entrada y salida sincronizada, qué significa)
 
 #### cpio
 
 Sistema de copias a nivel de sistemas de ficheros.
 
-Es un formato estándar, se usa para meter estructuras de directorios complejas en un solo archivo.
+Es un formato estándar, se usa para meter estructuras de directorios complejas en un solo archivo. (similar al comando tar). 
 
 - `find /etc/ -iname '\*.conf' | cpio -ov > ./etc/Conf.cpio`
 - `cpio -iduv < ./etc/Conf.cpio`
