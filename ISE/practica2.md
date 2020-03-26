@@ -118,22 +118,69 @@ Sistema de copias a nivel de sistemas de ficheros.
 
 Es un formato estándar, se usa para meter estructuras de directorios complejas en un solo archivo. (similar al comando tar). 
 
-- `find /etc/ -iname '\*.conf' | cpio -ov > ./etc/Conf.cpio`
-- `cpio -iduv < ./etc/Conf.cpio`
+Los comandos básicos son: 
+```
+SYNOPSIS
+PARA DESCOMPRIMIR
+     cpio -i [options] [pattern ...] [< archive]
+ PARA COMPRIMIR 
+     cpio -o [options] < name-list [> archive]  
+ PASS-THROUGH (copia de un directorio  a otro la lista de nombres a copiar) 
+     cpio -p [options] dest-dir < name-list
+
+```
+
+Donde las opciones básicas son: 
+
+- i input  
+- o output  
+- p pass-through  
+- l crea link en la copia 
+- v verbose copia el nombre del fichero que va copiando ( en la salids stderr es decir la terminal) 
+- u unconditional: si no se pone, el archivo que ya existia no se copia, y si se ha borrado no se borra en el directorio a copiar  
+- d  crea directorios si es necesario 
+
+
+
+- `find /etc/ -iname '*.conf' | cpio -ov > ./etc/Conf.cpio`
+- `cpio -iduv < ./etc/Conf.cpio` OJO TE LO GUARDA EN CARPETAS QUE ESTABAN INDICADAS, es decir, en este ejemplo otra vez todo para la carpeta etc xD 
 - `cpio -iduv '/etc/fuse.conf' < ./etc/Conf.cpio`
+- ` find /etc -iname '*conf' | cpio -pvd ~ ` Copiaría en home  una carpeta llamada etc con los archivos y estructura de directorios con los archivos de configuración.
+
+Fuentes: man 
 
 #### tar
+<
+Sistemas de copias a nivel de archivos. 
 
-Sistemas de copias a nivel de archivos
+Ejemplo de sintaxis vamos a usar el estilo tradicional de sintaxis (estilo unix con -a, el estilo GNU es el verboso): 
+Traditional usage
+       tar {A|c|d|r|t|u|x}[GnSkUWOmpsMBiajJzZhPlRvwo] [ARG...]
+```	   
 
+Opciones básicas:   
+- f nombre del archivo al que se quiere comprimir 
+- z usar gzip   
+- c create nuevo archivo a crear 
+- x extrat para descomprimir 
+- u update, append los ficheros que son más nuevos 
+- O --to-stdout: estra los ficheros a la salida estandar 
 - `tar czf /tmp/etc.tgz`
 - `tar xzf /tmp/etc.tgz`
 
+
+Fuentes: 
+- man 
+- https://help.ubuntu.com/community/BackupYourSystem/TAR  
+
 #### rsync
+Rsync es una herramienta ampliamente utilizada para realizar copias de seguridad y mantener copias exactas de estructuras de ficheros (sincronizadas). En las prácticas nos centraremos en esta segunda funcionalidad. El alumno debe ser capaz de sincronizar una estructura compleja de directorios y subdirectorios dentro del mismo servidor  y a un servidor remoto empleando SSH como canal de comunicación.
 
-Para mantener ficheros sincronizados entre dos máquinas.
 
-- `rsync -a ./dev antonio@ip ip:/home/antonio`
+- `rsync -a ./dev antonio@ip ip:/home/antonio`  
+- `rsync -aviz --delete ise ana@192.168.56.10:/home/ana/ `
+
+
 - borramos algo
 - ejecutamos otra vez el comando anterior y vemos que reaparece.
 
