@@ -154,6 +154,7 @@ Fuentes: man
 Sistemas de copias a nivel de archivos. 
 
 Ejemplo de sintaxis vamos a usar el estilo tradicional de sintaxis (estilo unix con -a, el estilo GNU es el verboso): 
+```
 Traditional usage
        tar {A|c|d|r|t|u|x}[GnSkUWOmpsMBiajJzZhPlRvwo] [ARG...]
 ```	   
@@ -182,10 +183,116 @@ Rsync es una herramienta ampliamente utilizada para realizar copias de seguridad
 
 
 - borramos algo
-- ejecutamos otra vez el comando anterior y vemos que reaparece.
+- ejecutamos otra vez el comando anterior y vemos que reaparece.  
+
+## Git   
+
+- Software Change Management (SCM) / Version Control System (VCS) SON LO MISMOS CONCEPTOS
+
+### Estrategias a la hora de utilizar un control de versiones  
+
+#### Feature Branches  
+
+- Cada característica de desarrollo de la aplicación tienen lugar en una rama dedicada a ello  
+
+- Esto permite que varios desarrolladores trabajen simultaneamente y la rama principal sea siempre funcional   
+
+#### Trunk based development  
+- Todos trabajan en la rama master, no se subirá ningún cambio que vuelva no funcional la rama master. 
+- máxima transparencia y trabajar en equipo
+- problemas
+(Este es el que utiliza google, a David le parece una barbaridad xD )
+
+#### Git workflow   
+
+Se parte de un puntu, pueden haber desarrollos paralelos a ese punto que se van integrando con merge . 
+
+### Repositorio centralizado   
+
+### Repositorio distribuido
+
+### Fuentes:
+- Sobre ramas, registros y trazas: https://git-scm.com/book/es/v2/Ramificaciones-en-Git-%C2%BFQu%C3%A9-es-una-rama%3F
+
+- Feature branches: https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow
+#### Guias de git  
+
+Comandos: 
+
+- git init: create a new repository  
+- git clone: 
+
+```
+create a working copy of a local repository by running the command
+git clone /path/to/repository
+when using a remote server, your command will be
+git clone username@host:/path/to/repository3`
+create a working copy of a local repository by running the command
+git clone /path/to/repository
+when using a remote server, your command will be
+git clone username@host:/path/to/repository
+
+```
+
+
+add & commit
+
+You can propose changes (add it to the Index) using
+git add <filename>
+git add *
+This is the first step in the basic git workflow. To actually commit these changes use
+git commit -m "Commit message"
+Now the file is committed to the HEAD, but not in your remote repository yet.
+
+
+pushing changes
+
+Your changes are now in the HEAD of your local working copy. To send those changes to your remote repository, execute
+git push origin master
+Change master to whatever branch you want to push your changes to.
+
+If you have not cloned an existing repository and want to connect your repository to a remote server, you need to add it with
+git remote add origin <server>
+Now you are able to push your changes to the selected remote server
+
+
+reate a new branch named "feature_x" and switch to it using
+git checkout -b feature_x
+switch back to master
+git checkout master
+and delete the branch again
+git branch -d feature_x
+a branch is not available to others unless you push the branch to your remote repository
+git push origin <branch>  
+
+
+update & merge
+
+to update your local repository to the newest commit, execute
+git pull
+in your working directory to fetch and merge remote changes.
+to merge another branch into your active branch (e.g. master), use
+git merge <branch>
+in both cases git tries to auto-merge changes. Unfortunately, this is not always possible and results in conflicts. You are responsible to merge those conflicts manually by editing the files shown by git. After changing, you need to mark them as merged with
+git add <filename>
+before merging changes, you can also preview them by using
+git diff <source_branch> <target_branch>
+
+
+ In case you did something wrong, which for sure never happens ;), you can replace local changes using the command
+git checkout -- <filename>
+this replaces the changes in your working tree with the last content in HEAD. Changes already added to the index, as well as new files, will be kept.
+
+If you instead want to drop all your local changes and commits, fetch the latest history from the server and point your local master branch at it like this
+git fetch origin
+git reset --hard origin/master 
+
+- Básica: http://rogerdudler.github.io/git-guide/  
+- completa: https://www.atlassian.com/git/tutorials
 
 ### Lección 3: LAMP Stack (Linux, Apache, MySQL, PHP)
 
+#### Ubuntu
 Nos vamos a Ubuntu y ejecutamos `tasksel`, buscamos la opción `LAMP server`, la seleccionamos con espacio y pulsamos enter.
 
 Con `systemctl status apache2` podemos ver que Apache está correctamente instalado. En `/etc/apache2` está la configuración. El archivo más importante es `apache2.conf`. Podemos comprobar que funciona correctamente lanzando un navegador y escribiendo `http://tuipdeubuntu`.
@@ -204,12 +311,101 @@ phpinfo();
 
 Y renombramos el archivo con: `mv index.html index.php`.
 
-Ahora nos cambiamos a CentOS y vamos a hacer lo mismo:
+#### CentOS
+
+Queremos instalar nuestra stack (pila de software) LAMP (Linux, apache, mysql, php) para tener nuestro servidor listo. 
+
+Para ello empezaremos instalando nuestro servidor de apache.
+Como no conocemos el nombre concreto del paquete con `yum search httpd` podemos buscar los existentes. 
+
+`httpd.x86_64 : Apache HTTP Server` esta línea es la que nos interesa. (el punto de después es información extra y no nos interesa.
 
 - `yum install httpd`
+- `systemctl status httpd` Nos permite ver el estado del servidor de apache. 
+Tras ejecutarlo nos deberá salir algo parecido a esto: 
+
+```
+● httpd.service - The Apache HTTP Server
+   Loaded: loaded (/usr/lib/systemd/system/httpd.service; disabled; vendor preset: disabled)
+   Active: inactive (dead)
+     Docs: man:httpd(8)
+           man:apachectl(8)
+```  
+Que como vemos esta desactivado. Procedamos a activarlo 
 - `systemctl enable httpd`
 - `systemctl start httpd`
+
+```
+[root@localhost ~]# systemctl start httpd
+[root@localhost ~]# systemctl status httpd
+● httpd.service - The Apache HTTP Server
+   Loaded: loaded (/usr/lib/systemd/system/httpd.service; disabled; vendor preset: disabled)
+   Active: active (running) since vie 2020-03-27 20:26:56 CET; 2s ago
+     Docs: man:httpd(8)
+           man:apachectl(8)
+ Main PID: 2330 (httpd)
+   Status: "Processing requests..."
+   CGroup: /system.slice/httpd.service
+           ├─2330 /usr/sbin/httpd -DFOREGROUND
+           ├─2331 /usr/sbin/httpd -DFOREGROUND
+           ├─2332 /usr/sbin/httpd -DFOREGROUND
+           ├─2333 /usr/sbin/httpd -DFOREGROUND
+           ├─2334 /usr/sbin/httpd -DFOREGROUND
+           └─2335 /usr/sbin/httpd -DFOREGROUND
+
+mar 27 20:26:56 localhost.localdomain systemd[1]: Starting The Apache HTTP Server...
+mar 27 20:26:56 localhost.localdomain httpd[2330]: AH00558: httpd: Could not reliably det...ge
+mar 27 20:26:56 localhost.localdomain systemd[1]: Started The Apache HTTP Server.
+Hint: Some lines were ellipsized, use -l to show in full.
+
+```
+
+Como vemos ya está corriendo, además apache ha lanzado varios procesos "pesados"  
+
+Todo lo relacionado a configuración de apache lo encontraremos el directorio `/etc/httpd/`
+
+Si ahora probamos si funciona:
+Desde el anfitrión abrimos un navegador y escribimos la dirección
+`192.168.56.103` (en mi caso)  
+
+vemos que no funciona x'D (tranqui, esto forma parte de la práctica y las pedagogías modernas)
+
+Comprobamos que tenemos conexión en local, es decir desde el servidor (al que estaremos conectados por ssh) nos conectamos usando
+
+o por telnet puerto 80 : `telnet localhost 80` 
+
+o por curl `curl http://localhost` 
+
+Esto nos devolverá código html e incluso para más información usar modo verboso `curl -vv http://localhost`  
+Esta información es muy interesante porque entre otras cosas se nos dirá información sobre el servidor sobre el que se está corriendo la información y aprovechar sus vulnerabilidades 
+
+Ejemplo línea que aporta información : `< Server: Apache/2.4.6 (CentOS)`
+
+Si ahora repetimos el curl en nuestro ordenador anfitrión: 
+
+`curl http://192.168.56.103` recibiremos el siguiente mensaje: `curl: (7) Failed to connect to 192.168.56.103 port 80: No existe ninguna ruta hasta el `host'
+` el cual nos interesa ua que os da más información del motivo del fallo que es... (redobles por favor...)  
+
+QUE NO HEMOS ABIERTO EL PUERTO 80 DE HTTP jejjejejej 
+
+Si hacemos `firewall-cmd --state` veremos que el demonio está corriendo. 
+
+Nota informativa para poder seguir con las prácticas: 
+Zonas de un cortafuegos  
+Las zonas son un grupo de interfaces físicas o virtuales a las que controlamos su acceso  
+
+Vamos a ver la configuración por defecto: `firewall-cmd --list-all` (para ver la de todas las zonas `firewall-cmd --list-all-zones`)
+
+` services: dhcpv6-client ssh` en esta línea vemos los servicios que admitimos (falta http)
+o también podríamos configurarlos por puertos. 
+Para añadir el servicio bastaría con: 
 - `firewall-cmd --add-service=http`
+
+Pero esto no lo haría de forma permanente y al reiniciar el servidor lo perderiamos, para ello ejecutamos: `
+- firewall-cmd --zone=public --permanent --add-service=http`  (debería de aparecer success) 
+
+min 30:14
+
 - `yum install php`
 - `apachectl restart`
 
@@ -275,3 +471,13 @@ mysql_close($link);
 </body>
 </html>
 ```
+
+
+Fuentes: 
+
+- Configuración httpd https://www.linode.com/docs/web-servers/apache-tips-and-tricks/apache-configuration-basics/
+- apache documentación oficial: https://httpd.apache.org/docs/2.4/
+- zones in firewall:
+  https://www.kwtrain.com/blog/network-security-zones
+ https://docs.paloaltonetworks.com/pan-os/7-1/pan-os-admin/getting-started/segment-your-network-using-interfaces-and-zones  
+ 
