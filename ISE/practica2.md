@@ -93,7 +93,8 @@ En CentOS para configurar el firewall se usa el comando `firewall-cmd`. Para ver
 - `firewall-cmd --remove service=ssh --permanent`
 - `firewall-cmd --add-service=ssh --permanent`
 - `firewall-cmd --add-port=22/tcp --permanent`
-- En lugar de `--permanent` podemos usar `--runtime-to-permanent`.
+- En lugar de `--permanent` podemos usar `--runtime-to-permanent`.  
+- `firewall-cmd --reload` para hacer ejectivos los cambios 
 
 ### Lección 2 - Backups y Sistemas de Control de Versiones
 
@@ -332,8 +333,8 @@ Tras ejecutarlo nos deberá salir algo parecido a esto:
            man:apachectl(8)
 ```  
 Que como vemos esta desactivado. Procedamos a activarlo 
-- `systemctl enable httpd`
-- `systemctl start httpd`
+- `systemctl start httpd` inicializamos apache (tras esto le hacemos status para cer si funciona
+
 
 ```
 [root@localhost ~]# systemctl start httpd
@@ -359,8 +360,10 @@ mar 27 20:26:56 localhost.localdomain systemd[1]: Started The Apache HTTP Server
 Hint: Some lines were ellipsized, use -l to show in full.
 
 ```
-
 Como vemos ya está corriendo, además apache ha lanzado varios procesos "pesados"  
+
+Y tras eso hacemos hacemos permanente el servicion 
+- `systemctl enable httpd` 
 
 Todo lo relacionado a configuración de apache lo encontraremos el directorio `/etc/httpd/`
 
@@ -382,6 +385,7 @@ Esta información es muy interesante porque entre otras cosas se nos dirá infor
 Ejemplo línea que aporta información : `< Server: Apache/2.4.6 (CentOS)`
 
 Si ahora repetimos el curl en nuestro ordenador anfitrión: 
+(curl es un herramienta para transferir datos de o para un servidor utilizando protocolos soportados)
 
 `curl http://192.168.56.103` recibiremos el siguiente mensaje: `curl: (7) Failed to connect to 192.168.56.103 port 80: No existe ninguna ruta hasta el `host'
 ` el cual nos interesa ua que os da más información del motivo del fallo que es... (redobles por favor...)  
@@ -402,12 +406,72 @@ Para añadir el servicio bastaría con:
 - `firewall-cmd --add-service=http`
 
 Pero esto no lo haría de forma permanente y al reiniciar el servidor lo perderiamos, para ello ejecutamos: `
-- firewall-cmd --zone=public --permanent --add-service=http`  (debería de aparecer success) 
+- firewall-cmd --zone=public --permanent --add-service=http`  (debería de aparecer success)
 
-min 30:14
+
+- `firewall-cmd --reload`  
+
+Si ahora volvemos a intentar entrar: desde el navegador aparecerá el contenido de la página de pruebas de apache.
+
+##### Registro de accesos a nuestro servidor  
+
+Como toda la información variable durante que la máquina esté corriendo, podemos acceder a ella en la carpeta var
+`/var/log/httpd` en el encontraremos dos archivos `access_log` y `error_logo` que nos muestran información sobre interacciones con nuestro servidor. 
+
+En la práctica estos archivos pesan demasiado así que cada poco se borran (aunque se pueden realizar el pertinente análisis de datos antes de borrarlos. 
+
+#### Contenido de la página web
+
+El contendo de una página web se divide 
+- Estático (html files, css,images...)
+- Dinámico (en esta práctica no se pide nada relacionado con él)  
+
+##### Estático  
+
+El path del documento que lo implementa lo podremos configurar con `DocumentRoot "/path/entrecomillas"`
+Por defecto lo podremos encontrar en `/var/www`  . 
+
+La página que se carga por defecto al entrar al servidor es `/var/www/html/index.html`  
+Pero como todo lo de apache es configurable en el fichero `/etc/httpd/conf/httpd.conf` más en concreto buscar `DirectoryIndex` en ese fichero. 
+
+
+hagamos una prueba: 
+Escribimos lo siguiente en el fichero `/var/www/html/index.html`  
+```htm
+<html>
+<head><title> Buenos y positivos días </title></head>
+<body>
+  <h1> ¡Buenos y positivos días! </h1>
+  <h2> Estoy probando apachecillo</h2>
+</body>
+</html>
+
+```
+
+Si ahora recargamos la página en el navegador veremso el cambio. 
+También podremos acceder a otras web que no sean el index escribiendo como ruta `192.168.56.103/onombreFichero.ext`
+Donde `ext` es la extensión del fichero que podría ser html, php,txt...
+ (si el archivo tiene una extensión que no reconoce te permite descgártelo si entras con el navegador)
+ 
+ 
+
+##### Contenido dinámico  
+Se genera en tiempo de respuesta del servidor, se puede generar de varias formas: handlers y gci programs.   
+más información: https://httpd.apache.org/docs/trunk/howto/cgi.html  
+(muy interesante para echarlo un vistacillo con perl o python)   
+
+
+
+#### Configuración de php
 
 - `yum install php`
-- `apachectl restart`
+- `apachectl restart` (Si ya lo hemos comenzado alguna  vez en lugar de utlizar `restart` podemos usar `reload`)
+- o prodríamos haber utilizado también `systemctl`
+
+
+
+También contamos con un fichero de configuración de php en etc. 
+Para comprobar si el fichero es correcto existe el comando `apachctl configtest`
 
 Creamos `index.php` en `/var/www/html` conteniendo:
 
@@ -428,11 +492,17 @@ phpinfo();
 </html>
 ```
 
+####  Configuración de MySql    
+
 Instalamos y configuramos MariaDB:
 
+(Si no nos acordamos  `yum search mysql`  )  
 - `yum install mariadb-server`
 - `systemctl enable mariadb`
-- `systemctl start mariadb`
+- `systemctl start mariadb` ( va a tardar un poquitillo, no os austéis xD)  
+
+Una orden interesante de `systemctl` es `systemctl list-unit-files` que permite ver el estado de todos los servicios disponibles 
+
 
 Es recomnedable ejecutar `mysql_secure_installation`.
 
@@ -441,13 +511,51 @@ Creamos un usuario:
 - `mysql -uroot -pantonio`
 - `create database ise2019;`
 - `grant all privileges on ise2019.\* to 'isedev'@'localhost' identified by 'isedev';`
+- ejemplo más concreto que escribió el profesos:  
+`grant all privileges on ise2020.* to 'alumno'@'localhost' identified by 'ise2020'; `
+
 - `flush privileges;`
 - `exit`
 - Para comprobar que funciona: `mysql -uisedev -pisedev ise2019`.
-- `yum install php-mysql` y reiniciamos apache `apachectl restart`.
+- `yum install php-mysql` y reiniciamos apache `apachectl restart`. (ahora en phpinfo() aparecerá en paquetes iniciales php-mysql)
+
+(Si nos da pereza hacer lo anterior podemos trabajar con las bases de datos que tienen por defecto mysql: 
+
+- `mysql mysql` (tabla por defecto)  
+- `show databases;`  
+)
 
 Y sustituimos el body de `/var/www/index.php`, quedándonos así:
 
+(Código aportado por el profesor)
+```php
+<?php 
+	$mysql = new mysqli('localhost', alumno', ise2020',password');
+	if ($mysql->connect_error) { 
+		die('No pudo conectarse: ' . $mysql->connected_error); 
+	}
+	echo '<h1>Conectado satisfactoriamente</h1>';
+	?> 
+	<h1>Contenido de la tabla Alumnos</h1>
+	<table border="1">
+	<tr><td>Id</td><td>Nombre</td><td>Email</td></tr> 
+	
+	<?php $sql = "SELECT id, nombre, apelidos, email FROM alumnos";
+	$result = $mysql->query($sql); 
+	if ($result->num_rows > 0) { 
+		while($row = $result->fetch_assoc()) { 
+			echo "<tr><td>".$row["id"]."</td><td>".$row["nombre"]." ". $row["apellidos"]."</td>";
+			echo "<td>".$row["email"]."</td></tr>\n"; 
+		} 
+	} 
+	mysql_close($enlace); 
+	phpinfo(); 
+?>
+```
+
+(hay algo que no funciona y que hay que corregir) 
+
+(Código de Antonio)
 ```
 <!DOCTYPE html>
 <html lang="en">
@@ -472,12 +580,25 @@ mysql_close($link);
 </html>
 ```
 
+Si no se ha instalado la versión php para mysql o hemos escrito mal el porgrama e intentamos acceder podemos ver el error en `/var/log/httpd/error_log`
 
-Fuentes: 
+
+
+
+#### Fuentes: 
 
 - Configuración httpd https://www.linode.com/docs/web-servers/apache-tips-and-tricks/apache-configuration-basics/
 - apache documentación oficial: https://httpd.apache.org/docs/2.4/
 - zones in firewall:
   https://www.kwtrain.com/blog/network-security-zones
  https://docs.paloaltonetworks.com/pan-os/7-1/pan-os-admin/getting-started/segment-your-network-using-interfaces-and-zones  
- 
+ - curl man
+ - systemctl: https://www.linode.com/docs/quick-answers/linux/start-service-at-boot/
+
+
+#### Notas gráciles  
+
+Para estas prácticas vamos a tirar mucho de editores y de manual, si no estamos acostumbrados a nano o vi podemos buscar alternativas con las que estemos acostumbrados. 
+
+Yo he utilizado  `emacs` en su versión `emacs-nox` que es la versión de terminal, más que nada porque me siento muy a gusto con sus atajos, coloreo de sintaxis y para consultar el man de manera más cómoda o ejecuar comandos terminal sin salir del editor. ¿por qué no le das una oportunidad a emacs? ;)
+
