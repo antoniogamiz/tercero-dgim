@@ -512,7 +512,7 @@ Creamos un usuario:
 - `create database ise2019;`
 - `grant all privileges on ise2019.\* to 'isedev'@'localhost' identified by 'isedev';`
 - ejemplo más concreto que escribió el profesos:  
-`grant all privileges on ise2020.* to 'alumno'@'localhost' identified by 'ise2020'; `
+`grant all privileges on ise2020.* to 'alumno'@'localhost' identified by 'ise2020'; `  
 
 - `flush privileges;`
 - `exit`
@@ -527,6 +527,7 @@ Creamos un usuario:
 
 Y sustituimos el body de `/var/www/index.php`, quedándonos así:
 
+Nota: antes de que funcione hay que crear la base de datos, las tablas y blablbalabal
 (Código aportado por el profesor)
 ```php
 <?php 
@@ -583,8 +584,56 @@ mysql_close($link);
 Si no se ha instalado la versión php para mysql o hemos escrito mal el porgrama e intentamos acceder podemos ver el error en `/var/log/httpd/error_log`
 
 
+## Mysqli guia rápida  <3  
+
+El paradigma de trabajo es orientado a objetos ( :O Blanca del pasado se sorprendió mucho)  
+
+Todos los comando que aquí escriba se entenderán dentro del tag de php, es decir dentro de html en una estructura 
+```php
+<?php 
+
+//cuestro codiguillo php 
+
+?>
+```
+
+- la variables creadas comienzan por $  
+`$SQL = new mysqli;`  // create copy class    
+y despúes iniciamos nuestra conexión en la base de datos 
+`$SQL -> real_connect('127.0.0.1', 'root', 'pass', 'database');` (estos son ejemplo de php)
+
+o bien directamente con el constructor nos conectamos (ahora ya si con nuestro contenido):
+
+`$mysql = new mysqli('localhost', 'alumno', 'secreto','ise2020');`
+
+Para comprobar si el acceso ha sido correcto: 
+
+```php
+$SQL_Err = $SQL->connect_errno;
+   
+if($SQL_Err) // if error
+    exit('Error');
+
+```  
+
+Para trabajr con la base de datos como hariamos desde la línea de comandos: 
+
+- creamos una variable con el texto de la búsqueda  y llamamos al método query ejemplo: 
+
+```
+$sql = "INSERT INTO MyGuests (firstname, lastname, email)
+VALUES ('John', 'Doe', 'john@example.com')";
+
+if ($conn->query($sql) === TRUE) {
+    echo "New record created successfully";
+} else {
+    echo "Error: " . $sql . "<br>" . $conn->error;
+}
+
+```
 
 
+Para cerrar la conexión: `$SQL->close(); `
 #### Fuentes: 
 
 - Configuración httpd https://www.linode.com/docs/web-servers/apache-tips-and-tricks/apache-configuration-basics/
@@ -594,7 +643,9 @@ Si no se ha instalado la versión php para mysql o hemos escrito mal el porgrama
  https://docs.paloaltonetworks.com/pan-os/7-1/pan-os-admin/getting-started/segment-your-network-using-interfaces-and-zones  
  - curl man
  - systemctl: https://www.linode.com/docs/quick-answers/linux/start-service-at-boot/
-
+- php y mysql manuales:
+Introducción sencillica pa' todos los públicos: https://www.w3schools.com/php/php_mysql_connect.asp  
+Lo bueno: https://www.php.net/manual/es/book.mysqli.php
 
 #### Notas gráciles  
 
